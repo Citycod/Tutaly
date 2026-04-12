@@ -33,10 +33,12 @@ function ResetPasswordContent() {
     setError('');
 
     try {
-      await api.post('/auth/reset-password', { token, newPassword: password });
+      await api.post('/auth/reset-password', { token, password });
       setIsSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to reset password. The link may have expired.');
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      setError(error.response?.data?.message || 'Failed to reset password.');
     } finally {
       setIsLoading(false);
     }

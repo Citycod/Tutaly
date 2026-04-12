@@ -5,8 +5,19 @@ import Link from 'next/link';
 import { apiAuth } from '@/lib/api';
 import { Plus, Users, Clock, CheckCircle } from 'lucide-react';
 
+interface Job {
+  id: string;
+  title: string;
+  jobType: string;
+  workMode: string;
+  status: string;
+  area?: string;
+  state: string;
+  createdAt: string;
+}
+
 export default function EmployerJobsPage() {
-  const [jobs, setJobs] = useState<any[]>([]);
+  const [jobs, setJobs] = useState<Job[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

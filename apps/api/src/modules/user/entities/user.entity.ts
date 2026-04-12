@@ -1,5 +1,7 @@
 import { Entity, Column, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
+import { SeekerProfile } from './seeker-profile.entity';
+import { EmployerProfile } from './employer-profile.entity';
 
 export enum UserRole {
   SEEKER = 'seeker',
@@ -37,9 +39,9 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isMfaEnabled: boolean;
 
-  @OneToOne('SeekerProfile', 'user')
-  seekerProfile: any;
+  @OneToOne(() => SeekerProfile, (profile) => profile.user)
+  seekerProfile: SeekerProfile;
 
-  @OneToOne('EmployerProfile', 'user')
-  employerProfile: any;
+  @OneToOne(() => EmployerProfile, (profile) => profile.user)
+  employerProfile: EmployerProfile;
 }

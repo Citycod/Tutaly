@@ -7,6 +7,7 @@ import {
   Res,
   Req,
   UseGuards,
+  Request as NestRequest,
 } from '@nestjs/common';
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
@@ -19,6 +20,15 @@ import {
   VerifyMfaDto,
 } from './dto/auth.dto';
 import { Throttle } from '@nestjs/throttler';
+import { UserRole } from '../user/entities/user.entity';
+
+interface AuthorizedRequest extends Request {
+  user: {
+    sub: string;
+    email: string;
+    role: UserRole;
+  };
+}
 
 @Controller('auth')
 export class AuthController {
@@ -117,9 +127,12 @@ export class AuthController {
 
   @UseGuards(JwtAuthGuard)
   @Post('logout')
-  async logout(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
-    if ((req as any).user?.sub) {
-      await this.authService.logout((req as any).user.sub);
+  async logout(
+    @NestRequest() req: AuthorizedRequest,
+    @Res({ passthrough: true }) res: Response,
+  ) {
+    if (req.user?.sub) {
+      await this.authService.logout(req.user.sub);
     }
     res.clearCookie('refreshToken', { path: '/' });
     return { message: 'Logged out successfully.' };

@@ -21,8 +21,10 @@ export default function ForgotPassword() {
       await api.post('/auth/forgot-password', { email });
       // Always show success regardless of whether email exists to prevent enumeration
       setIsSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Something went wrong. Please try again later.');
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      setError(error.response?.data?.message || 'Something went wrong.');
     } finally {
       setIsLoading(false);
     }

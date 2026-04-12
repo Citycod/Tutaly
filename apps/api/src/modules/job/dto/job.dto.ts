@@ -7,11 +7,10 @@ import {
   Min,
   Max,
   IsBoolean,
-  IsUUID,
   IsDateString,
   MaxLength,
 } from 'class-validator';
-import { Transform, Type } from 'class-transformer';
+import { Type } from 'class-transformer';
 import { PartialType } from '@nestjs/mapped-types';
 import {
   JobType,

@@ -15,7 +15,7 @@ export default function PostJobPage() {
   const [selectedCountry, setSelectedCountry] = useState('Nigeria');
   const [selectedState, setSelectedState] = useState('');
   
-  const [locationsData, setLocationsData] = useState<any>({});
+  const [locationsData, setLocationsData] = useState<Record<string, Record<string, string[]>>>({});
   
   // Real implementation would fetch this from a robust JSON or API endpoint
   // But we have apps/api/src/shared/data/locations.json!
@@ -56,7 +56,7 @@ export default function PostJobPage() {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget);
-    const data: any = Object.fromEntries(formData.entries());
+    const data: Record<string, unknown> = Object.fromEntries(formData.entries());
     
     // Quick parse for numbers
     if (data.minSalary) data.minSalary = Number(data.minSalary);
@@ -70,9 +70,11 @@ export default function PostJobPage() {
       const res = await apiAuth.withToken(token).post('/jobs', data);
       alert('Job posted successfully! It is now pending admin review.');
       router.push('/employer/jobs');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      alert(err.response?.data?.message || err.message || 'Failed to post job');
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      alert(error.response?.data?.message || error.message || 'Failed to post job');
     }
   };
 

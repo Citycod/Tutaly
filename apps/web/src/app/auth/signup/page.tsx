@@ -45,8 +45,10 @@ export default function SignUp() {
 
       await api.post('/auth/register', payload);
       setIsSuccess(true);
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Failed to register. Please try again.');
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      setError(error.response?.data?.message || 'Failed to register. Please try again.');
     } finally {
       setIsLoading(false);
     }

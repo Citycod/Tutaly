@@ -6,9 +6,22 @@ import { useParams } from 'next/navigation';
 import { apiAuth } from '@/lib/api';
 import { ArrowLeft, User, FileText, Check, X, Clock } from 'lucide-react';
 
+interface Applicant {
+  id: string;
+  status: string;
+  coverNote?: string;
+  createdAt: string;
+  seeker: {
+    email: string;
+    seekerProfile?: {
+      resumeUrl?: string;
+    };
+  };
+}
+
 export default function ApplicantsPage() {
   const { id: jobId } = useParams();
-  const [applicants, setApplicants] = useState<any[]>([]);
+  const [applicants, setApplicants] = useState<Applicant[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {

@@ -1,7 +1,26 @@
 import React, { Suspense } from 'react';
 import Link from 'next/link';
-import { Briefcase, MapPin, DollarSign, Clock, Search } from 'lucide-react';
+import { Briefcase, MapPin, DollarSign } from 'lucide-react';
 import JobFilterSidebar from '@/components/jobs/JobFilterSidebar';
+
+interface Job {
+  id: string;
+  title: string;
+  description: string;
+  industry: string;
+  role: string;
+  jobType: string;
+  experienceLevel: string;
+  minSalary?: number;
+  maxSalary?: number;
+  currency: string;
+  country: string;
+  state: string;
+  area?: string;
+  workMode: string;
+  isFeatured: boolean;
+  employer?: { email: string };
+}
 
 async function fetchJobs(searchParams: { [key: string]: string | string[] | undefined }) {
   const query = new URLSearchParams();
@@ -10,13 +29,13 @@ async function fetchJobs(searchParams: { [key: string]: string | string[] | unde
   });
 
   try {
-    const res = await fetch(`http://localhost:3000/api/jobs?${query.toString()}`, {
-      cache: 'no-store', // Since we want real-time filtering
+    const res = await fetch(`http://localhost:3001/api/jobs?${query.toString()}`, {
+      cache: 'no-store',
     });
-    if (!res.ok) return { items: [], meta: { total: 0 } };
+    if (!res.ok) return { items: [] as Job[], meta: { total: 0 } };
     return await res.json();
-  } catch (error) {
-    return { items: [], meta: { total: 0 } };
+  } catch {
+    return { items: [] as Job[], meta: { total: 0 } };
   }
 }
 
@@ -48,7 +67,7 @@ export default async function JobsPage(props: {
                 No jobs found matching your criteria. Try loosening your filters.
               </div>
             ) : (
-              jobs.map((job: any) => (
+              jobs.map((job: Job) => (
                 <Link href={`?jobId=${job.id}`} key={job.id} scroll={false}>
                   <div className={`bg-white p-6 rounded-xl border transition cursor-pointer hover:shadow-md ${searchParams.jobId === job.id ? 'border-teal-500 shadow-md ring-1 ring-teal-500' : 'border-gray-100'}`}>
                     <div className="flex justify-between items-start">
@@ -79,13 +98,13 @@ export default async function JobsPage(props: {
               {searchParams.jobId ? (
                 <div>
                   <h2 className="text-2xl font-bold text-gray-900 mb-2">
-                    {jobs.find((j: any) => j.id === searchParams.jobId)?.title || 'Job Details'}
+                    {jobs.find((j: Job) => j.id === searchParams.jobId)?.title || 'Job Details'}
                   </h2>
                   <div className="mb-6 flex gap-2">
                     <span className="bg-blue-50 text-blue-700 text-xs px-2 py-1 rounded font-medium">Quick Apply</span>
                   </div>
                   <p className="text-gray-600">
-                    {jobs.find((j: any) => j.id === searchParams.jobId)?.description || 'Select a job to view more details.'}
+                    {jobs.find((j: Job) => j.id === searchParams.jobId)?.description || 'Select a job to view more details.'}
                   </p>
                   <button className="mt-8 w-full bg-gray-900 text-white font-bold py-3 px-4 rounded-xl hover:bg-black transition shadow-lg shadow-gray-900/20">
                     Apply Now

@@ -12,7 +12,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
         url: configService.get<string>('DATABASE_URL'),
         autoLoadEntities: true,
         entities: [__dirname + '/../**/*.entity{.ts,.js}'],
-        synchronize: true, // Set to false in production
+        synchronize: false, // Set to false permanently. Source of truth is now migrations.
         ssl: {
           rejectUnauthorized: false, // Required for Supabase in some environments
         },

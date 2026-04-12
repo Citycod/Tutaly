@@ -36,8 +36,10 @@ export default function SignIn() {
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
       router.push('/dashboard');
-    } catch (err: any) {
-      setError(err.response?.data?.message || 'Invalid email or password.');
+    } catch (err: unknown) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = err as any;
+      setError(error.response?.data?.message || 'Invalid email or password.');
     } finally {
       setIsLoading(false);
     }

@@ -1,5 +1,5 @@
 # TUTALY — AI ENGINEER RULES & CODEBASE GUIDE
-> Version 1.1 | Last Updated: April 2026
+> Version 1.2 | Last Updated: April 2026
 
 ---
 
@@ -38,7 +38,17 @@ This is a pnpm monorepo. Never use npm or yarn.
 `apps/web` contains the Next.js 14 frontend.
 
 ## DATABASE RULES
-- Always generate a migration file for schema changes: `pnpm migration:generate`
-- Or manual SQL migration (e.g. for `search_vector`).
+- **Synchronize: false (LOCKED)**. Never enable `synchronize: true`. All schema changes must use migrations.
+- Always generate a migration file for schema changes: `pnpm migration:generate src/database/migrations/DescriptiveName`
+- Review the generated migration for security and performance (e.g., missing indices, potential data loss) before running.
+- Always add `.take(limit).skip(offset)` for paginated endpoints to prevent unbounded results.
+
+### Mandatory Schema Change Workflow
+Before committing any entity changes, follow this 5-step process:
+1. **Modify** the entity file (`*.entity.ts`).
+2. **Generate** the migration: `pnpm migration:generate src/database/migrations/DescriptiveName`.
+3. **Review** the generated migration file for correctness.
+4. **Run** the migration to sync your local/dev database: `pnpm migration:run`.
+5. **Commit** both the entity change AND the migration file together. Never commit a partial change.
 
 *Refer to the full design docs for complete rules.*
