@@ -146,7 +146,7 @@ export default function EmployerProfilePage() {
             <div className="flex-1">
               <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
                 {profile.companyName || 'Your Company'}
-                {profile.isVerified && <CheckCircle2 className="w-5 h-5 text-teal-500" title="Verified Employer" />}
+                {profile.isVerified && <CheckCircle2 className="w-5 h-5 text-teal-500" aria-label="Verified Employer" />}
               </h2>
               <p className="text-sm text-gray-500 mb-4">{profile.industry || 'No industry set'}</p>
               
