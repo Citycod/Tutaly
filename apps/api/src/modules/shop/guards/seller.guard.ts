@@ -1,4 +1,9 @@
-import { Injectable, CanActivate, ExecutionContext, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, SellerStatus } from '../../user/entities/user.entity';
@@ -20,7 +25,9 @@ export class SellerGuard implements CanActivate {
 
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user || user.sellerStatus !== SellerStatus.APPROVED) {
-      throw new ForbiddenException('You must be an approved seller to perform this action. Apply at /shop/seller/apply.');
+      throw new ForbiddenException(
+        'You must be an approved seller to perform this action. Apply at /shop/seller/apply.',
+      );
     }
 
     return true;

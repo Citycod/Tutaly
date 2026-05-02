@@ -5,7 +5,11 @@ import { ShopController } from './shop.controller';
 import { ShopService } from './shop.service';
 import { EscrowProcessor } from './escrow.processor';
 import { SellerGuard } from './guards/seller.guard';
-import { ShopProduct, ShopCategory, ShopSubcategory } from './entities/shop.entity';
+import {
+  ShopProduct,
+  ShopCategory,
+  ShopSubcategory,
+} from './entities/shop.entity';
 import { Order, QuoteRequest, OrderDispute } from './entities/order.entity';
 import { User } from '../user/entities/user.entity';
 import { SellerApplication } from '../support/entities/support.entity';

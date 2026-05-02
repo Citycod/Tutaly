@@ -375,9 +375,7 @@ export class JobService {
         .getCount();
     }
 
-    const activeJobs = jobs.filter(
-      (j) => j.status === JobStatus.ACTIVE,
-    ).length;
+    const activeJobs = jobs.filter((j) => j.status === JobStatus.ACTIVE).length;
     const pendingJobs = jobs.filter(
       (j) => j.status === JobStatus.PENDING_REVIEW,
     ).length;
@@ -391,11 +389,7 @@ export class JobService {
   }
 
   // ─── SINGLE APPLICATION DETAIL ──────────────────────────
-  async getApplicationDetail(
-    appId: string,
-    jobId: string,
-    employerId: string,
-  ) {
+  async getApplicationDetail(appId: string, jobId: string, employerId: string) {
     const job = await this.jobRepo.findOne({
       where: { id: jobId },
       relations: ['employer'],
@@ -542,9 +536,7 @@ export class JobService {
 
     const resumePath = application.seeker?.seekerProfile?.resumeUrl;
     if (!resumePath) {
-      throw new NotFoundException(
-        'This applicant has not uploaded a resume.',
-      );
+      throw new NotFoundException('This applicant has not uploaded a resume.');
     }
 
     // Generate signed URL from Supabase Storage

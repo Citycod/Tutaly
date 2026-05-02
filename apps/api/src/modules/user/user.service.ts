@@ -137,7 +137,10 @@ export class UserService {
       const user = await this.userRepo.findOne({ where: { id: userId } });
       if (!user) throw new NotFoundException('User not found');
 
-      profile = this.employerProfileRepo.create({ user, companyName: 'New Company' });
+      profile = this.employerProfileRepo.create({
+        user,
+        companyName: 'New Company',
+      });
       await this.employerProfileRepo.save(profile);
     }
 
@@ -174,9 +177,7 @@ export class UserService {
       });
 
     if (error) {
-      throw new BadRequestException(
-        `Failed to upload logo: ${error.message}`,
-      );
+      throw new BadRequestException(`Failed to upload logo: ${error.message}`);
     }
 
     profile.logoUrl = data.path;

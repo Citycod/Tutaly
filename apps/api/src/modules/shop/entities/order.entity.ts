@@ -41,7 +41,11 @@ export class Order extends BaseEntity {
   @Column({ type: 'enum', enum: Currency, default: Currency.NGN })
   currency: Currency;
 
-  @Column({ type: 'enum', enum: PaymentGateway, default: PaymentGateway.FLUTTERWAVE })
+  @Column({
+    type: 'enum',
+    enum: PaymentGateway,
+    default: PaymentGateway.FLUTTERWAVE,
+  })
   paymentGateway: PaymentGateway;
 
   @Column({ unique: true, nullable: true })

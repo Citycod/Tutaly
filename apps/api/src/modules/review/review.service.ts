@@ -1,6 +1,10 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  BadRequestException,
+  NotFoundException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, SelectQueryBuilder } from 'typeorm';
+import { Repository } from 'typeorm';
 import { CompanyReview, ReviewStatus } from './entities/review.entity';
 import { CreateReviewDto } from './dto/create-review.dto';
 import * as crypto from 'crypto';
@@ -12,10 +16,18 @@ export class ReviewService {
     private readonly reviewRepo: Repository<CompanyReview>,
   ) {}
 
-  async create(dto: CreateReviewDto, clientIp: string, userAgent: string, user: any = null) {
+  async create(
+    dto: CreateReviewDto,
+    clientIp: string,
+    userAgent: string,
+    user: any = null,
+  ) {
     // Generate a hash to prevent spam (guest submission tracking)
     const hashInput = `${clientIp}-${userAgent}-${new Date().toDateString()}`;
-    const submitterHash = crypto.createHash('sha256').update(hashInput).digest('hex');
+    const submitterHash = crypto
+      .createHash('sha256')
+      .update(hashInput)
+      .digest('hex');
 
     // Basic rate limiting: Check if same hash submitted recently
     const recentReview = await this.reviewRepo.findOne({
@@ -24,9 +36,12 @@ export class ReviewService {
     });
 
     if (recentReview) {
-      const hoursSince = (Date.now() - recentReview.createdAt.getTime()) / (1000 * 60 * 60);
+      const hoursSince =
+        (Date.now() - recentReview.createdAt.getTime()) / (1000 * 60 * 60);
       if (hoursSince < 24) {
-        throw new BadRequestException('You can only submit one review per company per day.');
+        throw new BadRequestException(
+          'You can only submit one review per company per day.',
+        );
       }
     }
 
@@ -73,7 +88,9 @@ export class ReviewService {
       avgPay: parseFloat(stats.avgPay || '0').toFixed(1),
       avgManagement: parseFloat(stats.avgManagement || '0').toFixed(1),
       avgCulture: parseFloat(stats.avgCulture || '0').toFixed(1),
-      recommendPercentage: parseFloat(stats.recommendPercentage || '0').toFixed(0),
+      recommendPercentage: parseFloat(stats.recommendPercentage || '0').toFixed(
+        0,
+      ),
     };
   }
 
@@ -109,4 +126,3 @@ export class ReviewService {
     return { success: true, message: `Review status updated to ${status}` };
   }
 }
-

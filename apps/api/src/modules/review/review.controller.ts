@@ -1,4 +1,16 @@
-import { Controller, Post, Body, Get, Param, Query, UseGuards, Request as NestRequest, Ip, Headers, Patch } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Body,
+  Get,
+  Param,
+  Query,
+  UseGuards,
+  Request as NestRequest,
+  Ip,
+  Headers,
+  Patch,
+} from '@nestjs/common';
 import { ReviewService } from './review.service';
 import { CreateReviewDto } from './dto/create-review.dto';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
@@ -28,7 +40,12 @@ export class ReviewController {
       // To keep it simple, if `req.user` is somehow populated, use it.
       user = req.user;
     }
-    return this.reviewService.create(dto, ip || 'unknown-ip', userAgent || 'unknown-ua', user);
+    return this.reviewService.create(
+      dto,
+      ip || 'unknown-ip',
+      userAgent || 'unknown-ua',
+      user,
+    );
   }
 
   @Get('admin/pending')
@@ -69,4 +86,3 @@ export class ReviewController {
     return this.reviewService.getApprovedReviews(companyName, p, l);
   }
 }
-

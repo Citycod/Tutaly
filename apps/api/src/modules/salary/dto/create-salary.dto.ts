@@ -1,4 +1,12 @@
-import { IsString, IsNotEmpty, IsNumber, Min, IsEnum, IsOptional, MaxLength } from 'class-validator';
+import {
+  IsString,
+  IsNotEmpty,
+  IsNumber,
+  Min,
+  IsEnum,
+  IsOptional,
+  MaxLength,
+} from 'class-validator';
 import { SalaryPeriod } from '../../review/entities/review.entity';
 
 export class CreateSalaryDto {

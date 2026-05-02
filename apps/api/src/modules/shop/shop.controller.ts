@@ -1,7 +1,18 @@
 import {
-  Controller, Post, Get, Patch, Delete, Body, Param, Query,
-  UseGuards, Request as NestRequest, UseInterceptors, UploadedFile,
-  BadRequestException, RawBodyRequest, Req, Headers,
+  Controller,
+  Post,
+  Get,
+  Patch,
+  Delete,
+  Body,
+  Param,
+  Query,
+  UseGuards,
+  Request as NestRequest,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+  Headers,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShopService } from './shop.service';
@@ -48,7 +59,11 @@ export class ShopController {
     @Body('status') status: SellerApplicationStatus,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return this.shopService.adminUpdateSellerApplication(id, status, req.user.sub);
+    return this.shopService.adminUpdateSellerApplication(
+      id,
+      status,
+      req.user.sub,
+    );
   }
 
   @Get('admin/seller/pending')
@@ -105,7 +120,9 @@ export class ShopController {
     return this.shopService.getProducts(
       parseInt(page || '1', 10),
       parseInt(limit || '12', 10),
-      search, listingType, subcategoryId,
+      search,
+      listingType,
+      subcategoryId,
     );
   }
 
@@ -143,7 +160,11 @@ export class ShopController {
       throw new BadRequestException('File size must not exceed 100MB');
     }
     return this.shopService.uploadDigitalFile(
-      id, req.user.sub, file.buffer, file.originalname, file.mimetype,
+      id,
+      req.user.sub,
+      file.buffer,
+      file.originalname,
+      file.mimetype,
     );
   }
 
@@ -161,7 +182,13 @@ export class ShopController {
     @NestRequest() req: AuthenticatedRequest,
     @Body() dto: AddToCartDto,
   ) {
-    return { data: this.shopService.addToCart(req.user.sub, dto.productId, dto.quantity) };
+    return {
+      data: this.shopService.addToCart(
+        req.user.sub,
+        dto.productId,
+        dto.quantity,
+      ),
+    };
   }
 
   @Delete('cart/:productId')
@@ -181,6 +208,7 @@ export class ShopController {
     @NestRequest() req: AuthenticatedRequest,
     @Body('gateway') gateway?: string,
   ) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     return this.shopService.createCheckout(req.user.sub, gateway as any);
   }
 
@@ -188,7 +216,7 @@ export class ShopController {
 
   @Post('webhook/flutterwave')
   async flutterwaveWebhook(
-    @Body() payload: any,
+    @Body() payload: Record<string, any>,
     @Headers('verif-hash') verifHash: string,
   ) {
     return this.shopService.handleFlutterwaveWebhook(payload, verifHash);
@@ -196,7 +224,7 @@ export class ShopController {
 
   @Post('webhook/paystack')
   async paystackWebhook(
-    @Body() payload: any,
+    @Body() payload: Record<string, unknown>,
     @Headers('x-paystack-signature') signature: string,
   ) {
     return this.shopService.handlePaystackWebhook(payload, signature);

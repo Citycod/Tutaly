@@ -1,6 +1,14 @@
 import {
-  IsString, IsNotEmpty, IsEnum, IsNumber, IsOptional,
-  MaxLength, MinLength, Min, IsBoolean, IsArray,
+  IsString,
+  IsNotEmpty,
+  IsEnum,
+  IsNumber,
+  IsOptional,
+  MaxLength,
+  MinLength,
+  Min,
+  IsBoolean,
+  IsArray,
 } from 'class-validator';
 import { ListingType, PricingType, Currency } from '../entities/shop.entity';
 

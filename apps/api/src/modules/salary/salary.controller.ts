@@ -17,7 +17,9 @@ export class SalaryController {
     @Query('role') role?: string,
     @Query('location') location?: string,
   ) {
-    return { data: await this.salaryService.getAggregates(industry, role, location) };
+    return {
+      data: await this.salaryService.getAggregates(industry, role, location),
+    };
   }
 
   @Get()
@@ -32,4 +34,3 @@ export class SalaryController {
     return this.salaryService.getRecent(p, l, industry, role);
   }
 }
-

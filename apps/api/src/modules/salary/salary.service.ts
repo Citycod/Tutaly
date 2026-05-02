@@ -52,7 +52,7 @@ export class SalaryService {
   }
 
   async getRecent(page = 1, limit = 10, industry?: string, role?: string) {
-    const where: any = {};
+    const where: import('typeorm').FindOptionsWhere<SalaryReview> = {};
     if (industry) where.industry = industry;
     if (role) where.role = role;
 
@@ -66,4 +66,3 @@ export class SalaryService {
     return { data, meta: { page, limit, total } };
   }
 }
-
