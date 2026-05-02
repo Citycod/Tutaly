@@ -4,10 +4,13 @@ import { ValidationPipe } from '@nestjs/common';
 import cookieParser from 'cookie-parser';
 import helmet from 'helmet';
 
+import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   app.setGlobalPrefix('api');
+  app.useGlobalFilters(new GlobalExceptionFilter());
 
   app.useGlobalPipes(
     new ValidationPipe({
@@ -20,8 +23,12 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(helmet());
 
+  const allowedOrigins = process.env.ALLOWED_ORIGINS 
+    ? process.env.ALLOWED_ORIGINS.split(',') 
+    : [process.env.WEB_URL || 'http://localhost:3001'];
+
   app.enableCors({
-    origin: process.env.WEB_URL || 'http://localhost:3001',
+    origin: allowedOrigins,
     credentials: true,
   });
 
