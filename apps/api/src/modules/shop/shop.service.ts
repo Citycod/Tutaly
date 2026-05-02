@@ -22,6 +22,7 @@ import {
 } from '../support/entities/support.entity';
 import { CreateProductDto } from './dto/create-product.dto';
 import { ApplySellerDto } from './dto/apply-seller.dto';
+import { TokenService } from '../auth/token.service';
 
 @Injectable()
 export class ShopService {
@@ -40,6 +41,7 @@ export class ShopService {
     private readonly categoryRepo: Repository<ShopCategory>,
     @InjectRepository(ShopSubcategory)
     private readonly subcategoryRepo: Repository<ShopSubcategory>,
+    private readonly tokenService: TokenService,
   ) {
     this.supabase = createClient(
       process.env.SUPABASE_URL || '',
@@ -296,37 +298,34 @@ export class ShopService {
     };
   }
 
-  // ─── Cart (Redis-backed, in-memory fallback for simplicity) ──────
+  // ─── Cart (Redis-backed) ──────────────────────────────────────────
 
-  // Using a simple DB-less approach: cart stored in a JSON column or separate table
-  // For this implementation, we use a lightweight approach with in-memory Map per-request
-  // In production, this would use Redis. For now, we store cart in orders with pending status.
-
-  private cartStore = new Map<
-    string,
-    Array<{ productId: string; quantity: number }>
-  >();
-
-  getCart(userId: string) {
-    return this.cartStore.get(userId) || [];
+  private cartKey(userId: string) {
+    return `cart:${userId}`;
   }
 
-  addToCart(userId: string, productId: string, quantity = 1) {
-    const cart = this.cartStore.get(userId) || [];
+  async getCart(userId: string) {
+    const raw = await this.tokenService.getJobCache(this.cartKey(userId));
+    if (!raw) return [];
+    return JSON.parse(raw) as Array<{ productId: string; quantity: number }>;
+  }
+
+  async addToCart(userId: string, productId: string, quantity = 1) {
+    const cart = await this.getCart(userId);
     const existing = cart.find((item) => item.productId === productId);
     if (existing) {
       existing.quantity += quantity;
     } else {
       cart.push({ productId, quantity });
     }
-    this.cartStore.set(userId, cart);
+    await this.tokenService.setJobCache(this.cartKey(userId), JSON.stringify(cart), 86400); // 24hr TTL
     return cart;
   }
 
-  removeFromCart(userId: string, productId: string) {
-    let cart = this.cartStore.get(userId) || [];
+  async removeFromCart(userId: string, productId: string) {
+    let cart = await this.getCart(userId);
     cart = cart.filter((item) => item.productId !== productId);
-    this.cartStore.set(userId, cart);
+    await this.tokenService.setJobCache(this.cartKey(userId), JSON.stringify(cart), 86400);
     return cart;
   }
 
@@ -336,7 +335,7 @@ export class ShopService {
     userId: string,
     gateway: PaymentGateway = PaymentGateway.FLUTTERWAVE,
   ) {
-    const cart = this.getCart(userId);
+    const cart = await this.getCart(userId);
     if (cart.length === 0) throw new BadRequestException('Your cart is empty.');
 
     const orders: Order[] = [];
@@ -463,7 +462,7 @@ export class ShopService {
         throw new BadRequestException(`Flutterwave error: ${result.message}`);
       }
     } catch {
-      this.cartStore.delete(userId);
+      await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
       return {
         success: true,
         gateway: 'flutterwave',
@@ -522,7 +521,7 @@ export class ShopService {
       const result = await response.json();
 
       if (result.status === true) {
-        this.cartStore.delete(userId);
+        await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
         return {
           success: true,
           gateway: 'paystack',
@@ -538,7 +537,7 @@ export class ShopService {
         throw new BadRequestException(`Paystack error: ${result.message}`);
       }
     } catch {
-      this.cartStore.delete(userId);
+      await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
       return {
         success: true,
         gateway: 'paystack',

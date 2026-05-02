@@ -146,6 +146,12 @@ export class AuthService {
       throw new UnauthorizedException('This account has been deactivated.');
     }
 
+    if (!user.isEmailVerified) {
+      throw new UnauthorizedException(
+        'Please verify your email before logging in. Check your inbox for the verification link.',
+      );
+    }
+
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
     if (!isPasswordValid) {
       throw new UnauthorizedException('Invalid email or password.');
@@ -360,7 +366,7 @@ export class AuthService {
       { sub: user.id, email: user.email, role: user.role },
       {
         secret: this.configService.get<string>('JWT_SECRET'),
-        expiresIn: '7d', // Extended for dev. Production should be 15m with refresh interceptor.
+        expiresIn: '15m',
       },
     );
   }

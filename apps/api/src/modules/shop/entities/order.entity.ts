@@ -20,13 +20,13 @@ export enum PaymentGateway {
 
 @Entity('orders')
 export class Order extends BaseEntity {
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
   buyer: User;
 
-  @ManyToOne(() => ShopProduct)
+  @ManyToOne(() => ShopProduct, { onDelete: 'RESTRICT' })
   product: ShopProduct;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, { onDelete: 'RESTRICT' })
   seller: User;
 
   @Column({ type: 'decimal', precision: 10, scale: 2 })

@@ -56,7 +56,19 @@ export default function DashboardLayout({
 
   const links = isSeller ? sellerLinks : isEmployer ? employerLinks : isSeeker ? seekerLinks : [];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
+        });
+      }
+    } catch {
+      // Even if backend call fails, clear local state
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     router.push('/');
