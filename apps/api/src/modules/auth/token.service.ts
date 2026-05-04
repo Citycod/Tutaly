@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import Redis from 'ioredis';
+import * as crypto from 'crypto';
 
 @Injectable()
 export class TokenService {
@@ -41,7 +42,7 @@ export class TokenService {
    * Generates and stores a 6-digit OTP for MFA.
    */
   async generateMfaEntry(userId: string): Promise<string> {
-    const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    const otp = crypto.randomInt(100000, 999999).toString();
     const key = `mfa_otp:${userId}`;
     // Store for 5 minutes
     await this.redisClient.set(key, otp, 'EX', 5 * 60);
@@ -93,9 +94,14 @@ export class TokenService {
   }
 
   async invalidateJobCache(): Promise<void> {
-    const keys = await this.redisClient.keys('jobs:*');
-    if (keys.length > 0) {
-      await this.redisClient.del(...keys);
-    }
+    let cursor = '0';
+    do {
+      const result = await this.redisClient.scan(cursor, 'MATCH', 'jobs:*', 'COUNT', 100);
+      cursor = result[0];
+      const keys = result[1];
+      if (keys.length > 0) {
+        await this.redisClient.del(...keys);
+      }
+    } while (cursor !== '0');
   }
 }

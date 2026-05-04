@@ -9,6 +9,7 @@ import {
   Query,
   UseGuards,
   Request as NestRequest,
+  ParseUUIDPipe,
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import {
@@ -23,14 +24,7 @@ import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/entities/user.entity';
-import type { Request } from 'express';
-
-interface AuthorizedRequest extends Request {
-  user: {
-    sub: string;
-    role: UserRole;
-  };
-}
+import type { AuthenticatedRequest } from '../../common/types/request';
 
 @Controller('jobs')
 export class JobController {
@@ -48,7 +42,7 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER)
   @Get('employer/me')
-  async getEmployerJobs(@NestRequest() req: AuthorizedRequest) {
+  async getEmployerJobs(@NestRequest() req: AuthenticatedRequest) {
     const userId = req.user.sub;
     return this.jobService.findEmployerJobs(userId);
   }
@@ -56,14 +50,14 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER)
   @Get('employer/stats')
-  async getEmployerStats(@NestRequest() req: AuthorizedRequest) {
+  async getEmployerStats(@NestRequest() req: AuthenticatedRequest) {
     const userId = req.user.sub;
     return this.jobService.getEmployerDashboardStats(userId);
   }
 
   @UseGuards(JwtAuthGuard)
   @Get('saved')
-  async getSavedJobs(@NestRequest() req: AuthorizedRequest) {
+  async getSavedJobs(@NestRequest() req: AuthenticatedRequest) {
     const userId = req.user.sub;
     return this.jobService.getSavedJobs(userId);
   }
@@ -71,7 +65,7 @@ export class JobController {
   // ─── PARAMETERIZED ROUTES ────────────────────────────────
 
   @Get(':id')
-  async findOne(@Param('id') id: string) {
+  async findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.jobService.findOne(id);
   }
 
@@ -80,7 +74,7 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.SEEKER)
   @Get('seeker/applications')
-  async getSeekerApplications(@NestRequest() req: AuthorizedRequest) {
+  async getSeekerApplications(@NestRequest() req: AuthenticatedRequest) {
     const userId = req.user.sub;
     return this.jobService.getSeekerApplications(userId);
   }
@@ -89,8 +83,8 @@ export class JobController {
   @Roles(UserRole.SEEKER)
   @Post(':id/apply')
   async apply(
-    @Param('id') id: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
     @Body() dto: ApplyJobDto,
   ) {
     const userId = req.user.sub;
@@ -100,8 +94,8 @@ export class JobController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/save')
   async saveJob(
-    @Param('id') id: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.saveJob(id, userId);
@@ -110,8 +104,8 @@ export class JobController {
   @UseGuards(JwtAuthGuard)
   @Delete(':id/save')
   async unsaveJob(
-    @Param('id') id: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.unsaveJob(id, userId);
@@ -120,8 +114,8 @@ export class JobController {
   @UseGuards(JwtAuthGuard)
   @Post(':id/report')
   async reportJob(
-    @Param('id') id: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
     @Body() dto: ReportJobDto,
   ) {
     const userId = req.user.sub;
@@ -135,7 +129,7 @@ export class JobController {
   @Post()
   async create(
     @Body() createJobDto: CreateJobDto,
-    @NestRequest() req: AuthorizedRequest,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.create(createJobDto, userId);
@@ -145,8 +139,8 @@ export class JobController {
   @Roles(UserRole.EMPLOYER)
   @Get(':id/applicants')
   async getApplicants(
-    @Param('id') id: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.getJobApplicants(id, userId);
@@ -156,9 +150,9 @@ export class JobController {
   @Roles(UserRole.EMPLOYER)
   @Patch(':id/applicants/:appId')
   async updateApplicationStatus(
-    @Param('appId') appId: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
     @Body() dto: UpdateApplicationStatusDto,
-    @NestRequest() req: AuthorizedRequest,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.updateApplicationStatus(appId, dto, userId);
@@ -168,9 +162,9 @@ export class JobController {
   @Roles(UserRole.EMPLOYER)
   @Get(':id/applicants/:appId')
   async getApplicationDetail(
-    @Param('id') jobId: string,
-    @Param('appId') appId: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) jobId: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.getApplicationDetail(appId, jobId, userId);
@@ -180,9 +174,9 @@ export class JobController {
   @Roles(UserRole.EMPLOYER)
   @Get(':id/applicants/:appId/resume')
   async getApplicantResume(
-    @Param('id') jobId: string,
-    @Param('appId') appId: string,
-    @NestRequest() req: AuthorizedRequest,
+    @Param('id', ParseUUIDPipe) jobId: string,
+    @Param('appId', ParseUUIDPipe) appId: string,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     return this.jobService.getApplicantResumeUrl(jobId, appId, userId);
@@ -194,9 +188,9 @@ export class JobController {
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN)
   @Patch(':id')
   async update(
-    @Param('id') id: string,
+    @Param('id', ParseUUIDPipe) id: string,
     @Body() updateJobDto: UpdateJobDto,
-    @NestRequest() req: AuthorizedRequest,
+    @NestRequest() req: AuthenticatedRequest,
   ) {
     const userId = req.user.sub;
     const role = req.user.role;
@@ -206,7 +200,7 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id') id: string, @NestRequest() req: AuthorizedRequest) {
+  async remove(@Param('id', ParseUUIDPipe) id: string, @NestRequest() req: AuthenticatedRequest) {
     const userId = req.user.sub;
     const role = req.user.role;
     return this.jobService.remove(id, userId, role);
@@ -217,7 +211,7 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.ADMIN)
   @Patch(':id/approve')
-  async approve(@Param('id') id: string) {
+  async approve(@Param('id', ParseUUIDPipe) id: string) {
     return this.jobService.approveJob(id);
   }
 }

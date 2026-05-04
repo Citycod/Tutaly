@@ -56,7 +56,19 @@ export default function DashboardLayout({
 
   const links = isSeller ? sellerLinks : isEmployer ? employerLinks : isSeeker ? seekerLinks : [];
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      const token = localStorage.getItem('access_token');
+      if (token) {
+        await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/auth/logout`, {
+          method: 'POST',
+          headers: { Authorization: `Bearer ${token}` },
+          credentials: 'include',
+        });
+      }
+    } catch {
+      // Even if backend call fails, clear local state
+    }
     localStorage.removeItem('access_token');
     localStorage.removeItem('refresh_token');
     router.push('/');
@@ -112,11 +124,39 @@ export default function DashboardLayout({
       </aside>
 
       {/* Main Content Area */}
-      <main className="flex-1 overflow-y-auto w-full">
+      <main className="flex-1 overflow-y-auto w-full pb-16 lg:pb-0">
         <div className="p-4 sm:p-8 w-full max-w-7xl mx-auto">
           {children}
         </div>
       </main>
+
+      {/* Mobile Bottom Navigation */}
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)]">
+        <div className="flex overflow-x-auto justify-start items-center h-16 px-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+          {links.map((item) => {
+            const isActive = pathname === item.href;
+            return (
+              <Link
+                key={item.href}
+                href={item.href}
+                className={`flex flex-col items-center justify-center min-w-[72px] shrink-0 px-1 space-y-1 transition-colors ${
+                  isActive ? 'text-teal-700' : 'text-gray-500 hover:text-gray-900'
+                }`}
+              >
+                <item.icon className={`h-5 w-5 ${isActive ? 'text-teal-700' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={`text-[10px] whitespace-nowrap ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
+              </Link>
+            );
+          })}
+          <button
+            onClick={handleLogout}
+            className="flex flex-col items-center justify-center min-w-[72px] shrink-0 px-1 space-y-1 text-gray-500 hover:text-red-600 transition-colors"
+          >
+            <LogOut className="h-5 w-5" />
+            <span className="text-[10px] font-medium whitespace-nowrap">Sign out</span>
+          </button>
+        </div>
+      </nav>
     </div>
   );
 }

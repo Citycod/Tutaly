@@ -6,6 +6,7 @@ import {
   MinLength,
   IsOptional,
   IsString,
+  Matches,
 } from 'class-validator';
 import { UserRole } from '../../user/entities/user.entity';
 
@@ -14,6 +15,9 @@ export class RegisterDto {
   email: string;
 
   @MinLength(8)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
+    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+  })
   password: string;
 
   @IsEnum(UserRole, { message: 'Role must be seeker or employer' })
@@ -63,6 +67,9 @@ export class ResetPasswordDto {
   token: string;
 
   @MinLength(8)
+  @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
+    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+  })
   newPassword: string;
 }
 

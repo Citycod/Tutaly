@@ -58,6 +58,20 @@ export class AuthService {
         );
       }
 
+      // 1.5. Verify reCAPTCHA
+      const recaptchaSecret = this.configService.get<string>('RECAPTCHA_SECRET_KEY');
+      if (recaptchaSecret && dto.recaptchaToken) {
+        const recaptchaRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+          body: `secret=${recaptchaSecret}&response=${dto.recaptchaToken}`,
+        });
+        const recaptchaData = await recaptchaRes.json();
+        if (!recaptchaData.success) {
+          throw new BadRequestException('reCAPTCHA verification failed. Please try again.');
+        }
+      }
+
       // 2. Check duplicate email
       const existing = await this.userRepo.findOne({
         where: { email: dto.email },
@@ -144,6 +158,12 @@ export class AuthService {
 
     if (!user.isActive) {
       throw new UnauthorizedException('This account has been deactivated.');
+    }
+
+    if (!user.isEmailVerified) {
+      throw new UnauthorizedException(
+        'Please verify your email before logging in. Check your inbox for the verification link.',
+      );
     }
 
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
@@ -360,7 +380,7 @@ export class AuthService {
       { sub: user.id, email: user.email, role: user.role },
       {
         secret: this.configService.get<string>('JWT_SECRET'),
-        expiresIn: '7d', // Extended for dev. Production should be 15m with refresh interceptor.
+        expiresIn: '15m',
       },
     );
   }
