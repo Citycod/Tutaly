@@ -28,15 +28,9 @@ export class MailService {
         user: this.fromEmail,
         pass,
       },
+      // Force IPv4 because Render sometimes has outbound IPv6 issues reaching Google's SMTP servers
+      family: 4, 
     };
-
-    // Use Gmail service optimization if host is Gmail
-    if (host?.includes('gmail.com')) {
-      delete config.host;
-      delete config.port;
-      delete config.secure;
-      config.service = 'gmail';
-    }
 
     this.transporter = nodemailer.createTransport(config);
   }
