@@ -23,11 +23,11 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(helmet());
 
-  const rawOrigins = process.env.ALLOWED_ORIGINS 
-    ? process.env.ALLOWED_ORIGINS.split(',') 
+  const rawOrigins = process.env.ALLOWED_ORIGINS
+    ? process.env.ALLOWED_ORIGINS.split(',')
     : [process.env.WEB_URL || 'http://localhost:3001'];
 
-  const allowedOrigins = rawOrigins.map(o => o.trim().replace(/\/$/, ''));
+  const allowedOrigins = rawOrigins.map((o) => o.trim().replace(/\/$/, ''));
 
   app.enableCors({
     origin: (origin, callback) => {

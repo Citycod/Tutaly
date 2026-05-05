@@ -1,0 +1,174 @@
+'use client';
+
+import React, { useEffect, useState } from 'react';
+import { useRouter } from 'next/navigation';
+import { Ban, CheckCircle, Shield } from 'lucide-react';
+
+export default function AdminUsersPage() {
+  const router = useRouter();
+  
+  const [users, setUsers] = useState<any[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState('');
+
+  useEffect(() => {
+    fetchUsers();
+  }, []);
+
+  const fetchUsers = async () => {
+    try {
+      setLoading(true);
+      const token = localStorage.getItem('access_token');
+      if (!token) {
+        router.push('/sign-in');
+        return;
+      }
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/admin/users`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
+      if (res.status === 401 || res.status === 403) {
+        router.push('/sign-in');
+        return;
+      }
+      if (!res.ok) throw new Error('Failed to fetch users');
+      const data = await res.json();
+      setUsers(data.items || []);
+    } catch (err: any) {
+      setError(err.message || 'Error loading users');
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const handleToggleStatus = async (id: string, currentStatus: boolean, role: string) => {
+    if (role === 'admin') {
+      alert('Cannot change status of admin users');
+      return;
+    }
+    
+    const newStatus = !currentStatus;
+    const action = newStatus ? 'activate' : 'deactivate';
+    
+    if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+    
+    try {
+      const token = localStorage.getItem('access_token');
+      const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/admin/users/${id}/status`, {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: `Bearer ${token}`
+        },
+        body: JSON.stringify({ isActive: newStatus })
+      });
+      if (!res.ok) throw new Error(`Failed to ${action} user`);
+      // Refresh list
+      fetchUsers();
+    } catch (err: any) {
+      alert(err.message);
+    }
+  };
+
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="max-w-7xl mx-auto space-y-6">
+      <div>
+        <h1 className="text-2xl font-bold text-gray-900">Manage Users</h1>
+        <p className="text-gray-500 mt-1">View user accounts and manage platform access</p>
+      </div>
+
+      {error && <div className="text-red-500 bg-red-50 p-4 rounded-lg">{error}</div>}
+
+      <div className="bg-white shadow-sm border border-gray-200 rounded-lg overflow-hidden">
+        {users.length === 0 ? (
+          <div className="p-8 text-center text-gray-500">
+            No users found.
+          </div>
+        ) : (
+          <table className="min-w-full divide-y divide-gray-200">
+            <thead className="bg-gray-50">
+              <tr>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  User
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Role
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Status
+                </th>
+                <th scope="col" className="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Joined
+                </th>
+                <th scope="col" className="px-6 py-3 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">
+                  Actions
+                </th>
+              </tr>
+            </thead>
+            <tbody className="bg-white divide-y divide-gray-200">
+              {users.map((u) => (
+                <tr key={u.id}>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <div className="text-sm font-medium text-gray-900">{u.email}</div>
+                    <div className="text-xs text-gray-500">{u.isEmailVerified ? 'Verified' : 'Unverified'}</div>
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
+                      {u.role}
+                    </span>
+                    {u.role === 'admin' && <Shield className="h-4 w-4 ml-2 inline text-blue-500" />}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap">
+                    {u.isActive ? (
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                        Active
+                      </span>
+                    ) : (
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                        Suspended
+                      </span>
+                    )}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    {new Date(u.createdAt).toLocaleDateString()}
+                  </td>
+                  <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                    {u.role !== 'admin' && (
+                      <button
+                        onClick={() => handleToggleStatus(u.id, u.isActive, u.role)}
+                        className={`${
+                          u.isActive 
+                            ? 'text-red-600 hover:text-red-900 bg-red-50' 
+                            : 'text-green-600 hover:text-green-900 bg-green-50'
+                        } px-3 py-1 rounded-md inline-flex items-center`}
+                      >
+                        {u.isActive ? (
+                          <>
+                            <Ban className="h-4 w-4 mr-1" /> Suspend
+                          </>
+                        ) : (
+                          <>
+                            <CheckCircle className="h-4 w-4 mr-1" /> Activate
+                          </>
+                        )}
+                      </button>
+                    )}
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
+    </div>
+  );
+}

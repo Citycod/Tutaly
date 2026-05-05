@@ -16,7 +16,8 @@ export class RegisterDto {
 
   @MinLength(8)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
-    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
   })
   password: string;
 
@@ -68,7 +69,8 @@ export class ResetPasswordDto {
 
   @MinLength(8)
   @Matches(/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&]).{8,}$/, {
-    message: 'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
+    message:
+      'Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character.',
   })
   newPassword: string;
 }
