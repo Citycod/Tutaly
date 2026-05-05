@@ -3,35 +3,35 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, XCircle } from 'lucide-react';
-import { useAuth } from '@/components/auth/AuthProvider';
 
 export default function AdminSellersPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
   
   const [sellers, setSellers] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || user.role !== 'admin') {
-        router.push('/auth/signin');
-      } else {
-        fetchSellers();
-      }
-    }
-  }, [user, authLoading, router]);
+    fetchSellers();
+  }, []);
 
   const fetchSellers = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('access_token');
+      if (!token) {
+        router.push('/sign-in');
+        return;
+      }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/shop/admin/seller/pending`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+      if (res.status === 401 || res.status === 403) {
+        router.push('/sign-in');
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch seller applications');
       const data = await res.json();
       setSellers(data.items || []);
@@ -62,7 +62,7 @@ export default function AdminSellersPage() {
     }
   };
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>

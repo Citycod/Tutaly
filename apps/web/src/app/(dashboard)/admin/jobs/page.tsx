@@ -3,35 +3,35 @@
 import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { CheckCircle, XCircle } from 'lucide-react';
-import { useAuth } from '@/components/auth/AuthProvider';
 
 export default function AdminJobsPage() {
   const router = useRouter();
-  const { user, loading: authLoading } = useAuth();
   
   const [jobs, setJobs] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    if (!authLoading) {
-      if (!user || user.role !== 'admin') {
-        router.push('/auth/signin');
-      } else {
-        fetchJobs();
-      }
-    }
-  }, [user, authLoading, router]);
+    fetchJobs();
+  }, []);
 
   const fetchJobs = async () => {
     try {
       setLoading(true);
       const token = localStorage.getItem('access_token');
+      if (!token) {
+        router.push('/sign-in');
+        return;
+      }
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3001'}/admin/jobs/pending`, {
         headers: {
           Authorization: `Bearer ${token}`
         }
       });
+      if (res.status === 401 || res.status === 403) {
+        router.push('/sign-in');
+        return;
+      }
       if (!res.ok) throw new Error('Failed to fetch jobs');
       const data = await res.json();
       setJobs(data.items || []);
@@ -60,7 +60,7 @@ export default function AdminJobsPage() {
     }
   };
 
-  if (authLoading || loading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
