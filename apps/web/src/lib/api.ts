@@ -54,7 +54,7 @@ api.interceptors.response.use(
         setMemoryToken(null);
         // Optional: emit an event or redirect to login here
         if (typeof window !== 'undefined') {
-          window.location.href = '/auth/login';
+          window.location.href = '/auth/signin';
         }
         return Promise.reject(refreshError);
       }

@@ -144,7 +144,7 @@ export class AdminService {
   async resolveFlaggedOrder(
     orderId: string,
     resolution: 'completed' | 'refunded',
-    _adminNotes?: string,
+    adminNotes?: string,
   ) {
     const order = await this.orderRepo.findOne({ where: { id: orderId } });
 
@@ -165,8 +165,9 @@ export class AdminService {
       // Note: Real integration would trigger a payment gateway refund here
     }
 
-    // Since we don't have an adminNotes column yet, we could log it for now
-    // Or if there is a way to store it.
+    if (adminNotes) {
+      order.adminNotes = adminNotes;
+    }
 
     await this.orderRepo.save(order);
 

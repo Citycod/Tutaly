@@ -135,7 +135,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { items: data, meta: { page, limit, total } };
   }
 
   // ─── Product CRUD ──────────────────────────────────────────────────
