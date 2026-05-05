@@ -20,7 +20,7 @@ export default function SignIn() {
     setError('');
 
     try {
-      const response = await api.post('/auth/login', { email, password });
+      const response = await api.post('/auth/signin', { email, password });
       
       if (response.data.mfaRequired) {
         // Important: Keep loading true while redirecting

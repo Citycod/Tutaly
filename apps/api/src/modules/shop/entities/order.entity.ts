@@ -71,6 +71,9 @@ export class Order extends BaseEntity {
 
   @Column({ default: 0 })
   downloadCount: number;
+
+  @Column({ type: 'text', nullable: true })
+  adminNotes: string | null;
 }
 
 export enum QuoteStatus {

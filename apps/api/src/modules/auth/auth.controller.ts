@@ -40,7 +40,7 @@ export class AuthController {
     return this.authService.register(dto);
   }
 
-  @Post('login')
+  @Post('signin')
   @Throttle({ short: { limit: 5, ttl: 60000 } }) // Limit login attempts
   async login(
     @Body() dto: LoginDto,
