@@ -200,7 +200,10 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN)
   @Delete(':id')
-  async remove(@Param('id', ParseUUIDPipe) id: string, @NestRequest() req: AuthenticatedRequest) {
+  async remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @NestRequest() req: AuthenticatedRequest,
+  ) {
     const userId = req.user.sub;
     const role = req.user.role;
     return this.jobService.remove(id, userId, role);

@@ -54,7 +54,16 @@ export default function DashboardLayout({
     { name: 'Add Product', href: '/seller/create', icon: FileText },
   ];
 
-  const links = isSeller ? sellerLinks : isEmployer ? employerLinks : isSeeker ? seekerLinks : [];
+  const isAdmin = pathname.startsWith('/admin');
+  const adminLinks = [
+    { name: 'Overview', href: '/admin', icon: Building2 },
+    { name: 'Approve Jobs', href: '/admin/jobs', icon: Briefcase },
+    { name: 'Approve Sellers', href: '/admin/sellers', icon: Store },
+    { name: 'Flagged Orders', href: '/admin/orders', icon: ShoppingBag },
+    { name: 'Manage Users', href: '/admin/users', icon: User },
+  ];
+
+  const links = isSeller ? sellerLinks : isEmployer ? employerLinks : isSeeker ? seekerLinks : isAdmin ? adminLinks : [];
 
   const handleLogout = async () => {
     try {
@@ -80,7 +89,7 @@ export default function DashboardLayout({
       <aside className="w-64 border-r border-gray-200 bg-white flex flex-col hidden lg:flex shrink-0">
         <div className="p-4 border-b border-gray-100 mb-2">
           <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
-            {isSeller ? 'Seller Dashboard' : isEmployer ? 'Employer Workspace' : isSeeker ? 'Professional Profile' : 'Dashboard'}
+            {isSeller ? 'Seller Dashboard' : isEmployer ? 'Employer Workspace' : isSeeker ? 'Professional Profile' : isAdmin ? 'Admin Control Panel' : 'Dashboard'}
           </p>
         </div>
 

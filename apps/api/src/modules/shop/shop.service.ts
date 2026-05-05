@@ -321,14 +321,22 @@ export class ShopService {
     } else {
       cart.push({ productId, quantity });
     }
-    await this.tokenService.setJobCache(this.cartKey(userId), JSON.stringify(cart), 86400); // 24hr TTL
+    await this.tokenService.setJobCache(
+      this.cartKey(userId),
+      JSON.stringify(cart),
+      86400,
+    ); // 24hr TTL
     return cart;
   }
 
   async removeFromCart(userId: string, productId: string) {
     let cart = await this.getCart(userId);
     cart = cart.filter((item) => item.productId !== productId);
-    await this.tokenService.setJobCache(this.cartKey(userId), JSON.stringify(cart), 86400);
+    await this.tokenService.setJobCache(
+      this.cartKey(userId),
+      JSON.stringify(cart),
+      86400,
+    );
     return cart;
   }
 
@@ -649,9 +657,7 @@ export class ShopService {
     if (order.seller.id !== sellerId)
       throw new ForbiddenException('Not your order.');
     if (order.status !== OrderStatus.PAID) {
-      throw new BadRequestException(
-        'Order must be paid to mark as delivered.',
-      );
+      throw new BadRequestException('Order must be paid to mark as delivered.');
     }
 
     order.status = OrderStatus.DELIVERED;
@@ -700,10 +706,12 @@ export class ShopService {
     if (!order) throw new NotFoundException('Order not found');
     if (order.buyer.id !== buyerId)
       throw new ForbiddenException('Not your order.');
-    
+
     // Can only report if paid or delivered, and not already completed/flagged
     if (![OrderStatus.PAID, OrderStatus.DELIVERED].includes(order.status)) {
-      throw new BadRequestException('Order status does not allow reporting at this stage.');
+      throw new BadRequestException(
+        'Order status does not allow reporting at this stage.',
+      );
     }
 
     order.status = OrderStatus.FLAGGED;
@@ -717,7 +725,8 @@ export class ShopService {
 
     return {
       success: true,
-      message: 'Issue reported. Order flagged for admin review and auto-release paused.',
+      message:
+        'Issue reported. Order flagged for admin review and auto-release paused.',
     };
   }
 
@@ -727,8 +736,8 @@ export class ShopService {
     const expiredOrders = await this.orderRepo
       .createQueryBuilder('order')
       .leftJoinAndSelect('order.product', 'product')
-      .where('order.status IN (:...statuses)', { 
-        statuses: [OrderStatus.PAID, OrderStatus.DELIVERED] 
+      .where('order.status IN (:...statuses)', {
+        statuses: [OrderStatus.PAID, OrderStatus.DELIVERED],
       })
       .andWhere('order.escrowReleaseAt <= :now', { now })
       .getMany();

@@ -59,16 +59,23 @@ export class AuthService {
       }
 
       // 1.5. Verify reCAPTCHA
-      const recaptchaSecret = this.configService.get<string>('RECAPTCHA_SECRET_KEY');
+      const recaptchaSecret = this.configService.get<string>(
+        'RECAPTCHA_SECRET_KEY',
+      );
       if (recaptchaSecret && dto.recaptchaToken) {
-        const recaptchaRes = await fetch('https://www.google.com/recaptcha/api/siteverify', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-          body: `secret=${recaptchaSecret}&response=${dto.recaptchaToken}`,
-        });
+        const recaptchaRes = await fetch(
+          'https://www.google.com/recaptcha/api/siteverify',
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+            body: `secret=${recaptchaSecret}&response=${dto.recaptchaToken}`,
+          },
+        );
         const recaptchaData = await recaptchaRes.json();
         if (!recaptchaData.success) {
-          throw new BadRequestException('reCAPTCHA verification failed. Please try again.');
+          throw new BadRequestException(
+            'reCAPTCHA verification failed. Please try again.',
+          );
         }
       }
 

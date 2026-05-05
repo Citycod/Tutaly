@@ -96,7 +96,13 @@ export class TokenService {
   async invalidateJobCache(): Promise<void> {
     let cursor = '0';
     do {
-      const result = await this.redisClient.scan(cursor, 'MATCH', 'jobs:*', 'COUNT', 100);
+      const result = await this.redisClient.scan(
+        cursor,
+        'MATCH',
+        'jobs:*',
+        'COUNT',
+        100,
+      );
       cursor = result[0];
       const keys = result[1];
       if (keys.length > 0) {

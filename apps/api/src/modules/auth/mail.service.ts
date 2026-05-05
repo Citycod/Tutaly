@@ -29,7 +29,7 @@ export class MailService {
         pass,
       },
       // Force IPv4 because Render sometimes has outbound IPv6 issues reaching Google's SMTP servers
-      family: 4, 
+      family: 4,
     };
 
     this.transporter = nodemailer.createTransport(config);
