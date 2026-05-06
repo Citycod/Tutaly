@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useEffect, useState } from "react";
-import { Menu, X } from "lucide-react";
+import { Menu, X, ShoppingCart } from "lucide-react";
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
@@ -51,6 +51,10 @@ export default function Navbar() {
 
         {/* CTAs */}
         <div className="flex items-center space-x-4">
+          <Link href="/shop/cart" className="p-2 text-gray-600 hover:text-teal-600 transition-colors relative">
+            <ShoppingCart className="h-6 w-6" />
+          </Link>
+
           {isAuthenticated ? (
             <Link
               href="/dashboard"
@@ -90,6 +94,7 @@ export default function Navbar() {
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/reviews" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Reviews</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/salaries" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Salaries</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Shop</Link>
+            <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop/cart" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">Cart</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/connect" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Community</Link>
             
             <div className="mt-4 border-t border-gray-200 pt-4">
