@@ -59,7 +59,8 @@ export default function DashboardLayout({
     { name: 'Overview', href: '/admin', icon: Building2 },
     { name: 'Approve Jobs', href: '/admin/jobs', icon: Briefcase },
     { name: 'Approve Sellers', href: '/admin/sellers', icon: Store },
-    { name: 'Flagged Orders', href: '/admin/orders', icon: ShoppingBag },
+    { name: 'Marketplace Catalog', href: '/admin/products', icon: Package },
+    { name: 'Shop Orders', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Manage Users', href: '/admin/users', icon: User },
   ];
 

@@ -8,6 +8,7 @@ import {
   SellerApplication,
   SellerApplicationStatus,
 } from '../support/entities/support.entity';
+import { ShopProduct } from '../shop/entities/shop.entity';
 
 @Injectable()
 export class AdminService {
@@ -17,6 +18,8 @@ export class AdminService {
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
     @InjectRepository(SellerApplication)
     private readonly sellerAppRepo: Repository<SellerApplication>,
+    @InjectRepository(ShopProduct)
+    private readonly productRepo: Repository<ShopProduct>,
   ) {}
 
   async getDashboardStats() {
@@ -48,6 +51,7 @@ export class AdminService {
     const flaggedOrdersCount = await this.orderRepo.count({
       where: { status: OrderStatus.FLAGGED },
     });
+    const totalProducts = await this.productRepo.count();
 
     return {
       totalUsers,
@@ -57,6 +61,7 @@ export class AdminService {
       pendingJobsCount,
       pendingSellersCount,
       flaggedOrdersCount,
+      totalProducts,
     };
   }
 
@@ -224,6 +229,56 @@ export class AdminService {
     return {
       success: true,
       message: `Order successfully resolved as ${resolution}`,
+    };
+  }
+
+  async getAllProducts(page = 1, limit = 20, isActive?: boolean) {
+    const where: any = {};
+    if (typeof isActive === 'boolean') {
+      where.isActive = isActive;
+    }
+
+    const [products, total] = await this.productRepo.findAndCount({
+      where,
+      relations: ['seller', 'subcategory', 'subcategory.category'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items: products,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getAllOrders(page = 1, limit = 20, status?: string) {
+    const where: any = {};
+    if (status) {
+      where.status = status;
+    }
+
+    const [orders, total] = await this.orderRepo.findAndCount({
+      where,
+      relations: ['buyer', 'seller', 'product'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items: orders,
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   }
 }

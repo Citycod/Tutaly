@@ -6,8 +6,20 @@ import helmet from 'helmet';
 
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
+import { NestExpressApplication } from '@nestjs/platform-express';
+import { json } from 'express';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // Capture raw body for webhook verification
+  app.use(
+    json({
+      verify: (req: any, res, buf) => {
+        req.rawBody = buf;
+      },
+    }),
+  );
 
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new GlobalExceptionFilter());

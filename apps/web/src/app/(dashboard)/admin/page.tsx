@@ -9,7 +9,8 @@ import {
   Store, 
   AlertTriangle,
   TrendingUp,
-  DollarSign
+  DollarSign,
+  Package
 } from 'lucide-react';
 import { apiAuth } from '@/lib/api';
 
@@ -143,6 +144,18 @@ export default function AdminDashboardPage() {
             </div>
             <div className="h-12 w-12 bg-purple-50 rounded-lg flex items-center justify-center">
               <DollarSign className="h-6 w-6 text-purple-600" />
+            </div>
+          </div>
+        </Link>
+
+        <Link href="/admin/products" className="block bg-white rounded-xl shadow-sm border border-gray-100 p-6 hover:shadow-md hover:border-gray-300 transition-all cursor-pointer">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-500">Total Products</p>
+              <p className="text-3xl font-bold text-gray-900 mt-1">{stats?.totalProducts || 0}</p>
+            </div>
+            <div className="h-12 w-12 bg-orange-50 rounded-lg flex items-center justify-center">
+              <Package className="h-6 w-6 text-orange-600" />
             </div>
           </div>
         </Link>
