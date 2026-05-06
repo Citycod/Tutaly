@@ -30,9 +30,18 @@ export class GlobalExceptionFilter implements ExceptionFilter {
     // Log the error for internal tracking (exclude common 400/401/404s if desired)
     if (status >= 500) {
       this.logger.error(
-        `HTTP Status: ${status} Error Message: ${JSON.stringify(message)}`,
+        `HTTP Status: ${status} Error Message: ${typeof message === 'string' ? message : 'Internal server error'}`,
         exception instanceof Error ? exception.stack : '',
       );
+    }
+
+    // Guard: If headers have already been sent (e.g. JSON serialization
+    // crash mid-stream), we cannot send another response. Just log and bail.
+    if (response.headersSent) {
+      this.logger.warn(
+        `Headers already sent for ${request.url} — cannot send error response`,
+      );
+      return;
     }
 
     response.status(status).json({
@@ -41,7 +50,6 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       timestamp: new Date().toISOString(),
       path: request.url,
       message: exception instanceof Error ? exception.message : message,
-      stack: exception instanceof Error ? exception.stack : undefined,
     });
   }
 }

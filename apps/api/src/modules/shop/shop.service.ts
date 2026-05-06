@@ -27,6 +27,14 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ApplySellerDto } from './dto/apply-seller.dto';
 import { TokenService } from '../auth/token.service';
 
+/**
+ * Strips TypeORM entity metadata & circular references by
+ * round-tripping through JSON.
+ */
+function toPlain<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 @Injectable()
 export class ShopService {
   private supabase: SupabaseClient;
@@ -136,7 +144,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { items: data, meta: { page, limit, total } };
+    return { items: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Product CRUD ──────────────────────────────────────────────────
@@ -170,7 +178,7 @@ export class ShopService {
     });
 
     await this.productRepo.save(product);
-    return { success: true, data: product };
+    return { success: true, data: toPlain(product) };
   }
 
   async getProductById(id: string) {
@@ -179,7 +187,7 @@ export class ShopService {
       relations: ['seller', 'subcategory', 'subcategory.category'],
     });
     if (!product) throw new NotFoundException('Product not found');
-    return product;
+    return toPlain(product);
   }
 
   async updateProduct(id: string, userId: string, dto: UpdateProductDto, isAdmin = false) {
@@ -244,7 +252,7 @@ export class ShopService {
       .skip((page - 1) * limit);
 
     const [data, total] = await query.getManyAndCount();
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   async getSellerProducts(userId: string, page = 1, limit = 10) {
@@ -255,7 +263,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Digital File Upload ──────────────────────────────────────────
@@ -890,7 +898,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   async getSellerOrders(userId: string, page = 1, limit = 10) {
@@ -901,12 +909,12 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Categories ───────────────────────────────────────────────────
 
   async getCategories() {
-    return this.categoryRepo.find({ relations: ['subcategories'] });
+    return toPlain(await this.categoryRepo.find({ relations: ['subcategories'] }));
   }
 }

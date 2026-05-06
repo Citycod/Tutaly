@@ -10,6 +10,15 @@ import {
 } from '../support/entities/support.entity';
 import { ShopProduct } from '../shop/entities/shop.entity';
 
+/**
+ * Strips TypeORM entity metadata & circular references by
+ * round-tripping through JSON. Safe because all our entities
+ * contain only serialisable primitives, dates, and arrays.
+ */
+function toPlain<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
+
 @Injectable()
 export class AdminService {
   constructor(
@@ -116,7 +125,7 @@ export class AdminService {
     });
 
     return {
-      items: jobs,
+      items: toPlain(jobs),
       meta: {
         total,
         page,
@@ -127,6 +136,7 @@ export class AdminService {
   }
 
   async getAllJobs(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (status) {
       where.status = status;
@@ -141,7 +151,7 @@ export class AdminService {
     });
 
     return {
-      items: jobs,
+      items: toPlain(jobs),
       meta: {
         total,
         page,
@@ -152,6 +162,7 @@ export class AdminService {
   }
 
   async getAllSellerApplications(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (status) {
       where.status = status;
@@ -166,7 +177,7 @@ export class AdminService {
     });
 
     return {
-      items: data,
+      items: toPlain(data),
       meta: {
         total,
         page,
@@ -186,7 +197,7 @@ export class AdminService {
     });
 
     return {
-      items: orders,
+      items: toPlain(orders),
       meta: {
         total,
         page,
@@ -233,6 +244,7 @@ export class AdminService {
   }
 
   async getAllProducts(page = 1, limit = 20, isActive?: boolean) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (typeof isActive === 'boolean') {
       where.isActive = isActive;
@@ -247,7 +259,7 @@ export class AdminService {
     });
 
     return {
-      items: products,
+      items: toPlain(products),
       meta: {
         total,
         page,
@@ -258,6 +270,7 @@ export class AdminService {
   }
 
   async getAllOrders(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (status) {
       where.status = status;
@@ -272,7 +285,7 @@ export class AdminService {
     });
 
     return {
-      items: orders,
+      items: toPlain(orders),
       meta: {
         total,
         page,
