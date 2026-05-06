@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Image from 'next/image';
 import { 
@@ -19,7 +19,7 @@ const PRODUCT_STATUSES = [
   { label: 'Inactive', value: 'false' },
 ];
 
-export default function AdminProductsPage() {
+function AdminProductsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const currentActive = searchParams.get('isActive') || '';
@@ -201,5 +201,17 @@ export default function AdminProductsPage() {
         )}
       </div>
     </div>
+  );
+}
+
+export default function AdminProductsPage() {
+  return (
+    <Suspense fallback={
+      <div className="flex justify-center items-center h-64">
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+      </div>
+    }>
+      <AdminProductsContent />
+    </Suspense>
   );
 }
