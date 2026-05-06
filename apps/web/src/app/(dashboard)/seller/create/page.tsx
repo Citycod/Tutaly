@@ -113,8 +113,10 @@ export default function CreateProductPage() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
 
+      // Strip categoryId — only subcategoryId is needed by the API
+      const { categoryId: _catId, ...formData } = form;
       const payload = {
-        ...form,
+        ...formData,
         price: form.pricingType === 'per_unit' ? Number(form.price) : undefined,
       };
 
@@ -284,8 +286,8 @@ export default function CreateProductPage() {
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input
                 type="radio"
-                checked={form.pricingType === 'quote_based'}
-                onChange={() => setForm({ ...form, pricingType: 'quote_based' })}
+                checked={form.pricingType === 'request_quote'}
+                onChange={() => setForm({ ...form, pricingType: 'request_quote' })}
                 className="text-teal-600 focus:ring-teal-500"
               /> Request Quote
             </label>
