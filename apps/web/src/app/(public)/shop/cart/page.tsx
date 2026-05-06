@@ -31,7 +31,7 @@ export default function CartPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        router.push('/auth/sign-in');
+        router.push('/auth/signin');
         return;
       }
 
@@ -73,7 +73,7 @@ export default function CartPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) {
-        router.push('/auth/sign-in');
+        router.push('/auth/signin');
         return;
       }
 

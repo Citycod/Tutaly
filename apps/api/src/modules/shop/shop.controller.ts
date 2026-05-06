@@ -199,18 +199,18 @@ export class ShopController {
 
   @Get('cart')
   @UseGuards(JwtAuthGuard)
-  getCart(@NestRequest() req: AuthenticatedRequest) {
-    return { data: this.shopService.getCart(req.user.sub) };
+  async getCart(@NestRequest() req: AuthenticatedRequest) {
+    return { data: await this.shopService.getCart(req.user.sub) };
   }
 
   @Post('cart/add')
   @UseGuards(JwtAuthGuard)
-  addToCart(
+  async addToCart(
     @NestRequest() req: AuthenticatedRequest,
     @Body() dto: AddToCartDto,
   ) {
     return {
-      data: this.shopService.addToCart(
+      data: await this.shopService.addToCart(
         req.user.sub,
         dto.productId,
         dto.quantity,
@@ -220,11 +220,11 @@ export class ShopController {
 
   @Delete('cart/:productId')
   @UseGuards(JwtAuthGuard)
-  removeFromCart(
+  async removeFromCart(
     @Param('productId') productId: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return { data: this.shopService.removeFromCart(req.user.sub, productId) };
+    return { data: await this.shopService.removeFromCart(req.user.sub, productId) };
   }
 
   // ─── Checkout ─────────────────────────────────────────────────
