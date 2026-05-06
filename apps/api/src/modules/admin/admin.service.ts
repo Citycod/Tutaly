@@ -8,6 +8,16 @@ import {
   SellerApplication,
   SellerApplicationStatus,
 } from '../support/entities/support.entity';
+import { ShopProduct } from '../shop/entities/shop.entity';
+
+/**
+ * Strips TypeORM entity metadata & circular references by
+ * round-tripping through JSON. Safe because all our entities
+ * contain only serialisable primitives, dates, and arrays.
+ */
+function toPlain<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 @Injectable()
 export class AdminService {
@@ -17,6 +27,8 @@ export class AdminService {
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
     @InjectRepository(SellerApplication)
     private readonly sellerAppRepo: Repository<SellerApplication>,
+    @InjectRepository(ShopProduct)
+    private readonly productRepo: Repository<ShopProduct>,
   ) {}
 
   async getDashboardStats() {
@@ -48,6 +60,7 @@ export class AdminService {
     const flaggedOrdersCount = await this.orderRepo.count({
       where: { status: OrderStatus.FLAGGED },
     });
+    const totalProducts = await this.productRepo.count();
 
     return {
       totalUsers,
@@ -57,6 +70,7 @@ export class AdminService {
       pendingJobsCount,
       pendingSellersCount,
       flaggedOrdersCount,
+      totalProducts,
     };
   }
 
@@ -111,7 +125,7 @@ export class AdminService {
     });
 
     return {
-      items: jobs,
+      items: toPlain(jobs),
       meta: {
         total,
         page,
@@ -122,6 +136,7 @@ export class AdminService {
   }
 
   async getAllJobs(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (status) {
       where.status = status;
@@ -136,7 +151,7 @@ export class AdminService {
     });
 
     return {
-      items: jobs,
+      items: toPlain(jobs),
       meta: {
         total,
         page,
@@ -147,6 +162,7 @@ export class AdminService {
   }
 
   async getAllSellerApplications(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const where: any = {};
     if (status) {
       where.status = status;
@@ -161,7 +177,7 @@ export class AdminService {
     });
 
     return {
-      items: data,
+      items: toPlain(data),
       meta: {
         total,
         page,
@@ -181,7 +197,7 @@ export class AdminService {
     });
 
     return {
-      items: orders,
+      items: toPlain(orders),
       meta: {
         total,
         page,
@@ -224,6 +240,58 @@ export class AdminService {
     return {
       success: true,
       message: `Order successfully resolved as ${resolution}`,
+    };
+  }
+
+  async getAllProducts(page = 1, limit = 20, isActive?: boolean) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
+    if (typeof isActive === 'boolean') {
+      where.isActive = isActive;
+    }
+
+    const [products, total] = await this.productRepo.findAndCount({
+      where,
+      relations: ['seller', 'subcategory', 'subcategory.category'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items: toPlain(products),
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
+    };
+  }
+
+  async getAllOrders(page = 1, limit = 20, status?: string) {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const where: any = {};
+    if (status) {
+      where.status = status;
+    }
+
+    const [orders, total] = await this.orderRepo.findAndCount({
+      where,
+      relations: ['buyer', 'seller', 'product'],
+      skip: (page - 1) * limit,
+      take: limit,
+      order: { createdAt: 'DESC' },
+    });
+
+    return {
+      items: toPlain(orders),
+      meta: {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+      },
     };
   }
 }

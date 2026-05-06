@@ -104,4 +104,30 @@ export class AdminController {
     }
     return this.adminService.resolveFlaggedOrder(id, resolution, adminNotes);
   }
+
+  @Get('products')
+  async getAllProducts(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('isActive') isActive?: string,
+  ) {
+    return this.adminService.getAllProducts(
+      parseInt(page || '1', 10),
+      parseInt(limit || '20', 10),
+      isActive === undefined ? undefined : isActive === 'true',
+    );
+  }
+
+  @Get('orders')
+  async getAllOrders(
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+    @Query('status') status?: string,
+  ) {
+    return this.adminService.getAllOrders(
+      parseInt(page || '1', 10),
+      parseInt(limit || '20', 10),
+      status,
+    );
+  }
 }

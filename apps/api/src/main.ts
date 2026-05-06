@@ -6,8 +6,14 @@ import helmet from 'helmet';
 
 import { GlobalExceptionFilter } from './common/filters/global-exception.filter';
 
+import { NestExpressApplication } from '@nestjs/platform-express';
+
 async function bootstrap() {
-  const app = await NestFactory.create(AppModule);
+  // rawBody: true — NestJS stores the raw request Buffer on req.rawBody
+  // automatically, which our @RawBody() decorator reads for webhook HMAC verification
+  const app = await NestFactory.create<NestExpressApplication>(AppModule, {
+    rawBody: true,
+  });
 
   app.setGlobalPrefix('api');
   app.useGlobalFilters(new GlobalExceptionFilter());

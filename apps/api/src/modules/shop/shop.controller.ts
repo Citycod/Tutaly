@@ -19,9 +19,11 @@ import { ShopService } from './shop.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
+import { RawBody } from '../../common/decorators/raw-body.decorator';
 import { UserRole } from '../user/entities/user.entity';
 import { SellerGuard } from './guards/seller.guard';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ApplySellerDto } from './dto/apply-seller.dto';
 import { AddToCartDto } from './dto/add-to-cart.dto';
 import { SellerApplicationStatus } from '../support/entities/support.entity';
@@ -91,13 +93,14 @@ export class ShopController {
   }
 
   @Patch('products/:id')
-  @UseGuards(JwtAuthGuard, SellerGuard)
+  @UseGuards(JwtAuthGuard)
   async updateProduct(
     @Param('id') id: string,
     @NestRequest() req: AuthenticatedRequest,
-    @Body() dto: Partial<CreateProductDto>,
+    @Body() dto: UpdateProductDto,
   ) {
-    return this.shopService.updateProduct(id, req.user.sub, dto);
+    const isAdmin = req.user.role === UserRole.ADMIN;
+    return { data: await this.shopService.updateProduct(id, req.user.sub, dto, isAdmin) };
   }
 
   @Delete('products/:id')
@@ -251,10 +254,11 @@ export class ShopController {
 
   @Post('webhook/paystack')
   async paystackWebhook(
-    @Body() payload: Record<string, unknown>,
+    @Body() payload: Record<string, any>,
     @Headers('x-paystack-signature') signature: string,
+    @RawBody() rawBody: Buffer,
   ) {
-    return this.shopService.handlePaystackWebhook(payload, signature);
+    return this.shopService.handlePaystackWebhook(payload, signature, rawBody);
   }
 
   // ─── Orders ───────────────────────────────────────────────────

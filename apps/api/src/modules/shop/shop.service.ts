@@ -23,8 +23,17 @@ import {
   SellerApplicationStatus,
 } from '../support/entities/support.entity';
 import { CreateProductDto } from './dto/create-product.dto';
+import { UpdateProductDto } from './dto/update-product.dto';
 import { ApplySellerDto } from './dto/apply-seller.dto';
 import { TokenService } from '../auth/token.service';
+
+/**
+ * Strips TypeORM entity metadata & circular references by
+ * round-tripping through JSON.
+ */
+function toPlain<T>(obj: T): T {
+  return JSON.parse(JSON.stringify(obj));
+}
 
 @Injectable()
 export class ShopService {
@@ -135,7 +144,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { items: data, meta: { page, limit, total } };
+    return { items: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Product CRUD ──────────────────────────────────────────────────
@@ -169,25 +178,28 @@ export class ShopService {
     });
 
     await this.productRepo.save(product);
-    return { success: true, data: product };
+    return { success: true, data: toPlain(product) };
   }
 
-  async updateProduct(
-    productId: string,
-    userId: string,
-    dto: Partial<CreateProductDto>,
-  ) {
+  async getProductById(id: string) {
     const product = await this.productRepo.findOne({
-      where: { id: productId },
-      relations: ['seller'],
+      where: { id },
+      relations: ['seller', 'subcategory', 'subcategory.category'],
     });
     if (!product) throw new NotFoundException('Product not found');
-    if (product.seller.id !== userId)
-      throw new ForbiddenException('You can only edit your own listings.');
+    return toPlain(product);
+  }
+
+  async updateProduct(id: string, userId: string, dto: UpdateProductDto, isAdmin = false) {
+    const product = await this.getProductById(id);
+
+    // Only owner or admin can update
+    if (!isAdmin && product.seller.id !== userId) {
+      throw new ForbiddenException('You do not have permission to update this product.');
+    }
 
     Object.assign(product, dto);
-    await this.productRepo.save(product);
-    return { success: true, data: product };
+    return this.productRepo.save(product);
   }
 
   async deleteProduct(productId: string, userId: string) {
@@ -240,16 +252,7 @@ export class ShopService {
       .skip((page - 1) * limit);
 
     const [data, total] = await query.getManyAndCount();
-    return { data, meta: { page, limit, total } };
-  }
-
-  async getProductById(id: string) {
-    const product = await this.productRepo.findOne({
-      where: { id, isActive: true },
-      relations: ['seller', 'subcategory', 'subcategory.category'],
-    });
-    if (!product) throw new NotFoundException('Product not found');
-    return product;
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   async getSellerProducts(userId: string, page = 1, limit = 10) {
@@ -260,7 +263,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Digital File Upload ──────────────────────────────────────────
@@ -636,21 +639,41 @@ export class ShopService {
 
   // ─── Paystack Webhook ─────────────────────────────────────────────
 
-  async handlePaystackWebhook(payload: Record<string, any>, signature: string) {
+  async handlePaystackWebhook(
+    payload: Record<string, any>,
+    signature: string,
+    rawBody?: Buffer,
+  ) {
+    console.log('[Paystack Webhook] Received event:', payload.event);
+
     // HMAC-SHA512 verification
     const secret = process.env.PAYSTACK_SECRET_KEY || '';
+    if (!secret) {
+      console.error('[Paystack Webhook] PAYSTACK_SECRET_KEY is not set!');
+    }
+
+    // Use rawBody if available, otherwise fallback to JSON.stringify (less reliable)
+    const verificationData = rawBody ? rawBody : JSON.stringify(payload);
+
     const hash = crypto
       .createHmac('sha512', secret)
-      .update(JSON.stringify(payload))
+      .update(verificationData)
       .digest('hex');
 
     if (hash !== signature) {
+      console.error('[Paystack Webhook] Signature mismatch!', {
+        received: signature,
+        calculated: hash,
+      });
       throw new ForbiddenException('Invalid webhook signature.');
     }
 
     const { event, data } = payload;
     if (event === 'charge.success' && data.status === 'success') {
+      console.log('[Paystack Webhook] Processing successful payment:', data.reference);
       await this.processSuccessfulPayment(data.reference, data.metadata);
+    } else {
+      console.log('[Paystack Webhook] Unhandled event type:', event);
     }
 
     return { success: true };
@@ -662,30 +685,41 @@ export class ShopService {
     txRef: string,
     meta: Record<string, any>,
   ) {
+    console.log('[Payment Processor] Processing payment for ref:', txRef);
     const order = await this.orderRepo.findOne({
       where: { paymentRef: txRef },
       relations: ['product'],
     });
 
     if (!order) {
+      console.log('[Payment Processor] No single order found for ref, checking batch metadata...');
       // Batch order — check metadata for order IDs
       const orderIds = (meta?.order_ids || '').split(',').filter(Boolean);
+      console.log('[Payment Processor] Found order IDs in meta:', orderIds);
+      
       for (const orderId of orderIds) {
         const o = await this.orderRepo.findOne({
           where: { id: orderId.trim() },
           relations: ['product'],
         });
-        if (o && o.status === OrderStatus.PENDING_PAYMENT) {
-          if (o.product.listingType === ListingType.DIGITAL) {
-            o.status = OrderStatus.COMPLETED;
-            o.earningsReleasedAt = new Date();
-          } else {
-            o.status = OrderStatus.PAID;
+        if (o) {
+          console.log(`[Payment Processor] Updating order ${o.id}. Current status: ${o.status}`);
+          if (o.status === OrderStatus.PENDING_PAYMENT) {
+            if (o.product.listingType === ListingType.DIGITAL) {
+              o.status = OrderStatus.COMPLETED;
+              o.earningsReleasedAt = new Date();
+            } else {
+              o.status = OrderStatus.PAID;
+            }
+            await this.orderRepo.save(o);
+            console.log(`[Payment Processor] Order ${o.id} marked as ${o.status}`);
           }
-          await this.orderRepo.save(o);
+        } else {
+          console.warn(`[Payment Processor] Order ID ${orderId} from metadata not found in database!`);
         }
       }
     } else if (order.status === OrderStatus.PENDING_PAYMENT) {
+      console.log(`[Payment Processor] Updating single order ${order.id}. Listing type: ${order.product.listingType}`);
       if (order.product.listingType === ListingType.DIGITAL) {
         order.status = OrderStatus.COMPLETED;
         order.earningsReleasedAt = new Date();
@@ -693,6 +727,9 @@ export class ShopService {
         order.status = OrderStatus.PAID;
       }
       await this.orderRepo.save(order);
+      console.log(`[Payment Processor] Order ${order.id} marked as ${order.status}`);
+    } else {
+      console.log(`[Payment Processor] Order ${order.id} already has status: ${order.status}`);
     }
   }
 
@@ -861,7 +898,7 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   async getSellerOrders(userId: string, page = 1, limit = 10) {
@@ -872,12 +909,12 @@ export class ShopService {
       take: limit,
       skip: (page - 1) * limit,
     });
-    return { data, meta: { page, limit, total } };
+    return { data: toPlain(data), meta: { page, limit, total } };
   }
 
   // ─── Categories ───────────────────────────────────────────────────
 
   async getCategories() {
-    return this.categoryRepo.find({ relations: ['subcategories'] });
+    return toPlain(await this.categoryRepo.find({ relations: ['subcategories'] }));
   }
 }
