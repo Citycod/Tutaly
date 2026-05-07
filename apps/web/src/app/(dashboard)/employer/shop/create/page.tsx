@@ -210,8 +210,8 @@ export default function CreateProductPage() {
             <label className="flex items-center gap-2 text-sm cursor-pointer">
               <input
                 type="radio"
-                checked={form.pricingType === 'quote_based'}
-                onChange={() => setForm({ ...form, pricingType: 'quote_based' })}
+                checked={form.pricingType === 'request_quote'}
+                onChange={() => setForm({ ...form, pricingType: 'request_quote' })}
                 className="text-teal-600 focus:ring-teal-500"
               /> Request Quote
             </label>
@@ -252,6 +252,30 @@ export default function CreateProductPage() {
                   className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500"
                 />
               </div>
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Quantity</label>
+                <input
+                  type="number"
+                  value={form.minQuantity}
+                  onChange={(e) => setForm({ ...form, minQuantity: Number(e.target.value) })}
+                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500"
+                  required
+                  min={1}
+                />
+              </div>
+            </div>
+          )}
+          {form.listingType === 'service' && (
+            <div className="mt-4">
+              <label className="flex items-center gap-2 text-sm cursor-pointer">
+                <input
+                  type="checkbox"
+                  checked={form.priceMayVary}
+                  onChange={(e) => setForm({ ...form, priceMayVary: e.target.checked })}
+                  className="text-teal-600 focus:ring-teal-500 rounded"
+                />
+                Final price may vary based on scope
+              </label>
             </div>
           )}
         </div>
