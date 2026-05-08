@@ -2,6 +2,7 @@ import {
   Controller,
   Get,
   Patch,
+  Post,
   Param,
   Body,
   Query,
@@ -105,6 +106,30 @@ export class AdminController {
     return this.adminService.resolveFlaggedOrder(id, resolution, adminNotes);
   }
 
+  // ─── Verify Payment (for stuck pending_payment orders) ──────────
+  @Post('orders/:id/verify-payment')
+  async verifyPayment(@Param('id', ParseUUIDPipe) id: string) {
+    return this.adminService.verifyPaymentWithGateway(id);
+  }
+
+  // ─── Cancel Order ───────────────────────────────────────────────
+  @Patch('orders/:id/cancel')
+  async cancelOrder(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('adminNotes') adminNotes?: string,
+  ) {
+    return this.adminService.cancelOrder(id, adminNotes);
+  }
+
+  // ─── Flag Order ─────────────────────────────────────────────────
+  @Patch('orders/:id/flag')
+  async flagOrder(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Body('adminNotes') adminNotes?: string,
+  ) {
+    return this.adminService.flagOrder(id, adminNotes);
+  }
+
   @Get('products')
   async getAllProducts(
     @Query('page') page?: string,
@@ -131,3 +156,4 @@ export class AdminController {
     );
   }
 }
+

@@ -1,9 +1,10 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../user/entities/user.entity';
 import { Job, JobStatus } from '../job/entities/job.entity';
-import { Order, OrderStatus } from '../shop/entities/order.entity';
+import { Order, OrderStatus, PaymentGateway } from '../shop/entities/order.entity';
+import { ListingType } from '../shop/entities/shop.entity';
 import {
   SellerApplication,
   SellerApplicationStatus,
@@ -21,6 +22,7 @@ function toPlain<T>(obj: T): T {
 
 @Injectable()
 export class AdminService {
+  private readonly logger = new Logger(AdminService.name);
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
@@ -292,6 +294,146 @@ export class AdminService {
         limit,
         totalPages: Math.ceil(total / limit),
       },
+    };
+  }
+
+  // ─── Verify Payment with Gateway ────────────────────────────────
+
+  async verifyPaymentWithGateway(orderId: string) {
+    const order = await this.orderRepo.findOne({
+      where: { id: orderId },
+      relations: ['product'],
+    });
+    if (!order) throw new NotFoundException('Order not found');
+
+    if (order.status !== OrderStatus.PENDING_PAYMENT) {
+      throw new BadRequestException(
+        `Order is already ${order.status} — verification only applies to pending_payment orders`,
+      );
+    }
+
+    if (order.paymentGateway !== PaymentGateway.PAYSTACK) {
+      throw new BadRequestException(
+        `Verification is only supported for Paystack orders. This order uses ${order.paymentGateway}.`,
+      );
+    }
+
+    if (!order.paymentRef) {
+      throw new BadRequestException('Order has no payment reference to verify.');
+    }
+
+    // Call Paystack Verify Transaction API
+    const secret = process.env.PAYSTACK_SECRET_KEY || '';
+    if (!secret) {
+      throw new BadRequestException('PAYSTACK_SECRET_KEY is not configured.');
+    }
+
+    try {
+      const response = await fetch(
+        `https://api.paystack.co/transaction/verify/${order.paymentRef}`,
+        {
+          headers: {
+            Authorization: `Bearer ${secret}`,
+          },
+        },
+      );
+      const result = await response.json();
+
+      if (result.status === true && result.data?.status === 'success') {
+        // Payment was successful — update order
+        if (order.product?.listingType === ListingType.DIGITAL) {
+          order.status = OrderStatus.COMPLETED;
+          order.earningsReleasedAt = new Date();
+        } else {
+          order.status = OrderStatus.PAID;
+        }
+        order.adminNotes = `Payment verified by admin via Paystack API. Gateway ref: ${result.data.reference}`;
+        await this.orderRepo.save(order);
+
+        this.logger.log(`Order ${orderId} payment verified and updated to ${order.status}`);
+
+        return {
+          success: true,
+          verified: true,
+          newStatus: order.status,
+          message: `Payment confirmed by Paystack. Order updated to ${order.status}.`,
+          gatewayData: {
+            amount: result.data.amount / 100,
+            currency: result.data.currency,
+            paidAt: result.data.paid_at,
+            channel: result.data.channel,
+          },
+        };
+      } else {
+        // Payment not successful on Paystack side
+        return {
+          success: true,
+          verified: false,
+          message: `Paystack reports this payment as "${result.data?.status || 'unknown'}". No changes made.`,
+          gatewayStatus: result.data?.status || 'unknown',
+        };
+      }
+    } catch (error) {
+      this.logger.error(`Failed to verify payment for order ${orderId}:`, error);
+      throw new BadRequestException(
+        'Failed to reach Paystack API. Please try again.',
+      );
+    }
+  }
+
+  // ─── Cancel Order ───────────────────────────────────────────────
+
+  async cancelOrder(orderId: string, adminNotes?: string) {
+    const order = await this.orderRepo.findOne({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('Order not found');
+
+    if (order.status === OrderStatus.COMPLETED || order.status === OrderStatus.REFUNDED) {
+      throw new BadRequestException(
+        `Cannot cancel an order that is already ${order.status}.`,
+      );
+    }
+
+    order.status = OrderStatus.REFUNDED;
+    order.adminNotes = adminNotes
+      ? `[Admin cancelled] ${adminNotes}`
+      : '[Admin cancelled] Order cancelled by admin.';
+    await this.orderRepo.save(order);
+
+    this.logger.log(`Order ${orderId} cancelled by admin`);
+
+    return {
+      success: true,
+      message: 'Order has been cancelled and marked as refunded.',
+    };
+  }
+
+  // ─── Flag Order ─────────────────────────────────────────────────
+
+  async flagOrder(orderId: string, adminNotes?: string) {
+    const order = await this.orderRepo.findOne({ where: { id: orderId } });
+    if (!order) throw new NotFoundException('Order not found');
+
+    if (order.status === OrderStatus.COMPLETED || order.status === OrderStatus.REFUNDED) {
+      throw new BadRequestException(
+        `Cannot flag an order that is already ${order.status}.`,
+      );
+    }
+
+    if (order.status === OrderStatus.FLAGGED) {
+      throw new BadRequestException('Order is already flagged.');
+    }
+
+    order.status = OrderStatus.FLAGGED;
+    order.adminNotes = adminNotes
+      ? `[Admin flagged] ${adminNotes}`
+      : '[Admin flagged] Order flagged for review by admin.';
+    await this.orderRepo.save(order);
+
+    this.logger.log(`Order ${orderId} flagged by admin`);
+
+    return {
+      success: true,
+      message: 'Order has been flagged for review.',
     };
   }
 }
