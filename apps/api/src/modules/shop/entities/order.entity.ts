@@ -8,6 +8,7 @@ export enum OrderStatus {
   PAID = 'paid',
   DELIVERED = 'delivered',
   COMPLETED = 'completed',
+  CONFIRMED = 'confirmed', // Physical goods - buyer confirmed receipt
   FLAGGED = 'flagged',
   REFUNDED = 'refunded',
 }
@@ -68,6 +69,15 @@ export class Order extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   earningsReleasedAt: Date | null;
+
+  @Column({ type: 'timestamp', nullable: true })
+  confirmedAt: Date | null; // When buyer confirms receipt (physical only)
+
+  @Column({ type: 'timestamp', nullable: true })
+  autoConfirmScheduledAt: Date | null; // 48hr auto-confirm scheduled time
+
+  @Column({ default: 1 })
+  quantity: number; // For per-unit listings
 
   @Column({ default: 0 })
   downloadCount: number;

@@ -96,4 +96,11 @@ export class ShopProduct extends BaseEntity {
 
   @Column({ type: 'jsonb', nullable: true })
   ratingDistribution: Record<number, number>; // { 1: 10, 2: 5, 3: 20, 4: 50, 5: 150 }
+
+  // Featured listing (seller boost)
+  @Column({ type: 'timestamp', nullable: true })
+  featuredUntil: Date | null; // When featured status expires
+
+  @Column({ nullable: true })
+  featuredSearchVector: any; // For full-text search (TSVector in PostgreSQL)
 }
