@@ -10,28 +10,33 @@ import {
   MessageCircle,
   Users,
   Search,
-  LogOut,
 } from 'lucide-react';
 
 export default function ConnectLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
-  const router = useRouter();
   const [unreadCount, setUnreadCount] = useState(0);
 
-  const fetchUnread = useCallback(async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      if (!token) return;
-      const res = await apiAuth.withToken(token).get('/support/notifications?limit=1');
-      setUnreadCount(res.data?.meta?.unreadCount || 0);
-    } catch { /* ignore */ }
-  }, []);
-
   useEffect(() => {
-    fetchUnread();
-    const interval = setInterval(fetchUnread, 30000); // poll every 30s
-    return () => clearInterval(interval);
-  }, [fetchUnread]);
+    let isMounted = true;
+
+    const doFetch = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+        const res = await apiAuth.withToken(token).get('/support/notifications?limit=1');
+        if (isMounted) {
+          setUnreadCount(res.data?.meta?.unreadCount || 0);
+        }
+      } catch { /* ignore */ }
+    };
+
+    doFetch();
+    const interval = setInterval(doFetch, 30000); // poll every 30s
+    return () => {
+      isMounted = false;
+      clearInterval(interval);
+    };
+  }, []);
 
   const navItems = [
     { name: 'Feed', href: '/connect', icon: Home },
