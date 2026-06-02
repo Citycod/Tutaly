@@ -184,7 +184,9 @@ export class ProductSearchService {
       rating: product.averageRating,
       totalRatings: product.totalRatings,
       ratingDistribution: product.ratingDistribution || {},
-      isFeatured: !!(product.featuredUntil && product.featuredUntil > new Date()),
+      isFeatured: !!(
+        product.featuredUntil && product.featuredUntil > new Date()
+      ),
       featuredUntil: product.featuredUntil || undefined,
       category: product.subcategory?.category?.name || 'Uncategorized',
       subcategory: product.subcategory?.name || 'Other',
@@ -224,7 +226,9 @@ export class ProductSearchService {
         ' ' +
         (product.seller?.seekerProfile?.lastName || ''),
       sellerUsername: product.seller?.email?.split('@')[0] || 'Unknown',
-      isFeatured: !!(product.featuredUntil && product.featuredUntil > new Date()),
+      isFeatured: !!(
+        product.featuredUntil && product.featuredUntil > new Date()
+      ),
     };
   }
 

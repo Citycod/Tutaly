@@ -1,13 +1,17 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Notification, NotificationType } from '../entities/notification.entity';
+import {
+  Notification,
+  NotificationType,
+} from '../entities/notification.entity';
 import { User } from '../../user/entities/user.entity';
 
 @Injectable()
 export class NotificationService {
   constructor(
-    @InjectRepository(Notification) private readonly notificationRepo: Repository<Notification>,
+    @InjectRepository(Notification)
+    private readonly notificationRepo: Repository<Notification>,
   ) {}
 
   async createNotification(
@@ -37,7 +41,10 @@ export class NotificationService {
   }
 
   async markAsRead(notificationId: string): Promise<void> {
-    await this.notificationRepo.update({ id: notificationId }, { isRead: true });
+    await this.notificationRepo.update(
+      { id: notificationId },
+      { isRead: true },
+    );
   }
 
   async markAllAsRead(userId: string): Promise<void> {

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { User, UserRole, SellerStatus } from '../../user/entities/user.entity';
@@ -21,8 +25,10 @@ function toPlain<T>(obj: T): T {
 export class UserManagementService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(SeekerProfile) private readonly seekerProfileRepo: Repository<SeekerProfile>,
-    @InjectRepository(EmployerProfile) private readonly employerProfileRepo: Repository<EmployerProfile>,
+    @InjectRepository(SeekerProfile)
+    private readonly seekerProfileRepo: Repository<SeekerProfile>,
+    @InjectRepository(EmployerProfile)
+    private readonly employerProfileRepo: Repository<EmployerProfile>,
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
   ) {}
@@ -78,8 +84,12 @@ export class UserManagementService {
     if (!user) throw new NotFoundException('User not found');
 
     // Get associated counts
-    const postCount = await this.postRepo.count({ where: { author: { id: userId } } });
-    const jobCount = await this.jobRepo.count({ where: { employer: { id: userId } } });
+    const postCount = await this.postRepo.count({
+      where: { author: { id: userId } },
+    });
+    const jobCount = await this.jobRepo.count({
+      where: { employer: { id: userId } },
+    });
 
     return toPlain({
       ...user,
@@ -96,13 +106,19 @@ export class UserManagementService {
       await this.userRepo.update({ id: userId }, { isSuspended: true });
       // TODO: Send suspension email
     } else if (status === UserStatus.ACTIVE) {
-      await this.userRepo.update({ id: userId }, { isSuspended: false, isActive: true });
+      await this.userRepo.update(
+        { id: userId },
+        { isSuspended: false, isActive: true },
+      );
     } else if (status === UserStatus.DELETED) {
       // Soft delete with anonymization
-      await this.userRepo.update({ id: userId }, {
-        isDeleted: true,
-        email: `deleted_${userId}@deleted.local`, // Anonymize email
-      });
+      await this.userRepo.update(
+        { id: userId },
+        {
+          isDeleted: true,
+          email: `deleted_${userId}@deleted.local`, // Anonymize email
+        },
+      );
 
       // Anonymize seeker profile
       if (user.role === UserRole.SEEKER) {
@@ -110,11 +126,14 @@ export class UserManagementService {
           where: { user: { id: userId } },
         });
         if (seekerProfile) {
-          await this.seekerProfileRepo.update({ id: seekerProfile.id }, {
-            firstName: 'Deleted',
-            lastName: 'User',
-            avatarUrl: undefined,
-          });
+          await this.seekerProfileRepo.update(
+            { id: seekerProfile.id },
+            {
+              firstName: 'Deleted',
+              lastName: 'User',
+              avatarUrl: undefined,
+            },
+          );
         }
       }
 
@@ -124,10 +143,13 @@ export class UserManagementService {
           where: { user: { id: userId } },
         });
         if (employerProfile) {
-          await this.employerProfileRepo.update({ id: employerProfile.id }, {
-            companyName: 'Deleted Company',
-            logoUrl: undefined,
-          });
+          await this.employerProfileRepo.update(
+            { id: employerProfile.id },
+            {
+              companyName: 'Deleted Company',
+              logoUrl: undefined,
+            },
+          );
         }
       }
 
@@ -143,7 +165,10 @@ export class UserManagementService {
     }
   }
 
-  async bulkUpdateUserStatus(userIds: string[], status: UserStatus): Promise<void> {
+  async bulkUpdateUserStatus(
+    userIds: string[],
+    status: UserStatus,
+  ): Promise<void> {
     for (const userId of userIds) {
       await this.updateUserStatus(userId, status);
     }

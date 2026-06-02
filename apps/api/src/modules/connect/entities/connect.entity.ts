@@ -108,7 +108,11 @@ export class PostShare extends BaseEntity {
   @ManyToOne(() => User)
   sharedBy: User;
 
-  @Column({ type: 'enum', enum: ['feed', 'whatsapp', 'twitter'], default: 'feed' })
+  @Column({
+    type: 'enum',
+    enum: ['feed', 'whatsapp', 'twitter'],
+    default: 'feed',
+  })
   shareType: 'feed' | 'whatsapp' | 'twitter';
 }
 

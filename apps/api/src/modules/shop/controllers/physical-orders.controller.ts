@@ -38,11 +38,7 @@ export class PhysicalOrdersController {
     @NestRequest() req: AuthenticatedRequest,
     @Body() dto?: ConfirmReceiptDto,
   ) {
-    return this.physicalOrderService.confirmReceipt(
-      orderId,
-      req.user.sub,
-      dto,
-    );
+    return this.physicalOrderService.confirmReceipt(orderId, req.user.sub, dto);
   }
 
   @Get('seller/physical')

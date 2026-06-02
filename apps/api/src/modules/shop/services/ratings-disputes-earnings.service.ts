@@ -10,7 +10,12 @@ import { Repository, LessThan, Between } from 'typeorm';
 import { Order, OrderStatus } from '../entities/order.entity';
 import { ShopProduct } from '../entities/shop.entity';
 import { ProductRating } from '../entities/product-rating.entity';
-import { QuoteRequest, QuoteStatus, OrderDispute, DisputeStatus } from '../entities/order.entity';
+import {
+  QuoteRequest,
+  QuoteStatus,
+  OrderDispute,
+  DisputeStatus,
+} from '../entities/order.entity';
 import { User } from '../../user/entities/user.entity';
 import {
   RateProductDto,
@@ -151,14 +156,11 @@ export class RatingsDisputesEarningsService {
 
     if (ratings.length === 0) {
       // Reset product rating
-      await this.productRepo.update(
-        { id: productId },
-        {
-          averageRating: 0,
-          totalRatings: 0,
-          ratingDistribution: {},
-        } as any,
-      );
+      await this.productRepo.update({ id: productId }, {
+        averageRating: 0,
+        totalRatings: 0,
+        ratingDistribution: {},
+      } as any);
       return;
     }
 
@@ -176,14 +178,11 @@ export class RatingsDisputesEarningsService {
     };
 
     // Update product with aggregated data
-    await this.productRepo.update(
-      { id: productId },
-      {
-        averageRating,
-        totalRatings,
-        ratingDistribution: distribution,
-      } as any,
-    );
+    await this.productRepo.update({ id: productId }, {
+      averageRating,
+      totalRatings,
+      ratingDistribution: distribution,
+    } as any);
 
     this.logger.debug(
       `Recalculated rating for product ${productId}: ${averageRating} (${totalRatings} ratings)`,
@@ -323,7 +322,9 @@ export class RatingsDisputesEarningsService {
     order.status = OrderStatus.REFUNDED;
     await this.orderRepo.save(order);
 
-    this.logger.log(`Refund initiated for order ${order.id} by admin ${adminId}`);
+    this.logger.log(
+      `Refund initiated for order ${order.id} by admin ${adminId}`,
+    );
   }
 
   /**
@@ -418,7 +419,9 @@ export class RatingsDisputesEarningsService {
   /**
    * Get seller's earnings summary
    */
-  async getSellerEarningsSummary(sellerId: string): Promise<SellerEarningsSummaryDto> {
+  async getSellerEarningsSummary(
+    sellerId: string,
+  ): Promise<SellerEarningsSummaryDto> {
     const orders = await this.orderRepo.find({
       where: {
         seller: { id: sellerId },

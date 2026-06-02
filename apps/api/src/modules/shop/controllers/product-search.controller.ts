@@ -23,9 +23,7 @@ export class ProductSearchController {
 
   @Get('trending')
   async getTrendingProducts(@Query('limit') limit?: string) {
-    return this.searchService.getTrendingProducts(
-      parseInt(limit || '12', 10),
-    );
+    return this.searchService.getTrendingProducts(parseInt(limit || '12', 10));
   }
 
   @Get('category/:id/products')

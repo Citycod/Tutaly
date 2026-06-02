@@ -13,12 +13,18 @@ import {
 } from '@nestjs/common';
 import { AdminService } from './admin.service';
 import { NotificationService } from './services/notification.service';
-import { UserManagementService, UserStatus } from './services/user-management.service';
+import {
+  UserManagementService,
+  UserStatus,
+} from './services/user-management.service';
 import { JobsModerationService } from './services/jobs-moderation.service';
 import { ReviewsModerationService } from './services/reviews-moderation.service';
 import { SellersModerationService } from './services/sellers-moderation.service';
 import { ReportsModerationService } from './services/reports-moderation.service';
-import { DisputesResolutionService, DisputeResolution } from './services/disputes-resolution.service';
+import {
+  DisputesResolutionService,
+  DisputeResolution,
+} from './services/disputes-resolution.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
@@ -93,7 +99,10 @@ export class AdminController {
     @Body('status') status: UserStatus,
   ) {
     await this.userManagementService.bulkUpdateUserStatus(userIds, status);
-    return { success: true, message: `Bulk action applied to ${userIds.length} users` };
+    return {
+      success: true,
+      message: `Bulk action applied to ${userIds.length} users`,
+    };
   }
 
   // ═══════════════════════════════════════════════════════════════════════════
@@ -169,7 +178,11 @@ export class AdminController {
       await this.reviewsModerationService.rejectReview(reviewId);
       return { success: true, message: 'Review rejected' };
     } else if (action === 'edit_approve') {
-      await this.reviewsModerationService.editAndApproveReview(reviewId, pros, cons);
+      await this.reviewsModerationService.editAndApproveReview(
+        reviewId,
+        pros,
+        cons,
+      );
       return { success: true, message: 'Review edited and approved' };
     }
   }
@@ -327,7 +340,9 @@ export class AdminController {
   }
 
   @Patch('notifications/:id/read')
-  async markNotificationAsRead(@Param('id', ParseUUIDPipe) notificationId: string) {
+  async markNotificationAsRead(
+    @Param('id', ParseUUIDPipe) notificationId: string,
+  ) {
     await this.notificationService.markAsRead(notificationId);
     return { success: true };
   }
@@ -340,7 +355,9 @@ export class AdminController {
 
   @Get('notifications/unread-count')
   async getUnreadNotificationCount(@NestRequest() req: AuthenticatedRequest) {
-    const unreadCount = await this.notificationService.getUnreadCount(req.user.sub);
+    const unreadCount = await this.notificationService.getUnreadCount(
+      req.user.sub,
+    );
     return { unreadCount };
   }
 

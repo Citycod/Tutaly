@@ -1,6 +1,11 @@
 import { Injectable, ForbiddenException, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
-import { IPaymentGateway, PaymentPayload, PaymentResponse, WebhookResult } from '../interfaces/payment-gateway.interface';
+import {
+  IPaymentGateway,
+  PaymentPayload,
+  PaymentResponse,
+  WebhookResult,
+} from '../interfaces/payment-gateway.interface';
 
 @Injectable()
 export class PaystackGateway implements IPaymentGateway {
@@ -108,7 +113,9 @@ export class PaystackGateway implements IPaymentGateway {
     }
 
     if (!this.secretKey) {
-      this.logger.error('PAYSTACK_SECRET_KEY not configured for webhook verification');
+      this.logger.error(
+        'PAYSTACK_SECRET_KEY not configured for webhook verification',
+      );
       return false;
     }
 
@@ -135,7 +142,9 @@ export class PaystackGateway implements IPaymentGateway {
     }
   }
 
-  async handleWebhookEvent(payload: Record<string, any>): Promise<WebhookResult> {
+  async handleWebhookEvent(
+    payload: Record<string, any>,
+  ): Promise<WebhookResult> {
     const { event, data } = payload;
 
     if (event === 'charge.success' && data.status === 'success') {

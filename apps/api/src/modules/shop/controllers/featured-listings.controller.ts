@@ -44,9 +44,7 @@ export class FeaturedListingsController {
 
   @Get('seller/featured')
   @UseGuards(JwtAuthGuard)
-  async getSellerFeaturedProducts(
-    @NestRequest() req: AuthenticatedRequest,
-  ) {
+  async getSellerFeaturedProducts(@NestRequest() req: AuthenticatedRequest) {
     return this.featuredService.getSellerFeaturedProducts(req.user.sub);
   }
 }

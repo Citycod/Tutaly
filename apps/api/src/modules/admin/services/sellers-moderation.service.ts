@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, SellerStatus } from '../../user/entities/user.entity';
@@ -12,7 +16,8 @@ function toPlain<T>(obj: T): T {
 export class SellersModerationService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(SeekerProfile) private readonly seekerProfileRepo: Repository<SeekerProfile>,
+    @InjectRepository(SeekerProfile)
+    private readonly seekerProfileRepo: Repository<SeekerProfile>,
   ) {}
 
   async getPendingSellerApplications(page = 1, limit = 20) {
@@ -46,10 +51,15 @@ export class SellersModerationService {
 
     if (!user) throw new NotFoundException('User not found');
     if (user.sellerStatus !== SellerStatus.PENDING) {
-      throw new BadRequestException('Only pending seller applications can be approved');
+      throw new BadRequestException(
+        'Only pending seller applications can be approved',
+      );
     }
 
-    await this.userRepo.update({ id: userId }, { sellerStatus: SellerStatus.APPROVED });
+    await this.userRepo.update(
+      { id: userId },
+      { sellerStatus: SellerStatus.APPROVED },
+    );
 
     // TODO: Send approval email
     // TODO: Create notification
@@ -59,7 +69,10 @@ export class SellersModerationService {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
-    await this.userRepo.update({ id: userId }, { sellerStatus: SellerStatus.REJECTED });
+    await this.userRepo.update(
+      { id: userId },
+      { sellerStatus: SellerStatus.REJECTED },
+    );
 
     // TODO: Send rejection email with reason
     // TODO: Create notification

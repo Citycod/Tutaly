@@ -16,7 +16,14 @@ import {
   Currency,
   ListingType,
 } from './entities/shop.entity';
-import { Order, OrderStatus, PaymentGateway, QuoteRequest, QuoteStatus, OrderDispute } from './entities/order.entity';
+import {
+  Order,
+  OrderStatus,
+  PaymentGateway,
+  QuoteRequest,
+  QuoteStatus,
+  OrderDispute,
+} from './entities/order.entity';
 import { User, SellerStatus } from '../user/entities/user.entity';
 import {
   SellerApplication,
@@ -115,7 +122,6 @@ export class ShopService {
     return { sellerStatus: user.sellerStatus };
   }
 
-
   // ─── Product CRUD ──────────────────────────────────────────────────
 
   async createProduct(userId: string, dto: CreateProductDto) {
@@ -159,12 +165,19 @@ export class ShopService {
     return toPlain(product);
   }
 
-  async updateProduct(id: string, userId: string, dto: UpdateProductDto, isAdmin = false) {
+  async updateProduct(
+    id: string,
+    userId: string,
+    dto: UpdateProductDto,
+    isAdmin = false,
+  ) {
     const product = await this.getProductById(id);
 
     // Only owner or admin can update
     if (!isAdmin && product.seller.id !== userId) {
-      throw new ForbiddenException('You do not have permission to update this product.');
+      throw new ForbiddenException(
+        'You do not have permission to update this product.',
+      );
     }
 
     Object.assign(product, dto);
@@ -639,7 +652,10 @@ export class ShopService {
 
     const { event, data } = payload;
     if (event === 'charge.success' && data.status === 'success') {
-      console.log('[Paystack Webhook] Processing successful payment:', data.reference);
+      console.log(
+        '[Paystack Webhook] Processing successful payment:',
+        data.reference,
+      );
       await this.processSuccessfulPayment(data.reference, data.metadata);
     } else {
       console.log('[Paystack Webhook] Unhandled event type:', event);
@@ -661,18 +677,22 @@ export class ShopService {
     });
 
     if (!order) {
-      console.log('[Payment Processor] No single order found for ref, checking batch metadata...');
+      console.log(
+        '[Payment Processor] No single order found for ref, checking batch metadata...',
+      );
       // Batch order — check metadata for order IDs
       const orderIds = (meta?.order_ids || '').split(',').filter(Boolean);
       console.log('[Payment Processor] Found order IDs in meta:', orderIds);
-      
+
       for (const orderId of orderIds) {
         const o = await this.orderRepo.findOne({
           where: { id: orderId.trim() },
           relations: ['product'],
         });
         if (o) {
-          console.log(`[Payment Processor] Updating order ${o.id}. Current status: ${o.status}`);
+          console.log(
+            `[Payment Processor] Updating order ${o.id}. Current status: ${o.status}`,
+          );
           if (o.status === OrderStatus.PENDING_PAYMENT) {
             if (o.product.listingType === ListingType.DIGITAL) {
               o.status = OrderStatus.COMPLETED;
@@ -681,14 +701,20 @@ export class ShopService {
               o.status = OrderStatus.PAID;
             }
             await this.orderRepo.save(o);
-            console.log(`[Payment Processor] Order ${o.id} marked as ${o.status}`);
+            console.log(
+              `[Payment Processor] Order ${o.id} marked as ${o.status}`,
+            );
           }
         } else {
-          console.warn(`[Payment Processor] Order ID ${orderId} from metadata not found in database!`);
+          console.warn(
+            `[Payment Processor] Order ID ${orderId} from metadata not found in database!`,
+          );
         }
       }
     } else if (order.status === OrderStatus.PENDING_PAYMENT) {
-      console.log(`[Payment Processor] Updating single order ${order.id}. Listing type: ${order.product.listingType}`);
+      console.log(
+        `[Payment Processor] Updating single order ${order.id}. Listing type: ${order.product.listingType}`,
+      );
       if (order.product.listingType === ListingType.DIGITAL) {
         order.status = OrderStatus.COMPLETED;
         order.earningsReleasedAt = new Date();
@@ -696,9 +722,13 @@ export class ShopService {
         order.status = OrderStatus.PAID;
       }
       await this.orderRepo.save(order);
-      console.log(`[Payment Processor] Order ${order.id} marked as ${order.status}`);
+      console.log(
+        `[Payment Processor] Order ${order.id} marked as ${order.status}`,
+      );
     } else {
-      console.log(`[Payment Processor] Order ${order.id} already has status: ${order.status}`);
+      console.log(
+        `[Payment Processor] Order ${order.id} already has status: ${order.status}`,
+      );
     }
   }
 
@@ -724,12 +754,12 @@ export class ShopService {
     order.escrowReleaseAt = releaseDate;
 
     await this.orderRepo.save(order);
-    
+
     await this.supportService.createNotification(
       order.buyer.id, // we don't have buyer loaded here! wait, I need to add buyer to relations!
       'order_delivered',
       `Your order #${order.id.slice(0, 8)} has been delivered. You have 48 hours to confirm.`,
-      `/dashboard/seeker/orders/${order.id}`
+      `/dashboard/seeker/orders/${order.id}`,
     );
 
     return {
@@ -760,7 +790,7 @@ export class ShopService {
       order.seller.id, // need seller relation here
       'order_completed',
       `Order #${order.id.slice(0, 8)} was confirmed! Funds have been released to your escrow.`,
-      `/dashboard/employer/orders/${order.id}`
+      `/dashboard/employer/orders/${order.id}`,
     );
 
     return {
@@ -786,9 +816,13 @@ export class ShopService {
     }
 
     // Check if dispute already exists
-    const existingDispute = await this.disputeRepo.findOne({ where: { order: { id: orderId } } });
+    const existingDispute = await this.disputeRepo.findOne({
+      where: { order: { id: orderId } },
+    });
     if (existingDispute) {
-      throw new BadRequestException('A dispute is already open for this order.');
+      throw new BadRequestException(
+        'A dispute is already open for this order.',
+      );
     }
 
     order.status = OrderStatus.FLAGGED;
@@ -920,7 +954,9 @@ export class ShopService {
     });
     if (!product) throw new NotFoundException('Product not found');
     if (product.seller.id === buyerId) {
-      throw new BadRequestException('You cannot request a quote for your own product');
+      throw new BadRequestException(
+        'You cannot request a quote for your own product',
+      );
     }
 
     const quote = this.quoteRepo.create({
@@ -929,12 +965,18 @@ export class ShopService {
       seller: { id: product.seller.id } as any,
       requirements: dto.requirements,
       budgetRange: dto.budgetRange,
-      deadlineRequested: dto.deadlineRequested ? new Date(dto.deadlineRequested) : undefined,
+      deadlineRequested: dto.deadlineRequested
+        ? new Date(dto.deadlineRequested)
+        : undefined,
       status: QuoteStatus.PENDING,
     });
 
     await this.quoteRepo.save(quote);
-    return { success: true, message: 'Quote request sent successfully', quoteId: quote.id };
+    return {
+      success: true,
+      message: 'Quote request sent successfully',
+      quoteId: quote.id,
+    };
   }
 
   async respondQuote(sellerId: string, quoteId: string, dto: any) {
@@ -943,7 +985,8 @@ export class ShopService {
       relations: ['seller', 'buyer', 'product'],
     });
     if (!quote) throw new NotFoundException('Quote request not found');
-    if (quote.seller.id !== sellerId) throw new ForbiddenException('Not your quote request');
+    if (quote.seller.id !== sellerId)
+      throw new ForbiddenException('Not your quote request');
 
     if (quote.status !== QuoteStatus.PENDING) {
       throw new BadRequestException(`Quote is already ${quote.status}`);
@@ -951,7 +994,8 @@ export class ShopService {
 
     quote.status = dto.status;
     if (dto.status === QuoteStatus.QUOTED) {
-      if (!dto.quotedPrice) throw new BadRequestException('Must provide a quoted price');
+      if (!dto.quotedPrice)
+        throw new BadRequestException('Must provide a quoted price');
       quote.quotedPrice = dto.quotedPrice;
       quote.sellerNotes = dto.sellerNotes;
       if (dto.expiresInDays) {
@@ -964,7 +1008,11 @@ export class ShopService {
     }
 
     await this.quoteRepo.save(quote);
-    return { success: true, message: `Quote ${dto.status}`, data: toPlain(quote) };
+    return {
+      success: true,
+      message: `Quote ${dto.status}`,
+      data: toPlain(quote),
+    };
   }
 
   async getBuyerQuotes(buyerId: string, page = 1, limit = 10) {
@@ -992,6 +1040,8 @@ export class ShopService {
   // ─── Categories ───────────────────────────────────────────────────
 
   async getCategories() {
-    return toPlain(await this.categoryRepo.find({ relations: ['subcategories'] }));
+    return toPlain(
+      await this.categoryRepo.find({ relations: ['subcategories'] }),
+    );
   }
 }

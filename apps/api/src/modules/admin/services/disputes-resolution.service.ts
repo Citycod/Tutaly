@@ -1,7 +1,16 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { OrderDispute, Order, OrderStatus, DisputeStatus } from '../../shop/entities/order.entity';
+import {
+  OrderDispute,
+  Order,
+  OrderStatus,
+  DisputeStatus,
+} from '../../shop/entities/order.entity';
 import { User } from '../../user/entities/user.entity';
 
 function toPlain<T>(obj: T): T {
@@ -16,7 +25,8 @@ export enum DisputeResolution {
 @Injectable()
 export class DisputesResolutionService {
   constructor(
-    @InjectRepository(OrderDispute) private readonly disputeRepo: Repository<OrderDispute>,
+    @InjectRepository(OrderDispute)
+    private readonly disputeRepo: Repository<OrderDispute>,
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
@@ -66,27 +76,36 @@ export class DisputesResolutionService {
       throw new BadRequestException('Invalid resolution type');
     }
 
-    await this.disputeRepo.update({ id: disputeId }, {
-      status: newDisputeStatus,
-      resolutionNotes,
-      resolvedAt: new Date(),
-      resolvedBy: admin,
-    });
+    await this.disputeRepo.update(
+      { id: disputeId },
+      {
+        status: newDisputeStatus,
+        resolutionNotes,
+        resolvedAt: new Date(),
+        resolvedBy: admin,
+      },
+    );
 
     // Trigger payment action based on resolution
     if (resolution === DisputeResolution.REFUND_BUYER) {
       // TODO: Process refund to buyer
       // TODO: Deduct from seller earnings
       // TODO: Create refund transaction
-      await this.orderRepo.update({ id: dispute.order.id }, {
-        status: OrderStatus.REFUNDED,
-      });
+      await this.orderRepo.update(
+        { id: dispute.order.id },
+        {
+          status: OrderStatus.REFUNDED,
+        },
+      );
     } else if (resolution === DisputeResolution.RELEASE_TO_SELLER) {
       // TODO: Release earnings to seller
       // TODO: Create earnings transaction
-      await this.orderRepo.update({ id: dispute.order.id }, {
-        status: OrderStatus.CONFIRMED,
-      });
+      await this.orderRepo.update(
+        { id: dispute.order.id },
+        {
+          status: OrderStatus.CONFIRMED,
+        },
+      );
     }
 
     // TODO: Notify both buyer and seller of resolution
@@ -99,7 +118,10 @@ export class DisputesResolutionService {
       .leftJoinAndSelect('order.buyer', 'buyer')
       .leftJoinAndSelect('order.seller', 'seller')
       .where('dispute.status IN (:...statuses)', {
-        statuses: [DisputeStatus.RESOLVED_REFUND, DisputeStatus.RESOLVED_RELEASE],
+        statuses: [
+          DisputeStatus.RESOLVED_REFUND,
+          DisputeStatus.RESOLVED_RELEASE,
+        ],
       })
       .orderBy('dispute.resolvedAt', 'DESC')
       .skip((page - 1) * limit)

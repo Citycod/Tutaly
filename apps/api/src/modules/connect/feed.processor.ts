@@ -14,11 +14,15 @@ export class FeedProcessor {
     @InjectRepository(Follow) private readonly followRepo: Repository<Follow>,
     private configService: ConfigService,
   ) {
-    this.redisClient = new Redis(this.configService.get<string>('REDIS_URL') || 'redis://localhost:6379');
+    this.redisClient = new Redis(
+      this.configService.get<string>('REDIS_URL') || 'redis://localhost:6379',
+    );
   }
 
   @Process('distribute-post')
-  async handleDistributePost(job: Job<{ postId: string; authorId: string; timestamp: number }>) {
+  async handleDistributePost(
+    job: Job<{ postId: string; authorId: string; timestamp: number }>,
+  ) {
     const { postId, authorId, timestamp } = job.data;
 
     // Find all accepted followers of the author
@@ -47,7 +51,7 @@ export class FeedProcessor {
     pipeline.expire(authorFeedKey, 7 * 24 * 60 * 60);
 
     await pipeline.exec();
-    
+
     return { distributedTo: followers.length + 1 };
   }
 }

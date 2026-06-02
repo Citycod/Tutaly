@@ -1,4 +1,12 @@
-import { Controller, Get, Patch, Param, Query, UseGuards, Request as NestRequest } from '@nestjs/common';
+import {
+  Controller,
+  Get,
+  Patch,
+  Param,
+  Query,
+  UseGuards,
+  Request as NestRequest,
+} from '@nestjs/common';
 import { SupportService } from './support.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
 

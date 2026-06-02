@@ -27,7 +27,9 @@ interface AuthenticatedRequest {
 
 @Controller('shop')
 export class RatingsDisputesEarningsController {
-  constructor(private readonly ratingsService: RatingsDisputesEarningsService) {}
+  constructor(
+    private readonly ratingsService: RatingsDisputesEarningsService,
+  ) {}
 
   // ─── PRODUCT RATINGS ─────────────────────────────────────────
 
@@ -110,9 +112,7 @@ export class RatingsDisputesEarningsController {
 
   @Get('my-earnings/summary')
   @UseGuards(JwtAuthGuard)
-  async getSellerEarningsSummary(
-    @NestRequest() req: AuthenticatedRequest,
-  ) {
+  async getSellerEarningsSummary(@NestRequest() req: AuthenticatedRequest) {
     return this.ratingsService.getSellerEarningsSummary(req.user.sub);
   }
 
@@ -136,7 +136,9 @@ export class RatingsDisputesEarningsController {
     @Query('startDate') startDateStr?: string,
     @Query('endDate') endDateStr?: string,
   ) {
-    const startDate = startDateStr ? new Date(startDateStr) : new Date('2026-01-01');
+    const startDate = startDateStr
+      ? new Date(startDateStr)
+      : new Date('2026-01-01');
     const endDate = endDateStr ? new Date(endDateStr) : new Date();
 
     if (isNaN(startDate.getTime()) || isNaN(endDate.getTime())) {

@@ -125,21 +125,26 @@ export class PaymentIdempotencyService {
    */
   private startCleanupInterval(): void {
     // Run cleanup every 30 minutes
-    this.cleanupInterval = setInterval(() => {
-      const now = new Date();
-      let cleanedCount = 0;
+    this.cleanupInterval = setInterval(
+      () => {
+        const now = new Date();
+        let cleanedCount = 0;
 
-      for (const [key, value] of this.idempotencyStore.entries()) {
-        if (now > value.expiresAt) {
-          this.idempotencyStore.delete(key);
-          cleanedCount++;
+        for (const [key, value] of this.idempotencyStore.entries()) {
+          if (now > value.expiresAt) {
+            this.idempotencyStore.delete(key);
+            cleanedCount++;
+          }
         }
-      }
 
-      if (cleanedCount > 0) {
-        this.logger.debug(`Cleaned up ${cleanedCount} expired idempotency keys`);
-      }
-    }, 30 * 60 * 1000);
+        if (cleanedCount > 0) {
+          this.logger.debug(
+            `Cleaned up ${cleanedCount} expired idempotency keys`,
+          );
+        }
+      },
+      30 * 60 * 1000,
+    );
   }
 
   /**

@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Job, JobStatus } from '../../job/entities/job.entity';
@@ -14,7 +18,8 @@ export class JobsModerationService {
   constructor(
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(EmployerProfile) private readonly employerProfileRepo: Repository<EmployerProfile>,
+    @InjectRepository(EmployerProfile)
+    private readonly employerProfileRepo: Repository<EmployerProfile>,
   ) {}
 
   async getPendingJobs(page = 1, limit = 20) {

@@ -1,9 +1,20 @@
-import { Injectable, NotFoundException, BadRequestException, Logger } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  Logger,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole, SellerStatus } from '../user/entities/user.entity';
 import { Job, JobStatus } from '../job/entities/job.entity';
-import { Order, OrderStatus, PaymentGateway, OrderDispute, DisputeStatus } from '../shop/entities/order.entity';
+import {
+  Order,
+  OrderStatus,
+  PaymentGateway,
+  OrderDispute,
+  DisputeStatus,
+} from '../shop/entities/order.entity';
 import { ListingType } from '../shop/entities/shop.entity';
 import {
   SellerApplication,
@@ -355,7 +366,9 @@ export class AdminService {
     }
 
     if (!order.paymentRef) {
-      throw new BadRequestException('Order has no payment reference to verify.');
+      throw new BadRequestException(
+        'Order has no payment reference to verify.',
+      );
     }
 
     // Call Paystack Verify Transaction API
@@ -386,7 +399,9 @@ export class AdminService {
         order.adminNotes = `Payment verified by admin via Paystack API. Gateway ref: ${result.data.reference}`;
         await this.orderRepo.save(order);
 
-        this.logger.log(`Order ${orderId} payment verified and updated to ${order.status}`);
+        this.logger.log(
+          `Order ${orderId} payment verified and updated to ${order.status}`,
+        );
 
         return {
           success: true,
@@ -410,7 +425,10 @@ export class AdminService {
         };
       }
     } catch (error) {
-      this.logger.error(`Failed to verify payment for order ${orderId}:`, error);
+      this.logger.error(
+        `Failed to verify payment for order ${orderId}:`,
+        error,
+      );
       throw new BadRequestException(
         'Failed to reach Paystack API. Please try again.',
       );
@@ -423,7 +441,10 @@ export class AdminService {
     const order = await this.orderRepo.findOne({ where: { id: orderId } });
     if (!order) throw new NotFoundException('Order not found');
 
-    if (order.status === OrderStatus.COMPLETED || order.status === OrderStatus.REFUNDED) {
+    if (
+      order.status === OrderStatus.COMPLETED ||
+      order.status === OrderStatus.REFUNDED
+    ) {
       throw new BadRequestException(
         `Cannot cancel an order that is already ${order.status}.`,
       );
@@ -449,7 +470,10 @@ export class AdminService {
     const order = await this.orderRepo.findOne({ where: { id: orderId } });
     if (!order) throw new NotFoundException('Order not found');
 
-    if (order.status === OrderStatus.COMPLETED || order.status === OrderStatus.REFUNDED) {
+    if (
+      order.status === OrderStatus.COMPLETED ||
+      order.status === OrderStatus.REFUNDED
+    ) {
       throw new BadRequestException(
         `Cannot flag an order that is already ${order.status}.`,
       );
@@ -508,23 +532,34 @@ export class AdminService {
     dispute.resolvedBy = { id: adminId } as User;
     dispute.resolvedAt = new Date();
 
-    const order = await this.orderRepo.findOne({ where: { id: dispute.order.id } });
-    if (!order) throw new NotFoundException('Order associated with dispute not found');
+    const order = await this.orderRepo.findOne({
+      where: { id: dispute.order.id },
+    });
+    if (!order)
+      throw new NotFoundException('Order associated with dispute not found');
 
     if (dto.status === DisputeStatus.RESOLVED_REFUND) {
       order.status = OrderStatus.REFUNDED;
       // You would typically trigger a refund via Flutterwave/Paystack API here
-      this.logger.log(`Admin ${adminId} ordered REFUND for order ${order.id} via dispute ${disputeId}`);
+      this.logger.log(
+        `Admin ${adminId} ordered REFUND for order ${order.id} via dispute ${disputeId}`,
+      );
     } else if (dto.status === DisputeStatus.RESOLVED_RELEASE) {
       order.status = OrderStatus.COMPLETED;
       order.earningsReleasedAt = new Date();
-      this.logger.log(`Admin ${adminId} ordered RELEASE for order ${order.id} via dispute ${disputeId}`);
+      this.logger.log(
+        `Admin ${adminId} ordered RELEASE for order ${order.id} via dispute ${disputeId}`,
+      );
     }
 
     await this.orderRepo.save(order);
     await this.disputeRepo.save(dispute);
 
-    return { success: true, message: `Dispute resolved as ${dto.status}`, data: toPlain(dispute) };
+    return {
+      success: true,
+      message: `Dispute resolved as ${dto.status}`,
+      data: toPlain(dispute),
+    };
   }
 
   // ─── Review Moderation ──────────────────────────────────────────────

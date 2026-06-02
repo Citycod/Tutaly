@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
+import { Entity, Column, OneToOne } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { SeekerProfile } from './seeker-profile.entity';
 import { EmployerProfile } from './employer-profile.entity';

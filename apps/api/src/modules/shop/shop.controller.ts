@@ -75,7 +75,14 @@ export class ShopController {
     @Body() dto: UpdateProductDto,
   ) {
     const isAdmin = req.user.role === UserRole.ADMIN;
-    return { data: await this.shopService.updateProduct(id, req.user.sub, dto, isAdmin) };
+    return {
+      data: await this.shopService.updateProduct(
+        id,
+        req.user.sub,
+        dto,
+        isAdmin,
+      ),
+    };
   }
 
   @Delete('products/:id')
@@ -162,7 +169,9 @@ export class ShopController {
     }
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowed.includes(file.mimetype)) {
-      throw new BadRequestException('Only JPEG, PNG, WebP, and GIF images are accepted');
+      throw new BadRequestException(
+        'Only JPEG, PNG, WebP, and GIF images are accepted',
+      );
     }
     return this.shopService.uploadProductImage(
       id,
@@ -202,7 +211,9 @@ export class ShopController {
     @Param('productId') productId: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return { data: await this.shopService.removeFromCart(req.user.sub, productId) };
+    return {
+      data: await this.shopService.removeFromCart(req.user.sub, productId),
+    };
   }
 
   // ─── Checkout ─────────────────────────────────────────────────

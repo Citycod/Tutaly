@@ -1,7 +1,14 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { CompanyReview, ReviewStatus } from '../../review/entities/review.entity';
+import {
+  CompanyReview,
+  ReviewStatus,
+} from '../../review/entities/review.entity';
 import { User } from '../../user/entities/user.entity';
 
 function toPlain<T>(obj: T): T {
@@ -11,7 +18,8 @@ function toPlain<T>(obj: T): T {
 @Injectable()
 export class ReviewsModerationService {
   constructor(
-    @InjectRepository(CompanyReview) private readonly reviewRepo: Repository<CompanyReview>,
+    @InjectRepository(CompanyReview)
+    private readonly reviewRepo: Repository<CompanyReview>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
   ) {}
 
@@ -39,7 +47,10 @@ export class ReviewsModerationService {
       throw new BadRequestException('Only pending reviews can be approved');
     }
 
-    await this.reviewRepo.update({ id: reviewId }, { status: ReviewStatus.APPROVED });
+    await this.reviewRepo.update(
+      { id: reviewId },
+      { status: ReviewStatus.APPROVED },
+    );
 
     // TODO: Update company rating aggregate
     // TODO: Send confirmation to reviewer
@@ -49,7 +60,10 @@ export class ReviewsModerationService {
     const review = await this.reviewRepo.findOne({ where: { id: reviewId } });
     if (!review) throw new NotFoundException('Review not found');
 
-    await this.reviewRepo.update({ id: reviewId }, { status: ReviewStatus.REJECTED });
+    await this.reviewRepo.update(
+      { id: reviewId },
+      { status: ReviewStatus.REJECTED },
+    );
     // TODO: Notify reviewer
   }
 
@@ -61,11 +75,14 @@ export class ReviewsModerationService {
     const review = await this.reviewRepo.findOne({ where: { id: reviewId } });
     if (!review) throw new NotFoundException('Review not found');
 
-    await this.reviewRepo.update({ id: reviewId }, {
-      status: ReviewStatus.APPROVED,
-      ...(prosUpdate && { pros: prosUpdate }),
-      ...(consUpdate && { cons: consUpdate }),
-    });
+    await this.reviewRepo.update(
+      { id: reviewId },
+      {
+        status: ReviewStatus.APPROVED,
+        ...(prosUpdate && { pros: prosUpdate }),
+        ...(consUpdate && { cons: consUpdate }),
+      },
+    );
 
     // TODO: Log edit by admin
   }
@@ -88,7 +105,9 @@ export class ReviewsModerationService {
     }
 
     if (companyName) {
-      query = query.andWhere('review.companyName ILIKE :companyName', { companyName: `%${companyName}%` });
+      query = query.andWhere('review.companyName ILIKE :companyName', {
+        companyName: `%${companyName}%`,
+      });
     }
 
     if (fromDate) {

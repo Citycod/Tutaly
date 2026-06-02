@@ -26,7 +26,9 @@ export class AddFeaturedFieldsToShopProducts1746316300000 implements MigrationIn
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query('DROP INDEX idx_shop_products_featured_search_vector;');
+    await queryRunner.query(
+      'DROP INDEX idx_shop_products_featured_search_vector;',
+    );
     await queryRunner.query('DROP INDEX idx_shop_products_featured_until;');
 
     await queryRunner.dropColumns('shop_products', [

@@ -1,11 +1,22 @@
-import { Injectable, BadRequestException, ForbiddenException, Logger } from '@nestjs/common';
-import { IPaymentGateway, PaymentPayload, PaymentResponse, WebhookResult } from '../interfaces/payment-gateway.interface';
+import {
+  Injectable,
+  BadRequestException,
+  ForbiddenException,
+  Logger,
+} from '@nestjs/common';
+import {
+  IPaymentGateway,
+  PaymentPayload,
+  PaymentResponse,
+  WebhookResult,
+} from '../interfaces/payment-gateway.interface';
 
 @Injectable()
 export class FlutterwaveGateway implements IPaymentGateway {
   private readonly logger = new Logger(FlutterwaveGateway.name);
   private readonly secretKey = process.env.FLUTTER_WAVE_SECRET_KEY || '';
-  private readonly encryptionKey = process.env.FLUTTER_WAVE_ENCRYPTION_KEY || '';
+  private readonly encryptionKey =
+    process.env.FLUTTER_WAVE_ENCRYPTION_KEY || '';
 
   getName(): string {
     return 'flutterwave';
@@ -55,7 +66,9 @@ export class FlutterwaveGateway implements IPaymentGateway {
       const result = await response.json();
 
       if (result.status === 'success') {
-        this.logger.debug(`Flutterwave payment initialized: ${payload.reference}`);
+        this.logger.debug(
+          `Flutterwave payment initialized: ${payload.reference}`,
+        );
         return {
           success: true,
           gateway: this.getName(),
@@ -120,7 +133,9 @@ export class FlutterwaveGateway implements IPaymentGateway {
     return isValid;
   }
 
-  async handleWebhookEvent(payload: Record<string, any>): Promise<WebhookResult> {
+  async handleWebhookEvent(
+    payload: Record<string, any>,
+  ): Promise<WebhookResult> {
     const { event, data } = payload;
 
     if (event === 'charge.completed' && data.status === 'successful') {

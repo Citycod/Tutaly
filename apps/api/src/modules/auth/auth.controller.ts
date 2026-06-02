@@ -134,10 +134,10 @@ export class AuthController {
     if (req.user?.sub) {
       await this.authService.logout(req.user.sub);
     }
-    res.clearCookie('refreshToken', { 
+    res.clearCookie('refreshToken', {
       path: '/',
       secure: true,
-      sameSite: 'none' as const 
+      sameSite: 'none' as const,
     });
     return { message: 'Logged out successfully.' };
   }

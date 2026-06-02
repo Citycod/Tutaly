@@ -120,7 +120,10 @@ export class QuoteProcessor {
 
       return `${process.env.WEB_URL}/checkout?quoteId=${quoteId}`;
     } catch (error) {
-      this.logger.error(`Checkout link generation failed for ${quoteId}:`, error);
+      this.logger.error(
+        `Checkout link generation failed for ${quoteId}:`,
+        error,
+      );
       throw error;
     }
   }

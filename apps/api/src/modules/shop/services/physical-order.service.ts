@@ -144,9 +144,7 @@ export class PhysicalOrderService {
       });
 
       if (!product) {
-        throw new NotFoundException(
-          `Product ${item.productId} not found`,
-        );
+        throw new NotFoundException(`Product ${item.productId} not found`);
       }
 
       // Check minimum quantity
@@ -204,7 +202,6 @@ export class PhysicalOrderService {
         );
 
         // TODO: Send notification to buyer
-
       } catch (error) {
         this.logger.error(
           `Failed to auto-confirm order ${order.id}:`,

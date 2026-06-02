@@ -10,7 +10,10 @@ import { Repository } from 'typeorm';
 import { ShopProduct } from '../entities/shop.entity';
 import { Order, OrderStatus } from '../entities/order.entity';
 import { User } from '../../user/entities/user.entity';
-import { SeekerProfile, SellerPlan } from '../../user/entities/seeker-profile.entity';
+import {
+  SeekerProfile,
+  SellerPlan,
+} from '../../user/entities/seeker-profile.entity';
 import { PaymentGatewayFactory } from '../gateways/payment-gateway.factory';
 import { PaymentAuditService } from './payment-audit.service';
 import { FeatureListingDto, FeatureListingResponseDto } from '../dto/week7.dto';

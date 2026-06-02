@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner, Table } from 'typeorm';
 
-export class CreatePaymentTransactionAuditTable1746228000000
-  implements MigrationInterface
-{
+export class CreatePaymentTransactionAuditTable1746228000000 implements MigrationInterface {
   public async up(queryRunner: QueryRunner): Promise<void> {
     await queryRunner.createTable(
       new Table({
@@ -36,8 +34,7 @@ export class CreatePaymentTransactionAuditTable1746228000000
             name: 'status',
             type: 'varchar',
             isNullable: false,
-            comment:
-              'initiated, pending, successful, failed, refunded, etc.',
+            comment: 'initiated, pending, successful, failed, refunded, etc.',
           },
           {
             name: 'amount',

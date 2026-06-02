@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, In } from 'typeorm';
 import { Report, ReportStatus } from '../../connect/entities/report.entity';
@@ -44,18 +48,27 @@ export class ReportsModerationService {
       await this.postRepo.softDelete({ id: report.post.id });
     }
 
-    await this.reportRepo.update({ id: reportId }, { status: ReportStatus.RESOLVED });
+    await this.reportRepo.update(
+      { id: reportId },
+      { status: ReportStatus.RESOLVED },
+    );
   }
 
   async dismissReport(reportId: string): Promise<void> {
     const report = await this.reportRepo.findOne({ where: { id: reportId } });
     if (!report) throw new NotFoundException('Report not found');
 
-    await this.reportRepo.update({ id: reportId }, { status: ReportStatus.REVIEWED });
+    await this.reportRepo.update(
+      { id: reportId },
+      { status: ReportStatus.REVIEWED },
+    );
   }
 
   async bulkDismissReports(reportIds: string[]): Promise<void> {
-    await this.reportRepo.update({ id: In(reportIds) }, { status: ReportStatus.REVIEWED });
+    await this.reportRepo.update(
+      { id: In(reportIds) },
+      { status: ReportStatus.REVIEWED },
+    );
   }
 
   async getAllReports(page = 1, limit = 20, status?: ReportStatus) {

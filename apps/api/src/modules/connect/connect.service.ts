@@ -1,11 +1,26 @@
-import { Injectable, NotFoundException, BadRequestException, ForbiddenException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+  ForbiddenException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 import Redis from 'ioredis';
 import { User } from '../user/entities/user.entity';
-import { Post, PostLike, PostComment, Follow, FollowStatus, Message, Report, ReportTargetType, PostSave } from './entities/connect.entity';
+import {
+  Post,
+  PostLike,
+  PostComment,
+  Follow,
+  FollowStatus,
+  Message,
+  Report,
+  ReportTargetType,
+  PostSave,
+} from './entities/connect.entity';
 import { ConfigService } from '@nestjs/config';
 import { SupportService } from '../support/support.service';
 
@@ -20,11 +35,14 @@ export class ConnectService {
   constructor(
     @InjectRepository(Post) private readonly postRepo: Repository<Post>,
     @InjectRepository(PostLike) private readonly likeRepo: Repository<PostLike>,
-    @InjectRepository(PostComment) private readonly commentRepo: Repository<PostComment>,
+    @InjectRepository(PostComment)
+    private readonly commentRepo: Repository<PostComment>,
     @InjectRepository(Follow) private readonly followRepo: Repository<Follow>,
-    @InjectRepository(Message) private readonly messageRepo: Repository<Message>,
+    @InjectRepository(Message)
+    private readonly messageRepo: Repository<Message>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
-    @InjectRepository(PostSave) private readonly postSaveRepo: Repository<PostSave>,
+    @InjectRepository(PostSave)
+    private readonly postSaveRepo: Repository<PostSave>,
     @InjectRepository(Report) private readonly reportRepo: Repository<Report>,
     @InjectQueue('feed-fanout') private feedQueue: Queue,
     private configService: ConfigService,
@@ -33,14 +51,22 @@ export class ConnectService {
     try {
       const redisUrl = this.configService.get<string>('REDIS_URL');
       if (redisUrl) {
-        this.redisClient = new Redis(redisUrl, { maxRetriesPerRequest: 3, lazyConnect: true });
+        this.redisClient = new Redis(redisUrl, {
+          maxRetriesPerRequest: 3,
+          lazyConnect: true,
+        });
         this.redisClient.connect().catch((err) => {
-          console.warn('[ConnectService] Redis connection failed, feed will use DB fallback:', err.message);
+          console.warn(
+            '[ConnectService] Redis connection failed, feed will use DB fallback:',
+            err.message,
+          );
           this.redisClient = null;
         });
       }
     } catch (err) {
-      console.warn('[ConnectService] Redis init failed, feed will use DB fallback');
+      console.warn(
+        '[ConnectService] Redis init failed, feed will use DB fallback',
+      );
     }
   }
 
@@ -62,7 +88,10 @@ export class ConnectService {
         timestamp: post.createdAt.getTime(),
       });
     } catch (err) {
-      console.warn('[ConnectService] Failed to queue feed fan-out (Redis may be unavailable):', err);
+      console.warn(
+        '[ConnectService] Failed to queue feed fan-out (Redis may be unavailable):',
+        err,
+      );
     }
 
     return { success: true, data: toPlain(post) };
@@ -89,16 +118,26 @@ export class ConnectService {
           posts.sort((a, b) => postIds.indexOf(a.id) - postIds.indexOf(b.id));
           const total = await this.redisClient.zcard(feedKey);
 
-          const mappedPosts = posts.map(p => {
-            const { password: _, seekerProfile, ...authorRest } = p.author as any;
-            p.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+          const mappedPosts = posts.map((p) => {
+            const {
+              password: _,
+              seekerProfile,
+              ...authorRest
+            } = p.author as any;
+            p.author = {
+              ...authorRest,
+              firstName: seekerProfile?.firstName,
+              lastName: seekerProfile?.lastName,
+            };
             return p;
           });
 
           return { data: toPlain(mappedPosts), meta: { page, limit, total } };
         }
       } catch (err) {
-        console.warn('[ConnectService] Redis feed read failed, falling back to DB');
+        console.warn(
+          '[ConnectService] Redis feed read failed, falling back to DB',
+        );
       }
     }
 
@@ -107,7 +146,7 @@ export class ConnectService {
       where: { follower: { id: userId }, status: FollowStatus.ACCEPTED },
       relations: ['followee'],
     });
-    const followedIds = followedUsers.map(f => f.followee.id);
+    const followedIds = followedUsers.map((f) => f.followee.id);
     followedIds.push(userId); // include own posts
 
     const [posts, total] = await this.postRepo
@@ -120,9 +159,13 @@ export class ConnectService {
       .take(limit)
       .getManyAndCount();
 
-    const mappedPosts = posts.map(p => {
+    const mappedPosts = posts.map((p) => {
       const { password: _, seekerProfile, ...authorRest } = p.author as any;
-      p.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+      p.author = {
+        ...authorRest,
+        firstName: seekerProfile?.firstName,
+        lastName: seekerProfile?.lastName,
+      };
       return p;
     });
 
@@ -147,13 +190,16 @@ export class ConnectService {
     await this.likeRepo.save(like);
     await this.postRepo.increment({ id: postId }, 'likesCount', 1);
 
-    const post = await this.postRepo.findOne({ where: { id: postId }, relations: ['author'] });
+    const post = await this.postRepo.findOne({
+      where: { id: postId },
+      relations: ['author'],
+    });
     if (post && post.author.id !== userId) {
       await this.supportService.createNotification(
         post.author.id,
         'like',
         `Someone liked your post.`,
-        `/connect/posts/${postId}`
+        `/connect/posts/${postId}`,
       );
     }
 
@@ -169,13 +215,16 @@ export class ConnectService {
     await this.commentRepo.save(comment);
     await this.postRepo.increment({ id: postId }, 'commentsCount', 1);
 
-    const post = await this.postRepo.findOne({ where: { id: postId }, relations: ['author'] });
+    const post = await this.postRepo.findOne({
+      where: { id: postId },
+      relations: ['author'],
+    });
     if (post && post.author.id !== userId) {
       await this.supportService.createNotification(
         post.author.id,
         'comment',
         `Someone commented on your post.`,
-        `/connect/posts/${postId}`
+        `/connect/posts/${postId}`,
       );
     }
 
@@ -196,16 +245,19 @@ export class ConnectService {
   // ─── Network (Follows) ─────────────────────────────────────────────
 
   async followUser(followerId: string, followeeId: string) {
-    if (followerId === followeeId) throw new BadRequestException('Cannot follow yourself');
+    if (followerId === followeeId)
+      throw new BadRequestException('Cannot follow yourself');
 
     const existing = await this.followRepo.findOne({
       where: { follower: { id: followerId }, followee: { id: followeeId } },
     });
 
     if (existing) {
-      if (existing.status === FollowStatus.ACCEPTED) throw new BadRequestException('Already following');
-      if (existing.status === FollowStatus.PENDING) throw new BadRequestException('Follow request pending');
-      
+      if (existing.status === FollowStatus.ACCEPTED)
+        throw new BadRequestException('Already following');
+      if (existing.status === FollowStatus.PENDING)
+        throw new BadRequestException('Follow request pending');
+
       existing.status = FollowStatus.PENDING;
       await this.followRepo.save(existing);
       return { success: true, message: 'Follow request sent' };
@@ -217,12 +269,12 @@ export class ConnectService {
       status: FollowStatus.PENDING,
     });
     await this.followRepo.save(follow);
-    
+
     await this.supportService.createNotification(
       followeeId,
       'follow_request',
       `Someone requested to follow you.`,
-      `/connect/profile/${followerId}`
+      `/connect/profile/${followerId}`,
     );
 
     return { success: true, message: 'Follow request sent' };
@@ -233,7 +285,7 @@ export class ConnectService {
       where: { follower: { id: followerId }, followee: { id: userId } },
     });
     if (!follow) throw new NotFoundException('Follow request not found');
-    
+
     follow.status = FollowStatus.ACCEPTED;
     await this.followRepo.save(follow);
 
@@ -241,7 +293,7 @@ export class ConnectService {
       followerId,
       'follow_accepted',
       `Your follow request was accepted.`,
-      `/connect/profile/${userId}`
+      `/connect/profile/${userId}`,
     );
 
     return { success: true, message: 'Follow request accepted' };
@@ -252,7 +304,7 @@ export class ConnectService {
       where: { follower: { id: followerId }, followee: { id: userId } },
     });
     if (!follow) throw new NotFoundException('Follow request not found');
-    
+
     follow.status = FollowStatus.REJECTED;
     await this.followRepo.save(follow);
     return { success: true, message: 'Follow request rejected' };
@@ -274,8 +326,8 @@ export class ConnectService {
       skip: (page - 1) * limit,
       take: limit,
     });
-    
-    const followers = data.map(f => {
+
+    const followers = data.map((f) => {
       const { password: _, seekerProfile, ...user } = f.follower as any;
       return {
         ...user,
@@ -283,7 +335,7 @@ export class ConnectService {
         lastName: seekerProfile?.lastName,
       };
     });
-    
+
     return { data: toPlain(followers), meta: { page, limit, total } };
   }
 
@@ -295,7 +347,7 @@ export class ConnectService {
       take: limit,
     });
 
-    const following = data.map(f => {
+    const following = data.map((f) => {
       const { password: _, seekerProfile, ...user } = f.followee as any;
       return {
         ...user,
@@ -316,7 +368,7 @@ export class ConnectService {
       take: limit,
     });
 
-    const mappedData = data.map(f => {
+    const mappedData = data.map((f) => {
       const { password: _, seekerProfile, ...followerData } = f.follower as any;
       return {
         id: f.id,
@@ -326,7 +378,7 @@ export class ConnectService {
           ...followerData,
           firstName: seekerProfile?.firstName,
           lastName: seekerProfile?.lastName,
-        }
+        },
       };
     });
 
@@ -334,9 +386,13 @@ export class ConnectService {
   }
 
   async deletePost(userId: string, postId: string) {
-    const post = await this.postRepo.findOne({ where: { id: postId }, relations: ['author'] });
+    const post = await this.postRepo.findOne({
+      where: { id: postId },
+      relations: ['author'],
+    });
     if (!post) throw new NotFoundException('Post not found');
-    if (post.author.id !== userId) throw new ForbiddenException('Not your post');
+    if (post.author.id !== userId)
+      throw new ForbiddenException('Not your post');
     await this.postRepo.remove(post);
     return { success: true, message: 'Post deleted' };
   }
@@ -356,7 +412,8 @@ export class ConnectService {
     const seen = new Set<string>();
     const uniqueConvos: any[] = [];
     for (const msg of conversations) {
-      const partnerId = msg.sender.id === userId ? msg.receiver.id : msg.sender.id;
+      const partnerId =
+        msg.sender.id === userId ? msg.receiver.id : msg.sender.id;
       if (!seen.has(partnerId)) {
         seen.add(partnerId);
         uniqueConvos.push({
@@ -375,7 +432,7 @@ export class ConnectService {
       where: { follower: { id: userId } },
       relations: ['followee'],
     });
-    const followedIds = following.map(f => f.followee.id);
+    const followedIds = following.map((f) => f.followee.id);
     followedIds.push(userId); // exclude self
 
     const query = this.userRepo
@@ -419,8 +476,14 @@ export class ConnectService {
       .createQueryBuilder('msg')
       .leftJoinAndSelect('msg.sender', 'sender')
       .leftJoinAndSelect('msg.receiver', 'receiver')
-      .where('(msg.sender.id = :userId AND msg.receiver.id = :otherUserId)', { userId, otherUserId })
-      .orWhere('(msg.sender.id = :otherUserId AND msg.receiver.id = :userId)', { userId, otherUserId })
+      .where('(msg.sender.id = :userId AND msg.receiver.id = :otherUserId)', {
+        userId,
+        otherUserId,
+      })
+      .orWhere('(msg.sender.id = :otherUserId AND msg.receiver.id = :userId)', {
+        userId,
+        otherUserId,
+      })
       .orderBy('msg.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit)
@@ -434,7 +497,10 @@ export class ConnectService {
       .createQueryBuilder()
       .update(Message)
       .set({ readAt: new Date() })
-      .where('receiver.id = :userId AND sender.id = :otherUserId AND readAt IS NULL', { userId, otherUserId })
+      .where(
+        'receiver.id = :userId AND sender.id = :otherUserId AND readAt IS NULL',
+        { userId, otherUserId },
+      )
       .execute();
     return { success: true, message: 'Messages marked as read' };
   }
@@ -483,9 +549,17 @@ export class ConnectService {
       .take(limit)
       .getManyAndCount();
 
-    const posts = data.map(s => {
-      const { password: _, seekerProfile, ...authorRest } = s.post.author as any;
-      s.post.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+    const posts = data.map((s) => {
+      const {
+        password: _,
+        seekerProfile,
+        ...authorRest
+      } = s.post.author as any;
+      s.post.author = {
+        ...authorRest,
+        firstName: seekerProfile?.firstName,
+        lastName: seekerProfile?.lastName,
+      };
       return s.post;
     });
 
@@ -514,7 +588,8 @@ export class ConnectService {
     });
 
     if (!comment) throw new NotFoundException('Comment not found');
-    if (comment.author.id !== userId) throw new ForbiddenException('Cannot delete other user comments');
+    if (comment.author.id !== userId)
+      throw new ForbiddenException('Cannot delete other user comments');
 
     await this.commentRepo.remove(comment);
     await this.postRepo.decrement({ id: comment.post.id }, 'commentsCount', 1);
@@ -539,7 +614,11 @@ export class ConnectService {
     if (!post) throw new NotFoundException('Post not found');
 
     const { password: _, seekerProfile, ...authorRest } = post.author as any;
-    post.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+    post.author = {
+      ...authorRest,
+      firstName: seekerProfile?.firstName,
+      lastName: seekerProfile?.lastName,
+    };
 
     return toPlain(post);
   }
@@ -556,7 +635,9 @@ export class ConnectService {
     if (!user) throw new NotFoundException('User not found');
 
     // Get user's post count, followers count, following count
-    const postsCount = await this.postRepo.count({ where: { author: { id: user.id } } });
+    const postsCount = await this.postRepo.count({
+      where: { author: { id: user.id } },
+    });
     const followersCount = await this.followRepo.count({
       where: { followee: { id: user.id }, status: FollowStatus.ACCEPTED },
     });
@@ -584,4 +665,3 @@ export class ConnectService {
     });
   }
 }
-
