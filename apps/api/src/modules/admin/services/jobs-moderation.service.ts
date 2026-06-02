@@ -22,6 +22,18 @@ export class JobsModerationService {
       .createQueryBuilder('job')
       .leftJoinAndSelect('job.employer', 'employer')
       .leftJoinAndSelect('employer.employerProfile', 'employerProfile')
+      .select([
+        'job.id',
+        'job.title',
+        'job.description',
+        'job.status',
+        'job.createdAt',
+        'employer.id',
+        'employer.email',
+        'employer.role',
+        'employerProfile.id',
+        'employerProfile.companyName',
+      ])
       .where('job.status = :status', { status: JobStatus.PENDING_REVIEW })
       .orderBy('job.createdAt', 'ASC')
       .skip((page - 1) * limit)

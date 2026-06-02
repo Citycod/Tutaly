@@ -19,6 +19,16 @@ export class SellersModerationService {
     const [data, total] = await this.userRepo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.seekerProfile', 'seekerProfile')
+      .select([
+        'user.id',
+        'user.email',
+        'user.sellerStatus',
+        'user.createdAt',
+        'seekerProfile.id',
+        'seekerProfile.firstName',
+        'seekerProfile.lastName',
+        'seekerProfile.avatarUrl',
+      ])
       .where('user.sellerStatus = :status', { status: SellerStatus.PENDING })
       .orderBy('user.createdAt', 'ASC')
       .skip((page - 1) * limit)
@@ -59,6 +69,16 @@ export class SellersModerationService {
     const [data, total] = await this.userRepo
       .createQueryBuilder('user')
       .leftJoinAndSelect('user.seekerProfile', 'seekerProfile')
+      .select([
+        'user.id',
+        'user.email',
+        'user.sellerStatus',
+        'user.createdAt',
+        'seekerProfile.id',
+        'seekerProfile.firstName',
+        'seekerProfile.lastName',
+        'seekerProfile.avatarUrl',
+      ])
       .where('user.sellerStatus = :status', { status: SellerStatus.APPROVED })
       .orderBy('user.createdAt', 'DESC')
       .skip((page - 1) * limit)
