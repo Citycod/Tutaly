@@ -1,4 +1,4 @@
-import { Entity, Column, OneToOne } from 'typeorm';
+import { Entity, Column, OneToOne, OneToMany } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { SeekerProfile } from './seeker-profile.entity';
 import { EmployerProfile } from './employer-profile.entity';
@@ -20,6 +20,9 @@ export enum SellerStatus {
 export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
+
+  @Column({ unique: true, nullable: true })
+  username: string; // @username format: name_slug_XXXX (4 random digits)
 
   @Column({ select: false }) // Hide password by default
   password: string;
@@ -60,4 +63,6 @@ export class User extends BaseEntity {
 
   @OneToOne(() => EmployerProfile, (profile) => profile.user)
   employerProfile: EmployerProfile;
+
+  // Note: Connect module relationships are defined in connect entities to avoid circular dependencies
 }

@@ -10,8 +10,8 @@ export class Post extends BaseEntity {
   @Column('text')
   content: string;
 
-  @Column({ nullable: true })
-  imageUrl: string;
+  @Column({ type: 'varchar', array: true, nullable: true })
+  imageUrls: string[] | null; // Multiple image URLs from Supabase
 
   @Column({ default: 0 })
   likesCount: number;
@@ -19,8 +19,17 @@ export class Post extends BaseEntity {
   @Column({ default: 0 })
   commentsCount: number;
 
+  @Column({ default: 0 })
+  sharesCount: number;
+
   @OneToMany(() => PostComment, (comment) => comment.post)
   comments: PostComment[];
+
+  @OneToMany(() => PostLike, (like) => like.post)
+  likes: PostLike[];
+
+  @OneToMany(() => PostSave, (save) => save.post)
+  savedBy: PostSave[];
 }
 
 @Entity('post_likes')
@@ -79,6 +88,28 @@ export class Message extends BaseEntity {
 
   @Column({ type: 'timestamp', nullable: true })
   readAt: Date;
+}
+
+@Entity('post_saves')
+@Unique(['user', 'post'])
+export class PostSave extends BaseEntity {
+  @ManyToOne(() => User)
+  user: User;
+
+  @ManyToOne(() => Post, (post) => post.savedBy)
+  post: Post;
+}
+
+@Entity('post_shares')
+export class PostShare extends BaseEntity {
+  @ManyToOne(() => Post)
+  originalPost: Post;
+
+  @ManyToOne(() => User)
+  sharedBy: User;
+
+  @Column({ type: 'enum', enum: ['feed', 'whatsapp', 'twitter'], default: 'feed' })
+  shareType: 'feed' | 'whatsapp' | 'twitter';
 }
 
 export enum ReportTargetType {

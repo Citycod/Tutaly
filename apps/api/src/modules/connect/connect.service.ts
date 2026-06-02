@@ -5,7 +5,7 @@ import { InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 import Redis from 'ioredis';
 import { User } from '../user/entities/user.entity';
-import { Post, PostLike, PostComment, Follow, FollowStatus, Message } from './entities/connect.entity';
+import { Post, PostLike, PostComment, Follow, FollowStatus, Message, Report, ReportTargetType, PostSave } from './entities/connect.entity';
 import { ConfigService } from '@nestjs/config';
 import { SupportService } from '../support/support.service';
 
@@ -24,6 +24,8 @@ export class ConnectService {
     @InjectRepository(Follow) private readonly followRepo: Repository<Follow>,
     @InjectRepository(Message) private readonly messageRepo: Repository<Message>,
     @InjectRepository(User) private readonly userRepo: Repository<User>,
+    @InjectRepository(PostSave) private readonly postSaveRepo: Repository<PostSave>,
+    @InjectRepository(Report) private readonly reportRepo: Repository<Report>,
     @InjectQueue('feed-fanout') private feedQueue: Queue,
     private configService: ConfigService,
     private supportService: SupportService,
@@ -44,11 +46,11 @@ export class ConnectService {
 
   // ─── Posts ────────────────────────────────────────────────────────
 
-  async createPost(userId: string, content: string, imageUrl?: string) {
+  async createPost(userId: string, content: string, imageUrls?: string[]) {
     const post = this.postRepo.create({
       author: { id: userId } as any,
       content,
-      imageUrl,
+      imageUrls: imageUrls || null,
     });
     await this.postRepo.save(post);
 
@@ -426,4 +428,160 @@ export class ConnectService {
 
     return { data: toPlain(data), meta: { page, limit, total } };
   }
+
+  async markMessagesAsRead(userId: string, otherUserId: string) {
+    await this.messageRepo
+      .createQueryBuilder()
+      .update(Message)
+      .set({ readAt: new Date() })
+      .where('receiver.id = :userId AND sender.id = :otherUserId AND readAt IS NULL', { userId, otherUserId })
+      .execute();
+    return { success: true, message: 'Messages marked as read' };
+  }
+
+  // ─── Post Saves ─────────────────────────────────────────────────────
+
+  async savePost(userId: string, postId: string) {
+    const existingSave = await this.postSaveRepo.findOne({
+      where: { user: { id: userId }, post: { id: postId } },
+    });
+
+    if (existingSave) {
+      throw new BadRequestException('Post already saved');
+    }
+
+    const save = this.postSaveRepo.create({
+      user: { id: userId } as any,
+      post: { id: postId } as any,
+    });
+    await this.postSaveRepo.save(save);
+    return { success: true, message: 'Post saved' };
+  }
+
+  async unsavePost(userId: string, postId: string) {
+    const save = await this.postSaveRepo.findOne({
+      where: { user: { id: userId }, post: { id: postId } },
+    });
+
+    if (!save) {
+      throw new NotFoundException('Saved post not found');
+    }
+
+    await this.postSaveRepo.remove(save);
+    return { success: true, message: 'Post unsaved' };
+  }
+
+  async getSavedPosts(userId: string, page = 1, limit = 20) {
+    const [data, total] = await this.postSaveRepo
+      .createQueryBuilder('save')
+      .leftJoinAndSelect('save.post', 'post')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('author.seekerProfile', 'seekerProfile')
+      .where('save.user.id = :userId', { userId })
+      .orderBy('save.createdAt', 'DESC')
+      .skip((page - 1) * limit)
+      .take(limit)
+      .getManyAndCount();
+
+    const posts = data.map(s => {
+      const { password: _, seekerProfile, ...authorRest } = s.post.author as any;
+      s.post.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+      return s.post;
+    });
+
+    return { data: toPlain(posts), meta: { page, limit, total } };
+  }
+
+  // ─── Post Reports ───────────────────────────────────────────────────
+
+  async reportPost(userId: string, postId: string, reason: string) {
+    const report = this.reportRepo.create({
+      reporter: { id: userId } as any,
+      targetType: ReportTargetType.POST,
+      targetId: postId,
+      reason,
+    });
+    await this.reportRepo.save(report);
+    return { success: true, message: 'Post reported', data: toPlain(report) };
+  }
+
+  // ─── Post Comments (Delete) ──────────────────────────────────────────
+
+  async deleteComment(userId: string, commentId: string) {
+    const comment = await this.commentRepo.findOne({
+      where: { id: commentId },
+      relations: ['author', 'post'],
+    });
+
+    if (!comment) throw new NotFoundException('Comment not found');
+    if (comment.author.id !== userId) throw new ForbiddenException('Cannot delete other user comments');
+
+    await this.commentRepo.remove(comment);
+    await this.postRepo.decrement({ id: comment.post.id }, 'commentsCount', 1);
+    return { success: true, message: 'Comment deleted' };
+  }
+
+  // ─── Single Post with Comments ───────────────────────────────────────
+
+  async getSinglePost(postId: string) {
+    const post = await this.postRepo
+      .createQueryBuilder('post')
+      .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('author.seekerProfile', 'seekerProfile')
+      .leftJoinAndSelect('post.comments', 'comments')
+      .leftJoinAndSelect('comments.author', 'commentAuthor')
+      .leftJoinAndSelect('commentAuthor.seekerProfile', 'commentAuthorProfile')
+      .leftJoinAndSelect('post.likes', 'likes')
+      .where('post.id = :postId', { postId })
+      .orderBy('comments.createdAt', 'DESC')
+      .getOne();
+
+    if (!post) throw new NotFoundException('Post not found');
+
+    const { password: _, seekerProfile, ...authorRest } = post.author as any;
+    post.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+
+    return toPlain(post);
+  }
+
+  // ─── Public Profile ─────────────────────────────────────────────────
+
+  async getPublicProfile(username: string) {
+    const user = await this.userRepo
+      .createQueryBuilder('user')
+      .leftJoinAndSelect('user.seekerProfile', 'seekerProfile')
+      .where('user.username = :username', { username })
+      .getOne();
+
+    if (!user) throw new NotFoundException('User not found');
+
+    // Get user's post count, followers count, following count
+    const postsCount = await this.postRepo.count({ where: { author: { id: user.id } } });
+    const followersCount = await this.followRepo.count({
+      where: { followee: { id: user.id }, status: FollowStatus.ACCEPTED },
+    });
+    const followingCount = await this.followRepo.count({
+      where: { follower: { id: user.id }, status: FollowStatus.ACCEPTED },
+    });
+
+    // Get recent posts
+    const recentPosts = await this.postRepo.find({
+      where: { author: { id: user.id } },
+      order: { createdAt: 'DESC' },
+      take: 5,
+    });
+
+    const { password: _, ...userSafe } = user as any;
+    return toPlain({
+      ...userSafe,
+      firstName: user.seekerProfile?.firstName,
+      lastName: user.seekerProfile?.lastName,
+      avatar: user.seekerProfile?.avatarUrl,
+      postsCount,
+      followersCount,
+      followingCount,
+      recentPosts,
+    });
+  }
 }
+

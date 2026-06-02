@@ -26,9 +26,9 @@ export class ConnectController {
   async createPost(
     @NestRequest() req: AuthenticatedRequest,
     @Body('content') content: string,
-    @Body('imageUrl') imageUrl?: string,
+    @Body('imageUrls') imageUrls?: string[],
   ) {
-    return this.connectService.createPost(req.user.sub, content, imageUrl);
+    return this.connectService.createPost(req.user.sub, content, imageUrls);
   }
 
   @Get('feed')
@@ -193,5 +193,70 @@ export class ConnectController {
       parseInt(page || '1', 10),
       parseInt(limit || '20', 10),
     );
+  }
+
+  @Patch('messages/:id/read')
+  async markMessagesAsRead(
+    @Param('id') id: string,
+    @NestRequest() req: AuthenticatedRequest,
+  ) {
+    return this.connectService.markMessagesAsRead(req.user.sub, id);
+  }
+
+  @Post('posts/:id/save')
+  async savePost(
+    @Param('id') id: string,
+    @NestRequest() req: AuthenticatedRequest,
+  ) {
+    return this.connectService.savePost(req.user.sub, id);
+  }
+
+  @Delete('posts/:id/save')
+  async unsavePost(
+    @Param('id') id: string,
+    @NestRequest() req: AuthenticatedRequest,
+  ) {
+    return this.connectService.unsavePost(req.user.sub, id);
+  }
+
+  @Get('posts/saved')
+  async getSavedPosts(
+    @NestRequest() req: AuthenticatedRequest,
+    @Query('page') page?: string,
+    @Query('limit') limit?: string,
+  ) {
+    return this.connectService.getSavedPosts(
+      req.user.sub,
+      parseInt(page || '1', 10),
+      parseInt(limit || '20', 10),
+    );
+  }
+
+  @Post('posts/:id/report')
+  async reportPost(
+    @Param('id') id: string,
+    @NestRequest() req: AuthenticatedRequest,
+    @Body('reason') reason: string,
+  ) {
+    return this.connectService.reportPost(req.user.sub, id, reason);
+  }
+
+  @Delete('posts/:postId/comments/:commentId')
+  async deleteComment(
+    @Param('postId') postId: string,
+    @Param('commentId') commentId: string,
+    @NestRequest() req: AuthenticatedRequest,
+  ) {
+    return this.connectService.deleteComment(req.user.sub, commentId);
+  }
+
+  @Get('posts/:id')
+  async getSinglePost(@Param('id') id: string) {
+    return this.connectService.getSinglePost(id);
+  }
+
+  @Get('profiles/:username')
+  async getPublicProfile(@Param('username') username: string) {
+    return this.connectService.getPublicProfile(username);
   }
 }
