@@ -47,6 +47,12 @@ export class User extends BaseEntity {
   isActive: boolean;
 
   @Column({ default: false })
+  isSuspended: boolean;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @Column({ default: false })
   isMfaEnabled: boolean;
 
   @Column({ type: 'enum', enum: SellerStatus, default: SellerStatus.NONE })
