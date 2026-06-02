@@ -80,12 +80,20 @@ export class ConnectService {
           const posts = await this.postRepo
             .createQueryBuilder('post')
             .leftJoinAndSelect('post.author', 'author')
+            .leftJoinAndSelect('author.seekerProfile', 'seekerProfile')
             .whereInIds(postIds)
             .getMany();
 
           posts.sort((a, b) => postIds.indexOf(a.id) - postIds.indexOf(b.id));
           const total = await this.redisClient.zcard(feedKey);
-          return { data: toPlain(posts), meta: { page, limit, total } };
+
+          const mappedPosts = posts.map(p => {
+            const { password: _, seekerProfile, ...authorRest } = p.author as any;
+            p.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+            return p;
+          });
+
+          return { data: toPlain(mappedPosts), meta: { page, limit, total } };
         }
       } catch (err) {
         console.warn('[ConnectService] Redis feed read failed, falling back to DB');
@@ -103,13 +111,20 @@ export class ConnectService {
     const [posts, total] = await this.postRepo
       .createQueryBuilder('post')
       .leftJoinAndSelect('post.author', 'author')
+      .leftJoinAndSelect('author.seekerProfile', 'seekerProfile')
       .where('post.author.id IN (:...ids)', { ids: followedIds })
       .orderBy('post.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit)
       .getManyAndCount();
 
-    return { data: toPlain(posts), meta: { page, limit, total } };
+    const mappedPosts = posts.map(p => {
+      const { password: _, seekerProfile, ...authorRest } = p.author as any;
+      p.author = { ...authorRest, firstName: seekerProfile?.firstName, lastName: seekerProfile?.lastName } as any;
+      return p;
+    });
+
+    return { data: toPlain(mappedPosts), meta: { page, limit, total } };
   }
 
   async likePost(userId: string, postId: string) {
@@ -253,32 +268,67 @@ export class ConnectService {
   async getFollowers(userId: string, page = 1, limit = 20) {
     const [data, total] = await this.followRepo.findAndCount({
       where: { followee: { id: userId }, status: FollowStatus.ACCEPTED },
-      relations: ['follower'],
+      relations: ['follower', 'follower.seekerProfile'],
       skip: (page - 1) * limit,
       take: limit,
     });
-    return { data: toPlain(data.map(f => f.follower)), meta: { page, limit, total } };
+    
+    const followers = data.map(f => {
+      const { password: _, seekerProfile, ...user } = f.follower as any;
+      return {
+        ...user,
+        firstName: seekerProfile?.firstName,
+        lastName: seekerProfile?.lastName,
+      };
+    });
+    
+    return { data: toPlain(followers), meta: { page, limit, total } };
   }
 
   async getFollowing(userId: string, page = 1, limit = 20) {
     const [data, total] = await this.followRepo.findAndCount({
       where: { follower: { id: userId }, status: FollowStatus.ACCEPTED },
-      relations: ['followee'],
+      relations: ['followee', 'followee.seekerProfile'],
       skip: (page - 1) * limit,
       take: limit,
     });
-    return { data: toPlain(data.map(f => f.followee)), meta: { page, limit, total } };
+
+    const following = data.map(f => {
+      const { password: _, seekerProfile, ...user } = f.followee as any;
+      return {
+        ...user,
+        firstName: seekerProfile?.firstName,
+        lastName: seekerProfile?.lastName,
+      };
+    });
+
+    return { data: toPlain(following), meta: { page, limit, total } };
   }
 
   async getPendingFollowRequests(userId: string, page = 1, limit = 20) {
     const [data, total] = await this.followRepo.findAndCount({
       where: { followee: { id: userId }, status: FollowStatus.PENDING },
-      relations: ['follower'],
+      relations: ['follower', 'follower.seekerProfile'],
       order: { createdAt: 'DESC' },
       skip: (page - 1) * limit,
       take: limit,
     });
-    return { data: toPlain(data), meta: { page, limit, total } };
+
+    const mappedData = data.map(f => {
+      const { password: _, seekerProfile, ...followerData } = f.follower as any;
+      return {
+        id: f.id,
+        status: f.status,
+        createdAt: f.createdAt,
+        follower: {
+          ...followerData,
+          firstName: seekerProfile?.firstName,
+          lastName: seekerProfile?.lastName,
+        }
+      };
+    });
+
+    return { data: toPlain(mappedData), meta: { page, limit, total } };
   }
 
   async deletePost(userId: string, postId: string) {
@@ -328,6 +378,7 @@ export class ConnectService {
 
     const query = this.userRepo
       .createQueryBuilder('user')
+      .leftJoinAndSelect('user.seekerProfile', 'seekerProfile')
       .where('user.isActive = true')
       .orderBy('user.createdAt', 'DESC')
       .skip((page - 1) * limit)
@@ -338,7 +389,14 @@ export class ConnectService {
     }
 
     const [data, total] = await query.getManyAndCount();
-    const safePeople = data.map(({ password: _, ...rest }) => rest);
+    const safePeople = data.map((u: any) => {
+      const { password: _, seekerProfile, ...rest } = u;
+      return {
+        ...rest,
+        firstName: seekerProfile?.firstName,
+        lastName: seekerProfile?.lastName,
+      };
+    });
     return { data: toPlain(safePeople), meta: { page, limit, total } };
   }
 
