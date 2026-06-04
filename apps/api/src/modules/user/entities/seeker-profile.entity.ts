@@ -2,6 +2,12 @@ import { Entity, Column, OneToOne, JoinColumn } from 'typeorm';
 import { BaseEntity } from '../../../common/entities/base.entity';
 import { User } from './user.entity';
 
+export enum SellerPlan {
+  FREE = 'free',
+  BASIC = 'basic',
+  PREMIUM = 'premium',
+}
+
 @Entity('seeker_profiles')
 export class SeekerProfile extends BaseEntity {
   @OneToOne(() => User, (user) => user.seekerProfile)
@@ -34,4 +40,14 @@ export class SeekerProfile extends BaseEntity {
 
   @Column('jsonb', { nullable: true, default: {} })
   socialLinks: { linkedin?: string; portfolio?: string };
+
+  // Seller marketplace fields
+  @Column({ nullable: true })
+  contactPhone: string; // Business phone for physical orders
+
+  @Column({ nullable: true })
+  contactWhatsapp: string; // WhatsApp for communication
+
+  @Column({ type: 'enum', enum: SellerPlan, default: SellerPlan.FREE })
+  sellerPlan: SellerPlan;
 }

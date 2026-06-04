@@ -17,8 +17,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShopService } from './shop.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { RawBody } from '../../common/decorators/raw-body.decorator';
 import { UserRole } from '../user/entities/user.entity';
 import { SellerGuard } from './guards/seller.guard';
@@ -29,7 +27,6 @@ import { AddToCartDto } from './dto/add-to-cart.dto';
 import { CreateQuoteRequestDto } from './dto/create-quote.dto';
 import { RespondQuoteDto } from './dto/respond-quote.dto';
 import { CreateDisputeDto } from './dto/create-dispute.dto';
-import { SellerApplicationStatus } from '../support/entities/support.entity';
 
 interface AuthenticatedRequest {
   user: { sub: string; email: string; role: string };
@@ -75,7 +72,14 @@ export class ShopController {
     @Body() dto: UpdateProductDto,
   ) {
     const isAdmin = req.user.role === UserRole.ADMIN;
-    return { data: await this.shopService.updateProduct(id, req.user.sub, dto, isAdmin) };
+    return {
+      data: await this.shopService.updateProduct(
+        id,
+        req.user.sub,
+        dto,
+        isAdmin,
+      ),
+    };
   }
 
   @Delete('products/:id')
@@ -162,7 +166,9 @@ export class ShopController {
     }
     const allowed = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
     if (!allowed.includes(file.mimetype)) {
-      throw new BadRequestException('Only JPEG, PNG, WebP, and GIF images are accepted');
+      throw new BadRequestException(
+        'Only JPEG, PNG, WebP, and GIF images are accepted',
+      );
     }
     return this.shopService.uploadProductImage(
       id,
@@ -202,7 +208,9 @@ export class ShopController {
     @Param('productId') productId: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return { data: await this.shopService.removeFromCart(req.user.sub, productId) };
+    return {
+      data: await this.shopService.removeFromCart(req.user.sub, productId),
+    };
   }
 
   // ─── Checkout ─────────────────────────────────────────────────

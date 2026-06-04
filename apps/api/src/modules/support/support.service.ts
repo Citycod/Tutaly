@@ -10,12 +10,18 @@ function toPlain<T>(obj: T): T {
 @Injectable()
 export class SupportService {
   constructor(
-    @InjectRepository(Notification) private readonly notificationRepo: Repository<Notification>,
+    @InjectRepository(Notification)
+    private readonly notificationRepo: Repository<Notification>,
   ) {}
 
   // ─── Notifications ──────────────────────────────────────────────────
 
-  async createNotification(userId: string, type: string, message: string, link?: string) {
+  async createNotification(
+    userId: string,
+    type: string,
+    message: string,
+    link?: string,
+  ) {
     const notification = this.notificationRepo.create({
       user: { id: userId } as any,
       type,
@@ -32,7 +38,7 @@ export class SupportService {
       skip: (page - 1) * limit,
       take: limit,
     });
-    
+
     const unreadCount = await this.notificationRepo.count({
       where: { user: { id: userId }, isRead: false },
     });

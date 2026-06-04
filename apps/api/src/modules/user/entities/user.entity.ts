@@ -21,6 +21,9 @@ export class User extends BaseEntity {
   @Column({ unique: true })
   email: string;
 
+  @Column({ unique: true, nullable: true })
+  username: string; // @username format: name_slug_XXXX (4 random digits)
+
   @Column({ select: false }) // Hide password by default
   password: string;
 
@@ -44,14 +47,28 @@ export class User extends BaseEntity {
   isActive: boolean;
 
   @Column({ default: false })
+  isSuspended: boolean;
+
+  @Column({ default: false })
+  isDeleted: boolean;
+
+  @Column({ default: false })
   isMfaEnabled: boolean;
 
   @Column({ type: 'enum', enum: SellerStatus, default: SellerStatus.NONE })
   sellerStatus: SellerStatus;
+
+  @Column({ nullable: true })
+  contactPhone: string;
+
+  @Column({ nullable: true })
+  whatsappPhone: string;
 
   @OneToOne(() => SeekerProfile, (profile) => profile.user)
   seekerProfile: SeekerProfile;
 
   @OneToOne(() => EmployerProfile, (profile) => profile.user)
   employerProfile: EmployerProfile;
+
+  // Note: Connect module relationships are defined in connect entities to avoid circular dependencies
 }

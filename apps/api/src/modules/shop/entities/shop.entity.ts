@@ -86,4 +86,21 @@ export class ShopProduct extends BaseEntity {
 
   @Column({ default: false })
   isWorkRelatedConfirmed: boolean;
+
+  // Product Rating Aggregation
+  @Column({ type: 'decimal', precision: 3, scale: 2, default: 0 })
+  averageRating: number; // 0-5
+
+  @Column({ type: 'integer', default: 0 })
+  totalRatings: number;
+
+  @Column({ type: 'jsonb', nullable: true })
+  ratingDistribution: Record<number, number>; // { 1: 10, 2: 5, 3: 20, 4: 50, 5: 150 }
+
+  // Featured listing (seller boost)
+  @Column({ type: 'timestamp', nullable: true })
+  featuredUntil: Date | null; // When featured status expires
+
+  @Column({ type: 'tsvector', nullable: true, select: false })
+  featuredSearchVector: any; // For full-text search (TSVector in PostgreSQL)
 }

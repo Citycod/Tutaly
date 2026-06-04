@@ -4,14 +4,33 @@ import { BullModule } from '@nestjs/bull';
 import { ConnectController } from './connect.controller';
 import { ConnectService } from './connect.service';
 import { FeedProcessor } from './feed.processor';
-import { Post, PostLike, PostComment, Follow, Message, Report } from './entities/connect.entity';
+import {
+  Post,
+  PostLike,
+  PostComment,
+  Follow,
+  Message,
+  Report,
+  PostSave,
+  PostShare,
+} from './entities/connect.entity';
 import { User } from '../user/entities/user.entity';
 import { SupportModule } from '../support/support.module';
 import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([Post, PostLike, PostComment, Follow, Message, Report, User]),
+    TypeOrmModule.forFeature([
+      Post,
+      PostLike,
+      PostComment,
+      Follow,
+      Message,
+      Report,
+      User,
+      PostSave,
+      PostShare,
+    ]),
     BullModule.registerQueue({
       name: 'feed-fanout',
     }),
