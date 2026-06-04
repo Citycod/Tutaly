@@ -25,7 +25,9 @@ export class PaymentGatewayFactory {
       case PaymentGateway.PAYSTACK:
         return this.paystackGateway;
       default:
-        throw new BadRequestException(`Unknown payment gateway: ${gateway}`);
+        throw new BadRequestException(
+          'Unknown payment gateway: ' + String(gateway),
+        );
     }
   }
 

@@ -104,11 +104,11 @@ export class PaymentAuditService {
   /**
    * Log a webhook received
    */
-  async logWebhookReceived(
+  logWebhookReceived(
     gateway: string,
     reference: string,
     payload: Record<string, any>,
-  ): Promise<void> {
+  ): void {
     this.logger.debug(`Webhook received: ${gateway} - ${reference}`, {
       payloadKeys: Object.keys(payload),
     });

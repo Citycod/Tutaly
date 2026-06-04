@@ -34,7 +34,6 @@ import { UpdateProductDto } from './dto/update-product.dto';
 import { ApplySellerDto } from './dto/apply-seller.dto';
 import { TokenService } from '../auth/token.service';
 import { SupportService } from '../support/support.service';
-import { CreateQuoteRequestDto } from './dto/create-quote.dto';
 /**
  * Strips TypeORM entity metadata & circular references by
  * round-tripping through JSON.

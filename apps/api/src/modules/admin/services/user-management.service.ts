@@ -1,10 +1,6 @@
-import {
-  Injectable,
-  NotFoundException,
-  ForbiddenException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, In } from 'typeorm';
+import { Repository } from 'typeorm';
 import { User, UserRole, SellerStatus } from '../../user/entities/user.entity';
 import { SeekerProfile } from '../../user/entities/seeker-profile.entity';
 import { EmployerProfile } from '../../user/entities/employer-profile.entity';

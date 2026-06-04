@@ -6,9 +6,9 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { LessThanOrEqual, MoreThan, Repository } from 'typeorm';
 import { ShopProduct } from '../entities/shop.entity';
-import { Order, OrderStatus } from '../entities/order.entity';
+
 import { User } from '../../user/entities/user.entity';
 import {
   SeekerProfile,
@@ -82,8 +82,6 @@ export class FeaturedListingsService {
     }
 
     const price = FEATURE_PRICING[dto.durationDays];
-    const gateway = dto.paymentGateway || 'flutterwave';
-
     // TODO: Initiate payment through gateway
     // After payment confirmation, set featured_until
 
@@ -122,7 +120,7 @@ export class FeaturedListingsService {
 
     return this.productRepo.find({
       where: {
-        featuredUntil: `${ShopProduct}.featured_until > :now` as any,
+        featuredUntil: MoreThan(now),
         isActive: true,
       },
       relations: ['seller', 'seller.seekerProfile', 'subcategory'],
@@ -140,7 +138,7 @@ export class FeaturedListingsService {
 
     const result = await this.productRepo.update(
       {
-        featuredUntil: `${ShopProduct}.featured_until <= :now` as any,
+        featuredUntil: LessThanOrEqual(now),
       },
       { featuredUntil: null },
     );
@@ -181,7 +179,7 @@ export class FeaturedListingsService {
     return this.productRepo.find({
       where: {
         seller: { id: sellerId },
-        featuredUntil: `${ShopProduct}.featured_until > :now` as any,
+        featuredUntil: MoreThan(now),
       },
       relations: ['subcategory'],
       order: { featuredUntil: 'DESC' },

@@ -17,8 +17,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ShopService } from './shop.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
-import { RolesGuard } from '../../common/guards/roles.guard';
-import { Roles } from '../../common/decorators/roles.decorator';
 import { RawBody } from '../../common/decorators/raw-body.decorator';
 import { UserRole } from '../user/entities/user.entity';
 import { SellerGuard } from './guards/seller.guard';
@@ -29,7 +27,6 @@ import { AddToCartDto } from './dto/add-to-cart.dto';
 import { CreateQuoteRequestDto } from './dto/create-quote.dto';
 import { RespondQuoteDto } from './dto/respond-quote.dto';
 import { CreateDisputeDto } from './dto/create-dispute.dto';
-import { SellerApplicationStatus } from '../support/entities/support.entity';
 
 interface AuthenticatedRequest {
   user: { sub: string; email: string; role: string };

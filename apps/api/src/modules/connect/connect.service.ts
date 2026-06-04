@@ -63,7 +63,7 @@ export class ConnectService {
           this.redisClient = null;
         });
       }
-    } catch (err) {
+    } catch {
       console.warn(
         '[ConnectService] Redis init failed, feed will use DB fallback',
       );
@@ -134,7 +134,7 @@ export class ConnectService {
 
           return { data: toPlain(mappedPosts), meta: { page, limit, total } };
         }
-      } catch (err) {
+      } catch {
         console.warn(
           '[ConnectService] Redis feed read failed, falling back to DB',
         );

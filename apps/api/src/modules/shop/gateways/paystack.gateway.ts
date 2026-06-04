@@ -1,4 +1,4 @@
-import { Injectable, ForbiddenException, Logger } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import * as crypto from 'crypto';
 import {
   IPaymentGateway,
@@ -103,9 +103,10 @@ export class PaystackGateway implements IPaymentGateway {
 
   async verifyWebhookSignature(
     headers: Record<string, any>,
-    body: any,
+    _body: any,
     rawBody?: Buffer,
   ): Promise<boolean> {
+    await Promise.resolve();
     const signature = headers['x-paystack-signature'];
     if (!signature) {
       this.logger.warn('Paystack webhook missing x-paystack-signature header');
@@ -121,7 +122,7 @@ export class PaystackGateway implements IPaymentGateway {
 
     try {
       // Use rawBody if available, otherwise fallback to JSON.stringify
-      const verificationData = rawBody ? rawBody : JSON.stringify(body);
+      const verificationData = rawBody ? rawBody : JSON.stringify(_body);
 
       const hash = crypto
         .createHmac('sha512', this.secretKey)
@@ -145,6 +146,7 @@ export class PaystackGateway implements IPaymentGateway {
   async handleWebhookEvent(
     payload: Record<string, any>,
   ): Promise<WebhookResult> {
+    await Promise.resolve();
     const { event, data } = payload;
 
     if (event === 'charge.success' && data.status === 'success') {

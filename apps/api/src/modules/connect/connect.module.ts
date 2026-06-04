@@ -9,10 +9,8 @@ import {
   PostLike,
   PostComment,
   Follow,
-  FollowStatus,
   Message,
   Report,
-  ReportTargetType,
   PostSave,
   PostShare,
 } from './entities/connect.entity';

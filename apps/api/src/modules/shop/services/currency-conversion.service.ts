@@ -99,7 +99,7 @@ export class CurrencyConversionService {
    * Update exchange rates (typically called by a scheduled job)
    * In production, this should fetch from a real-time API
    */
-  async updateExchangeRates(): Promise<void> {
+  updateExchangeRates(): void {
     try {
       // Check if cache is still valid
       const timeSinceLastUpdate = Date.now() - this.lastUpdatedAt.getTime();

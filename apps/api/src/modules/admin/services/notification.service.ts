@@ -5,7 +5,6 @@ import {
   Notification,
   NotificationType,
 } from '../entities/notification.entity';
-import { User } from '../../user/entities/user.entity';
 
 @Injectable()
 export class NotificationService {

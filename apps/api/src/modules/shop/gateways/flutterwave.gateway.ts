@@ -1,9 +1,4 @@
-import {
-  Injectable,
-  BadRequestException,
-  ForbiddenException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import {
   IPaymentGateway,
   PaymentPayload,
@@ -111,9 +106,10 @@ export class FlutterwaveGateway implements IPaymentGateway {
 
   async verifyWebhookSignature(
     headers: Record<string, any>,
-    body: any,
-    rawBody?: Buffer,
+    _body: any,
+    _rawBody?: Buffer,
   ): Promise<boolean> {
+    await Promise.resolve();
     const verifHash = headers['verif-hash'];
     if (!verifHash) {
       this.logger.warn('Flutterwave webhook missing verif-hash header');
@@ -136,6 +132,7 @@ export class FlutterwaveGateway implements IPaymentGateway {
   async handleWebhookEvent(
     payload: Record<string, any>,
   ): Promise<WebhookResult> {
+    await Promise.resolve();
     const { event, data } = payload;
 
     if (event === 'charge.completed' && data.status === 'successful') {

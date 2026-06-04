@@ -1,4 +1,4 @@
-import { Injectable, Logger, ConflictException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from '../entities/order.entity';
@@ -54,10 +54,10 @@ export class PaymentIdempotencyService {
    * @param gateway Payment gateway name
    * @returns Cached result if already processed, null if new
    */
-  async getIfProcessed(
+  getIfProcessed(
     reference: string,
     gateway: string,
-  ): Promise<Record<string, any> | null> {
+  ): Record<string, any> | null {
     const key = this.generateKey(reference, gateway);
     const cached = this.idempotencyStore.get(key);
 
@@ -83,12 +83,12 @@ export class PaymentIdempotencyService {
    * @param result The result to cache
    * @param expiresInHours How long to keep the cache (default 24 hours)
    */
-  async store(
+  store(
     reference: string,
     gateway: string,
     result: Record<string, any>,
     expiresInHours: number = 24,
-  ): Promise<void> {
+  ): void {
     const key = this.generateKey(reference, gateway);
     const expiresAt = new Date();
     expiresAt.setHours(expiresAt.getHours() + expiresInHours);

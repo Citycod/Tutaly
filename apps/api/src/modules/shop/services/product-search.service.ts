@@ -1,7 +1,7 @@
 import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
-import { ShopProduct, ListingType, Currency } from '../entities/shop.entity';
+import { MoreThan, Repository } from 'typeorm';
+import { ShopProduct } from '../entities/shop.entity';
 import { SeekerProfile } from '../../user/entities/seeker-profile.entity';
 import {
   ProductPreviewDto,
@@ -241,7 +241,7 @@ export class ProductSearchService {
     const products = await this.productRepo.find({
       where: {
         isActive: true,
-        featuredUntil: `${ShopProduct}.featured_until > :now` as any,
+        featuredUntil: MoreThan(now),
       },
       relations: ['seller', 'seller.seekerProfile'],
       order: { featuredUntil: 'DESC' },

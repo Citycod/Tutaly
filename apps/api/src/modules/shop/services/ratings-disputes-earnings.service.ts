@@ -6,13 +6,12 @@ import {
   ForbiddenException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository, LessThan, Between } from 'typeorm';
+import { Repository, Between } from 'typeorm';
 import { Order, OrderStatus } from '../entities/order.entity';
 import { ShopProduct } from '../entities/shop.entity';
 import { ProductRating } from '../entities/product-rating.entity';
 import {
   QuoteRequest,
-  QuoteStatus,
   OrderDispute,
   DisputeStatus,
 } from '../entities/order.entity';

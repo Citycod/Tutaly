@@ -10,7 +10,7 @@ import { Repository } from 'typeorm';
 import { Cron, CronExpression } from '@nestjs/schedule';
 import { Order, OrderStatus } from '../entities/order.entity';
 import { ShopProduct, ListingType } from '../entities/shop.entity';
-import { User } from '../../user/entities/user.entity';
+
 import {
   MarkDeliveredDto,
   ConfirmReceiptDto,
@@ -40,7 +40,7 @@ export class PhysicalOrderService {
   async markDelivered(
     orderId: string,
     sellerId: string,
-    dto: MarkDeliveredDto,
+    _dto: MarkDeliveredDto,
   ): Promise<OrderStatusDto> {
     const order = await this.orderRepo.findOne({
       where: { id: orderId },
@@ -95,7 +95,7 @@ export class PhysicalOrderService {
   async confirmReceipt(
     orderId: string,
     buyerId: string,
-    dto?: ConfirmReceiptDto,
+    _dto?: ConfirmReceiptDto,
   ): Promise<OrderStatusDto> {
     const order = await this.orderRepo.findOne({
       where: { id: orderId },
@@ -159,7 +159,7 @@ export class PhysicalOrderService {
   /**
    * Get order status with all tracking info
    */
-  async getOrderStatus(order: Order): Promise<OrderStatusDto> {
+  getOrderStatus(order: Order): OrderStatusDto {
     return {
       id: order.id,
       status: order.status,

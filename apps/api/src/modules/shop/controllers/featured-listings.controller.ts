@@ -31,12 +31,12 @@ export class FeaturedListingsController {
   }
 
   @Get('feature/pricing')
-  async getFeaturePricing() {
+  getFeaturePricing() {
     return this.featuredService.getFeaturePricing();
   }
 
   @Get('featured')
-  async getFeaturedProducts(@Query('limit') limit?: string) {
+  getFeaturedProducts(@Query('limit') limit?: string) {
     return this.featuredService.getFeaturedProducts(
       parseInt(limit || '20', 10),
     );
@@ -44,7 +44,7 @@ export class FeaturedListingsController {
 
   @Get('seller/featured')
   @UseGuards(JwtAuthGuard)
-  async getSellerFeaturedProducts(@NestRequest() req: AuthenticatedRequest) {
+  getSellerFeaturedProducts(@NestRequest() req: AuthenticatedRequest) {
     return this.featuredService.getSellerFeaturedProducts(req.user.sub);
   }
 }

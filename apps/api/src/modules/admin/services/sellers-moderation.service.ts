@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException, BadRequestException } from '@nestjs/common';
+import {
+  Injectable,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, SellerStatus } from '../../user/entities/user.entity';
@@ -61,7 +65,7 @@ export class SellersModerationService {
     // TODO: Create notification
   }
 
-  async rejectSeller(userId: string, reason?: string): Promise<void> {
+  async rejectSeller(userId: string, _reason?: string): Promise<void> {
     const user = await this.userRepo.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
