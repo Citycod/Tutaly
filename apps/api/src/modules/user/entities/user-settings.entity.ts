@@ -20,6 +20,11 @@ export class UserSettings extends BaseEntity {
     postCommented?: boolean;
     orderUpdates?: boolean;
     platformAnnouncements?: boolean;
+    adCampaignStatusUpdates?: boolean;
+    adBudgetAlerts?: boolean;
+    adWeeklyReports?: boolean;
+    adRefundNotifications?: boolean;
+    adAdminMessages?: boolean;
   };
 
   @Column({ type: 'jsonb', default: {} })

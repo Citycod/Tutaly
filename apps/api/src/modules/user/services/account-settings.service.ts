@@ -158,6 +158,15 @@ export class AccountSettingsService {
 
   async updateNotificationSettings(userId: string, dto: Record<string, boolean>) {
     const settings = await this.getOrCreateSettings(userId);
+
+    // Server-side enforcement: these cannot be disabled
+    if (dto.adCampaignStatusUpdates === false) {
+      delete dto.adCampaignStatusUpdates;
+    }
+    if (dto.adAdminMessages === false) {
+      delete dto.adAdminMessages;
+    }
+
     settings.notifications = { ...settings.notifications, ...dto };
     await this.settingsRepo.save(settings);
     return settings.notifications;

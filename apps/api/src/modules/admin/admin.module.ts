@@ -22,6 +22,7 @@ import { AdExpiryCron } from './processors/ad-expiry.cron';
 import { User } from '../user/entities/user.entity';
 import { SeekerProfile } from '../user/entities/seeker-profile.entity';
 import { EmployerProfile } from '../user/entities/employer-profile.entity';
+import { UserSettings } from '../user/entities/user-settings.entity';
 import { Job, Application } from '../job/entities/job.entity';
 import { Order, OrderDispute } from '../shop/entities/order.entity';
 import { SellerApplication, LegalPage, Ad } from '../support/entities/support.entity';
@@ -39,6 +40,7 @@ import { AuthModule } from '../auth/auth.module';
   imports: [
     TypeOrmModule.forFeature([
       User,
+      UserSettings,
       SeekerProfile,
       EmployerProfile,
       Job,

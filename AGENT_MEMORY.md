@@ -27,5 +27,10 @@ This file serves as a persistent memory bank for AI agents working on the Tutaly
 ## 5. Network Connectivity Issues (ENOTFOUND)
 - If the backend terminal starts spamming `getaddrinfo ENOTFOUND` for Supabase (`aws-1-us-east-1.pooler.supabase.com`) or Upstash Redis (`valued-mole-79728.upstash.io`), it means the local machine has lost internet connectivity or DNS resolution. Restart the server once the internet is restored.
 
+## 6. Ads Module
+- **Ad Serving**: Seekers CANNOT create ad campaigns, but they CAN see ads. All authenticated users and guests see ads on public pages, jobs page, shop, connect feed, etc. Never restrict ad visibility by role.
+- **Payment Model**: The full `total_budget` of a campaign is charged upfront. Ad revenue is purely platform service revenue, meaning 100% of the budget counts as platform revenue with no 20% commission subtracted.
+- **Notification Settings**: Ad campaign status updates (`adCampaignStatusUpdates`) and admin messages (`adAdminMessages`) are strictly enforced server-side. Payloads attempting to disable them are silently ignored in `AccountSettingsService`.
+
 ---
-*Last Updated: End of Admin Dashboard (Part 2) Frontend Session*
+*Last Updated: Ads Module Backend Finalization*

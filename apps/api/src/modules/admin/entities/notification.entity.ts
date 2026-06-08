@@ -21,6 +21,16 @@ export enum NotificationType {
   SELLER_APPLICATION_DECISION = 'seller_application_decision',
   MESSAGE_RECEIVED = 'message_received',
   PLATFORM_ANNOUNCEMENT = 'platform_announcement',
+  AD_CAMPAIGN_CREATED = 'ad_campaign_created',
+  AD_UNDER_REVIEW = 'ad_under_review',
+  AD_APPROVED = 'ad_approved',
+  AD_REJECTED = 'ad_rejected',
+  AD_BUDGET_50 = 'ad_budget_50',
+  AD_BUDGET_80 = 'ad_budget_80',
+  AD_BUDGET_EXHAUSTED = 'ad_budget_exhausted',
+  AD_CAMPAIGN_ENDED = 'ad_campaign_ended',
+  AD_REFUND_PROCESSED = 'ad_refund_processed',
+  AD_WEEKLY_REPORT = 'ad_weekly_report',
 }
 
 @Entity('notifications')

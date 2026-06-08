@@ -13,6 +13,7 @@ import { ReviewModule } from './modules/review/review.module';
 import { SalaryModule } from './modules/salary/salary.module';
 import { SupportModule } from './modules/support/support.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AdsModule } from './modules/ads/ads.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -40,6 +41,7 @@ import { APP_GUARD } from '@nestjs/core';
     SalaryModule,
     SupportModule,
     AdminModule,
+    AdsModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
