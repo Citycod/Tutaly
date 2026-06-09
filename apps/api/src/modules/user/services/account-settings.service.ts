@@ -105,7 +105,11 @@ export class AccountSettingsService {
     }
   }
 
-  async changePassword(userId: string, currentPassword: string, newPassword: string) {
+  async changePassword(
+    userId: string,
+    currentPassword: string,
+    newPassword: string,
+  ) {
     const user = await this.userRepo.findOne({
       where: { id: userId },
       select: ['id', 'password', 'tokenVersion'],
@@ -124,13 +128,23 @@ export class AccountSettingsService {
     // Also revoke refresh tokens
     await this.tokenService.revokeRefreshToken(userId);
 
-    return { message: 'Password changed successfully. All other sessions have been logged out.' };
+    return {
+      message:
+        'Password changed successfully. All other sessions have been logged out.',
+    };
   }
 
   async deleteAccount(userId: string, currentPassword: string) {
     const user = await this.userRepo.findOne({
       where: { id: userId },
-      select: ['id', 'password', 'email', 'username', 'isDeleted', 'tokenVersion'],
+      select: [
+        'id',
+        'password',
+        'email',
+        'username',
+        'isDeleted',
+        'tokenVersion',
+      ],
     });
 
     if (!user) throw new NotFoundException('User not found');
@@ -143,7 +157,7 @@ export class AccountSettingsService {
     user.email = `deleted_${Date.now()}@deleted.user`; // Anonymize email
     user.username = `deleted_${Date.now()}`;
     user.tokenVersion += 1; // Invalidate sessions
-    
+
     await this.userRepo.save(user);
     await this.tokenService.revokeRefreshToken(userId);
 
@@ -156,7 +170,10 @@ export class AccountSettingsService {
     return settings.notifications;
   }
 
-  async updateNotificationSettings(userId: string, dto: Record<string, boolean>) {
+  async updateNotificationSettings(
+    userId: string,
+    dto: Record<string, boolean>,
+  ) {
     const settings = await this.getOrCreateSettings(userId);
 
     // Server-side enforcement: these cannot be disabled

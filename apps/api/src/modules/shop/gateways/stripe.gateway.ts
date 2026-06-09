@@ -113,7 +113,9 @@ export class StripeGateway implements IPaymentGateway {
     }
 
     if (!this.webhookSecret || !this.stripe) {
-      this.logger.error('Stripe credentials not configured for webhook verification');
+      this.logger.error(
+        'Stripe credentials not configured for webhook verification',
+      );
       return false;
     }
 
@@ -123,15 +125,23 @@ export class StripeGateway implements IPaymentGateway {
     }
 
     try {
-      this.stripe.webhooks.constructEvent(rawBody, signature, this.webhookSecret);
+      this.stripe.webhooks.constructEvent(
+        rawBody,
+        signature,
+        this.webhookSecret,
+      );
       return true;
     } catch (error: any) {
-      this.logger.warn(`Stripe webhook signature verification failed: ${error.message}`);
+      this.logger.warn(
+        `Stripe webhook signature verification failed: ${error.message}`,
+      );
       return false;
     }
   }
 
-  async handleWebhookEvent(payload: Record<string, any>): Promise<WebhookResult> {
+  async handleWebhookEvent(
+    payload: Record<string, any>,
+  ): Promise<WebhookResult> {
     // The payload is already constructed and verified by verifyWebhookSignature if called properly
     // However, constructEvent returns the typed event. If we just receive the parsed JSON body here:
     const event = payload;

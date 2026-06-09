@@ -6,6 +6,7 @@ import { AdClick } from './entities/ad-click.entity';
 import { BullModule, InjectQueue } from '@nestjs/bull';
 import type { Queue } from 'bull';
 import { AdminModule } from '../admin/admin.module';
+import { ShopModule } from '../shop/shop.module';
 import { AdsService } from './services/ads.service';
 import { AdsCronProcessor } from './services/ads-cron.processor';
 import { AdsController } from './controllers/ads.controller';
@@ -17,9 +18,11 @@ import { AdsAdminController } from './controllers/ads-admin.controller';
     TypeOrmModule.forFeature([AdCampaign, AdImpression, AdClick]),
     BullModule.registerQueue({ name: 'ads-cron' }),
     AdminModule,
+    ShopModule,
   ],
   controllers: [AdsController, AdsTrackingController, AdsAdminController],
   providers: [AdsService, AdsCronProcessor],
+  exports: [AdsService],
 })
 export class AdsModule implements OnModuleInit {
   constructor(@InjectQueue('ads-cron') private readonly adsQueue: Queue) {}

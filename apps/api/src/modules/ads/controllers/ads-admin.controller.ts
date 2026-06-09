@@ -1,33 +1,33 @@
-import { Controller, Get, Patch, Param, UseGuards } from '@nestjs/common';
-import { JwtAuthGuard } from '../../auth/guards/jwt-auth.guard';
-import { RolesGuard } from '../../auth/guards/roles.guard';
-import { Roles } from '../../auth/decorators/roles.decorator';
+import { Controller, Get, Patch, Param, UseGuards, Body } from '@nestjs/common';
+import { JwtAuthGuard } from '../../../common/guards/jwt-auth.guard';
+import { RolesGuard } from '../../../common/guards/roles.guard';
+import { Roles } from '../../../common/decorators/roles.decorator';
+import { UserRole } from '../../user/entities/user.entity';
+import { AdsService } from '../services/ads.service';
 
 @Controller('admin/ads')
 @UseGuards(JwtAuthGuard, RolesGuard)
-@Roles('admin')
+@Roles(UserRole.ADMIN)
 export class AdsAdminController {
-  
+  constructor(private readonly adsService: AdsService) {}
+
   @Get('queue')
   async getQueue() {
-    // Return pending_review campaigns
-    return [];
+    return this.adsService.getPendingQueue();
   }
 
   @Patch(':id/approve')
   async approveCampaign(@Param('id') id: string) {
-    // Approve campaign logic
-    return { success: true };
+    return this.adsService.approveCampaign(id);
   }
 
   @Patch(':id/reject')
-  async rejectCampaign(@Param('id') id: string) {
-    // Reject campaign logic
-    return { success: true };
+  async rejectCampaign(@Param('id') id: string, @Body('reason') reason: string) {
+    return this.adsService.rejectCampaign(id, reason);
   }
 
   @Get('all')
   async getAllCampaigns() {
-    return [];
+    return this.adsService.getAllCampaigns();
   }
 }

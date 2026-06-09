@@ -88,7 +88,13 @@ export class ShopProduct extends BaseEntity {
   isWorkRelatedConfirmed: boolean;
 
   // Product Rating Aggregation
-  @Column({ name: 'average_rating', type: 'decimal', precision: 3, scale: 2, default: 0 })
+  @Column({
+    name: 'average_rating',
+    type: 'decimal',
+    precision: 3,
+    scale: 2,
+    default: 0,
+  })
   averageRating: number; // 0-5
 
   @Column({ name: 'total_ratings', type: 'integer', default: 0 })
@@ -101,6 +107,11 @@ export class ShopProduct extends BaseEntity {
   @Column({ name: 'featured_until', type: 'timestamp', nullable: true })
   featuredUntil: Date | null; // When featured status expires
 
-  @Column({ name: 'featured_search_vector', type: 'tsvector', nullable: true, select: false })
+  @Column({
+    name: 'featured_search_vector',
+    type: 'tsvector',
+    nullable: true,
+    select: false,
+  })
   featuredSearchVector: any; // For full-text search (TSVector in PostgreSQL)
 }

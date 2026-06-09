@@ -12,7 +12,12 @@ import { AuthModule } from '../auth/auth.module';
 
 @Module({
   imports: [
-    TypeOrmModule.forFeature([User, SeekerProfile, EmployerProfile, UserSettings]),
+    TypeOrmModule.forFeature([
+      User,
+      SeekerProfile,
+      EmployerProfile,
+      UserSettings,
+    ]),
     forwardRef(() => AuthModule),
   ],
   controllers: [UserController, UserSettingsController],

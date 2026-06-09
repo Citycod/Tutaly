@@ -22,7 +22,9 @@ interface AuthenticatedRequest {
 @Controller('users')
 @UseGuards(JwtAuthGuard)
 export class UserSettingsController {
-  constructor(private readonly accountSettingsService: AccountSettingsService) {}
+  constructor(
+    private readonly accountSettingsService: AccountSettingsService,
+  ) {}
 
   // ─── ACCOUNT SETTINGS ───────────────────────────────────────
 
@@ -32,7 +34,11 @@ export class UserSettingsController {
     @Body('newEmail') newEmail: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return this.accountSettingsService.changeEmail(req.user.sub, currentPassword, newEmail);
+    return this.accountSettingsService.changeEmail(
+      req.user.sub,
+      currentPassword,
+      newEmail,
+    );
   }
 
   @Put('settings/password')
@@ -41,7 +47,11 @@ export class UserSettingsController {
     @Body('newPassword') newPassword: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return this.accountSettingsService.changePassword(req.user.sub, currentPassword, newPassword);
+    return this.accountSettingsService.changePassword(
+      req.user.sub,
+      currentPassword,
+      newPassword,
+    );
   }
 
   @Delete('account')
@@ -49,7 +59,10 @@ export class UserSettingsController {
     @Body('currentPassword') currentPassword: string,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return this.accountSettingsService.deleteAccount(req.user.sub, currentPassword);
+    return this.accountSettingsService.deleteAccount(
+      req.user.sub,
+      currentPassword,
+    );
   }
 
   // ─── NOTIFICATIONS ──────────────────────────────────────────
@@ -64,7 +77,10 @@ export class UserSettingsController {
     @Body() dto: Record<string, boolean>,
     @NestRequest() req: AuthenticatedRequest,
   ) {
-    return this.accountSettingsService.updateNotificationSettings(req.user.sub, dto);
+    return this.accountSettingsService.updateNotificationSettings(
+      req.user.sub,
+      dto,
+    );
   }
 
   // ─── PRIVACY ────────────────────────────────────────────────

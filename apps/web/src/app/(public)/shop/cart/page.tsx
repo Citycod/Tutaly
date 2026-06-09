@@ -68,29 +68,8 @@ export default function CartPage() {
     }
   };
 
-  const handleCheckout = async () => {
-    setCheckingOut(true);
-    try {
-      const token = localStorage.getItem('access_token');
-      if (!token) {
-        router.push('/auth/signin');
-        return;
-      }
-
-      const res = await apiAuth.withToken(token).post('/shop/checkout', { gateway });
-      const data = res.data;
-
-      if (data.paymentLink) {
-        // Redirect to payment page (Flutterwave or Paystack)
-        window.location.href = data.paymentLink;
-      } else {
-        // Gateway not configured — redirect to success with order info
-        router.push(`/shop/checkout/success?orders=${encodeURIComponent(JSON.stringify(data.orders))}`);
-      }
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Checkout failed');
-      setCheckingOut(false);
-    }
+  const handleCheckout = () => {
+    router.push('/shop/checkout');
   };
 
   const formatPrice = (price: number, currency?: string) => {
@@ -208,51 +187,12 @@ export default function CartPage() {
                   </div>
                 </div>
 
-                {/* Gateway Selection */}
-                <div className="mb-5">
-                  <label className="block text-sm font-bold text-gray-700 mb-3">Payment Method</label>
-                  <div className="grid grid-cols-2 gap-3">
-                    <button
-                      type="button"
-                      onClick={() => setGateway('flutterwave')}
-                      className={`p-3 rounded-xl border-2 text-center transition-all ${
-                        gateway === 'flutterwave'
-                          ? 'border-orange-500 bg-orange-50 ring-2 ring-orange-500 ring-opacity-20'
-                          : 'border-gray-200 hover:border-orange-300'
-                      }`}
-                    >
-                      <span className="text-xl">🦋</span>
-                      <p className={`text-sm font-bold mt-1 ${gateway === 'flutterwave' ? 'text-orange-700' : 'text-gray-700'}`}>Flutterwave</p>
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setGateway('paystack')}
-                      className={`p-3 rounded-xl border-2 text-center transition-all ${
-                        gateway === 'paystack'
-                          ? 'border-blue-500 bg-blue-50 ring-2 ring-blue-500 ring-opacity-20'
-                          : 'border-gray-200 hover:border-blue-300'
-                      }`}
-                    >
-                      <span className="text-xl">💳</span>
-                      <p className={`text-sm font-bold mt-1 ${gateway === 'paystack' ? 'text-blue-700' : 'text-gray-700'}`}>Paystack</p>
-                    </button>
-                  </div>
-                </div>
-
                 <button
                   onClick={handleCheckout}
-                  disabled={checkingOut || cartItems.length === 0}
-                  className={`w-full text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50 ${
-                    gateway === 'flutterwave'
-                      ? 'bg-orange-500 hover:bg-orange-400'
-                      : 'bg-blue-600 hover:bg-blue-500'
-                  }`}
+                  disabled={cartItems.length === 0}
+                  className="w-full text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50"
                 >
-                  {checkingOut ? (
-                    <Loader2 className="w-5 h-5 animate-spin" />
-                  ) : (
-                    <><CreditCard className="w-5 h-5" /> Pay with {gateway === 'flutterwave' ? 'Flutterwave' : 'Paystack'}</>
-                  )}
+                  Proceed to Checkout
                 </button>
 
                 <div className="mt-6 space-y-3">

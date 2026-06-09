@@ -36,7 +36,9 @@ export class UserSettings1777960000000 implements MigrationInterface {
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.query(`ALTER TABLE "user_settings" DROP CONSTRAINT "FK_user_settings_userId"`);
+    await queryRunner.query(
+      `ALTER TABLE "user_settings" DROP CONSTRAINT "FK_user_settings_userId"`,
+    );
     await queryRunner.query(`DROP TABLE "user_settings"`);
     await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "tokenVersion"`);
     await queryRunner.query(`ALTER TABLE "users" DROP COLUMN "pendingEmail"`);

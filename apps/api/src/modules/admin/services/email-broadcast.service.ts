@@ -2,7 +2,10 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User, UserRole } from '../../user/entities/user.entity';
-import { NewsletterSend, BroadcastAudience } from '../entities/newsletter-send.entity';
+import {
+  NewsletterSend,
+  BroadcastAudience,
+} from '../entities/newsletter-send.entity';
 import { MailService } from '../../auth/mail.service';
 
 function toPlain<T>(obj: T): T {
@@ -32,7 +35,10 @@ export class EmailBroadcastService {
     adminId: string,
   ) {
     // Determine recipients based on audience
-    const whereClause: Record<string, any> = { isActive: true, isEmailVerified: true };
+    const whereClause: Record<string, any> = {
+      isActive: true,
+      isEmailVerified: true,
+    };
 
     if (audience === BroadcastAudience.SEEKERS) {
       whereClause.role = UserRole.SEEKER;
@@ -63,9 +69,13 @@ export class EmailBroadcastService {
     for (let i = 0; i < recipients.length; i += BATCH_SIZE) {
       const batch = recipients.slice(i, i + BATCH_SIZE);
       const promises = batch.map((user) =>
-        this.mailService.sendBroadcastEmail(user.email, subject, body).catch((err) => {
-          this.logger.error(`Failed to send broadcast to ${user.email}: ${err.message}`);
-        }),
+        this.mailService
+          .sendBroadcastEmail(user.email, subject, body)
+          .catch((err) => {
+            this.logger.error(
+              `Failed to send broadcast to ${user.email}: ${err.message}`,
+            );
+          }),
       );
       await Promise.allSettled(promises);
       sentCount += batch.length;

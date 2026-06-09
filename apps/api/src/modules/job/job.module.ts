@@ -7,6 +7,7 @@ import { Job, Application, SavedJob, ReportedJob } from './entities/job.entity';
 import { User } from '../user/entities/user.entity';
 import { SeekerProfile } from '../user/entities/seeker-profile.entity';
 import { AuthModule } from '../auth/auth.module';
+import { AdsModule } from '../ads/ads.module';
 
 @Module({
   imports: [
@@ -19,6 +20,7 @@ import { AuthModule } from '../auth/auth.module';
       SeekerProfile,
     ]),
     AuthModule,
+    AdsModule,
   ],
   controllers: [JobController],
   providers: [JobService],

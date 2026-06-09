@@ -1,8 +1,4 @@
-import {
-  Injectable,
-  NotFoundException,
-  Logger,
-} from '@nestjs/common';
+import { Injectable, NotFoundException, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { LegalPage } from '../../support/entities/support.entity';
@@ -42,7 +38,9 @@ export class LegalPagesService {
    */
   async seedLegalPages() {
     for (const page of LEGAL_PAGE_SLUGS) {
-      const existing = await this.legalRepo.findOne({ where: { slug: page.slug } });
+      const existing = await this.legalRepo.findOne({
+        where: { slug: page.slug },
+      });
       if (!existing) {
         const newPage = this.legalRepo.create({
           slug: page.slug,
@@ -91,7 +89,12 @@ export class LegalPagesService {
   /**
    * PUT /admin/legal/:slug — update content via rich text editor.
    */
-  async updateLegalPage(slug: string, content: string, title: string | undefined, adminId: string) {
+  async updateLegalPage(
+    slug: string,
+    content: string,
+    title: string | undefined,
+    adminId: string,
+  ) {
     const page = await this.legalRepo.findOne({ where: { slug } });
     if (!page) throw new NotFoundException(`Legal page "${slug}" not found`);
 

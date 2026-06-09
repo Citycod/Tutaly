@@ -44,20 +44,23 @@ export class AdvertisingService {
    * GET /admin/ads
    */
   async getAds(page = 1, limit = 20, status?: string) {
-    const qb = this.adRepo.createQueryBuilder('ad')
+    const qb = this.adRepo
+      .createQueryBuilder('ad')
       .leftJoinAndSelect('ad.advertiser', 'advertiser')
       .orderBy('ad.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
 
     if (status === 'active') {
-      qb.andWhere('ad.isActive = :isActive', { isActive: true })
-        .andWhere('ad.endsAt > NOW()');
+      qb.andWhere('ad.isActive = :isActive', { isActive: true }).andWhere(
+        'ad.endsAt > NOW()',
+      );
     } else if (status === 'expired') {
       qb.andWhere('ad.endsAt <= NOW()');
     } else if (status === 'paused') {
-      qb.andWhere('ad.isActive = :isActive', { isActive: false })
-        .andWhere('ad.endsAt > NOW()');
+      qb.andWhere('ad.isActive = :isActive', { isActive: false }).andWhere(
+        'ad.endsAt > NOW()',
+      );
     }
 
     const [items, total] = await qb.getManyAndCount();
@@ -131,7 +134,8 @@ export class AdvertisingService {
    * Public endpoint returning currently active ads filtered by placement.
    */
   async getActiveAdsByPlacement(placement?: string) {
-    const qb = this.adRepo.createQueryBuilder('ad')
+    const qb = this.adRepo
+      .createQueryBuilder('ad')
       .where('ad.isActive = :isActive', { isActive: true })
       .andWhere('ad.startsAt <= NOW()')
       .andWhere('ad.endsAt > NOW()');

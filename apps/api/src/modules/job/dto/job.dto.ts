@@ -80,6 +80,14 @@ export class CreateJobDto {
   @IsOptional()
   @IsDateString()
   deadline?: string;
+
+  @IsOptional()
+  @IsBoolean()
+  isFeatured?: boolean;
+
+  @IsOptional()
+  @IsBoolean()
+  isUrgent?: boolean;
 }
 
 export class UpdateJobDto extends PartialType(CreateJobDto) {}

@@ -1,4 +1,14 @@
-import { Controller, Post, Get, Body, Req, UseGuards, UseInterceptors, UploadedFile, BadRequestException } from '@nestjs/common';
+import {
+  Controller,
+  Post,
+  Get,
+  Body,
+  Req,
+  UseGuards,
+  UseInterceptors,
+  UploadedFile,
+  BadRequestException,
+} from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { AdsService } from '../services/ads.service';
 import { NotificationService } from '../../admin/services/notification.service';
@@ -12,20 +22,32 @@ import { UserRole } from '../../user/entities/user.entity';
 export class AdsController {
   constructor(
     private readonly adsService: AdsService,
-    private readonly notificationService: NotificationService
+    private readonly notificationService: NotificationService,
   ) {}
 
   @Post()
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN) // Block 'seeker'
   async createCampaign(@Req() req, @Body() body: any) {
-    // Basic implementation of creating a campaign
-    const campaign = await this.adsService.createCampaign(req.user.id, body);
+    const { paymentGateway, ...campaignData } = body;
     
-    // Trigger payment gateway checkout logic here
-    
+    // Create the campaign
+    const campaign = await this.adsService.createCampaign(req.user.id, campaignData);
+
+    // If paymentGateway is provided, initialize payment immediately
+    let paymentInitialization: any = null;
+    if (paymentGateway && campaign.total_budget > 0) {
+      paymentInitialization = await this.adsService.initializeAdPayment(
+        campaign.id,
+        paymentGateway,
+        req.user.email || 'employer@tutaly.com',
+        req.user.name || 'Tutaly Employer'
+      );
+    }
+
     return {
-      message: 'Campaign created successfully. Proceed to payment.',
+      message: 'Campaign created successfully.',
       campaign,
+      payment: paymentInitialization,
     };
   }
 
@@ -36,7 +58,7 @@ export class AdsController {
     if (!file) {
       throw new BadRequestException('No file provided');
     }
-    
+
     return this.adsService.uploadCreative(
       req.user.sub,
       file.buffer,
@@ -56,9 +78,13 @@ export class AdsController {
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN)
   async getAdAlerts(@Req() req) {
     // Fetch all notifications for user, then filter ad-specific types
-    // Note: this is a simple implementation. In a real scenario, we would add a method 
+    // Note: this is a simple implementation. In a real scenario, we would add a method
     // to NotificationService to query specific types directly.
-    const { data } = await this.notificationService.getUserNotifications(req.user.sub, 1, 100);
+    const { data } = await this.notificationService.getUserNotifications(
+      req.user.sub,
+      1,
+      100,
+    );
     const adTypes = [
       'ad_campaign_created',
       'ad_under_review',
@@ -69,9 +95,9 @@ export class AdsController {
       'ad_budget_exhausted',
       'ad_campaign_ended',
       'ad_refund_processed',
-      'ad_weekly_report'
+      'ad_weekly_report',
     ];
-    const adAlerts = data.filter(n => adTypes.includes(n.type) && !n.isRead);
+    const adAlerts = data.filter((n) => adTypes.includes(n.type) && !n.isRead);
     return { alerts: adAlerts };
   }
 }

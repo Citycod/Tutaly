@@ -277,17 +277,17 @@ export class MailService {
   // --- ADS MODULE TEMPLATES ---------------------------------------
 
   private getAdTemplate(title: string, content: string, ctaHtml: string = '') {
-    return \
+    return `
       <div style="font-family: 'Inter', sans-serif; max-width: 600px; margin: 0 auto; padding: 40px 20px;">
         <div style="text-align: center; margin-bottom: 30px;">
           <h1 style="color: #0D1B2A; font-size: 28px; margin: 0;">Tutaly</h1>
         </div>
         <div style="background: #ffffff; border-radius: 12px; padding: 32px; border: 1px solid #e2e8f0; box-shadow: 0 4px 6px rgba(0,0,0,0.05);">
-          <h2 style="color: #0D1B2A; margin-top: 0;">\</h2>
+          <h2 style="color: #0D1B2A; margin-top: 0;">${title}</h2>
           <p style="color: #4a5568; font-size: 16px; line-height: 1.6;">
-            \
+            ${content}
           </p>
-          \
+          ${ctaHtml}
         </div>
         <div style="text-align: center; margin-top: 20px;">
           <p style="color: #a0aec0; font-size: 12px;">
@@ -296,124 +296,124 @@ export class MailService {
           </p>
         </div>
       </div>
-    \;
+    `;
   }
 
   async sendAdCampaignCreatedEmail(to: string, campaignId: string): Promise<void> {
-    const dashboardUrl = \http://localhost:3000/dashboard/employer/advertise/\\;
+    const dashboardUrl = `http://localhost:3000/dashboard/employer/advertise/`;
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Created successfully',
         html: this.getAdTemplate(
           'Campaign Created',
           'Your new ad campaign has been successfully created and payment confirmed. It is currently waiting for admin review.',
-          \<div style="text-align: center; margin: 30px 0;"><a href="\" style="background: #2563eb; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Campaign</a></div>\
+          `<div style="text-align: center; margin: 30px 0;"><a href="${dashboardUrl}" style="background: #2563eb; color: white; padding: 14px 32px; border-radius: 8px; text-decoration: none; font-weight: 600;">View Campaign</a></div>`
         )
       });
-    } catch (e) { console.error('Failed to send ad created email:', e.message); }
+    } catch (e) { console.error('Failed to send ad created email:', (e as Error).message); }
   }
 
   async sendAdUnderReviewEmail(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Under Review',
         html: this.getAdTemplate('Campaign Under Review', 'Your ad campaign is now under review by our moderation team. You will be notified as soon as it is approved or if any changes are required.')
       });
-    } catch (e) { console.error('Failed to send ad review email:', e.message); }
+    } catch (e) { console.error('Failed to send ad review email:', (e as Error).message); }
   }
 
   async sendAdApprovedEmail(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
-        subject: 'Campaign Approved! ??',
+        subject: 'Campaign Approved! 🎉',
         html: this.getAdTemplate('Campaign Approved!', 'Great news! Your ad campaign has been approved and is now live (or will start running on your scheduled start date).')
       });
-    } catch (e) { console.error('Failed to send ad approved email:', e.message); }
+    } catch (e) { console.error('Failed to send ad approved email:', (e as Error).message); }
   }
 
   async sendAdRejectedEmail(to: string, campaignId: string, reason: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Action Required',
         html: this.getAdTemplate(
           'Campaign Rejected',
-          \Unfortunately, your ad campaign was rejected during review. Reason provided by moderator:<br/><br/><i>"\"</i><br/><br/>Please update your campaign to comply with our guidelines or your budget will be refunded.\
+          `Unfortunately, your ad campaign was rejected during review. Reason provided by moderator:<br/><br/><i>"${reason}"</i><br/><br/>Please update your campaign to comply with our guidelines or your budget will be refunded.`
         )
       });
-    } catch (e) { console.error('Failed to send ad rejected email:', e.message); }
+    } catch (e) { console.error('Failed to send ad rejected email:', (e as Error).message); }
   }
 
   async sendAdBudget50Email(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Budget Alert: 50% Used',
         html: this.getAdTemplate('Budget Alert: 50%', 'Your ad campaign has consumed 50% of its total budget. Consider adding more funds if you wish to extend its reach.')
       });
-    } catch (e) { console.error('Failed to send ad budget 50 email:', e.message); }
+    } catch (e) { console.error('Failed to send ad budget 50 email:', (e as Error).message); }
   }
 
   async sendAdBudget80Email(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Budget Alert: 80% Used',
         html: this.getAdTemplate('Budget Alert: 80%', 'Your ad campaign has now consumed 80% of its total budget. It will automatically pause once the budget is exhausted.')
       });
-    } catch (e) { console.error('Failed to send ad budget 80 email:', e.message); }
+    } catch (e) { console.error('Failed to send ad budget 80 email:', (e as Error).message); }
   }
 
   async sendAdBudgetExhaustedEmail(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Paused: Budget Exhausted',
         html: this.getAdTemplate('Budget Exhausted', 'Your ad campaign has exhausted its total budget and is now paused. Add more funds to reactivate it.')
       });
-    } catch (e) { console.error('Failed to send ad budget exhausted email:', e.message); }
+    } catch (e) { console.error('Failed to send ad budget exhausted email:', (e as Error).message); }
   }
 
   async sendAdCampaignEndedEmail(to: string, campaignId: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Campaign Ended',
         html: this.getAdTemplate('Campaign Ended', 'Your ad campaign has reached its scheduled end date and is now completed. Check your dashboard for final performance metrics.')
       });
-    } catch (e) { console.error('Failed to send ad ended email:', e.message); }
+    } catch (e) { console.error('Failed to send ad ended email:', (e as Error).message); }
   }
 
   async sendAdRefundProcessedEmail(to: string, campaignId: string, amount: number): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Ad Budget Refund Processed',
-        html: this.getAdTemplate('Refund Processed', \We have processed a refund of ?\ for your unspent ad campaign budget. This should reflect in your account shortly.\)
+        html: this.getAdTemplate('Refund Processed', `We have processed a refund of ₦${amount} for your unspent ad campaign budget. This should reflect in your account shortly.`)
       });
-    } catch (e) { console.error('Failed to send ad refund email:', e.message); }
+    } catch (e) { console.error('Failed to send ad refund email:', (e as Error).message); }
   }
 
   async sendAdWeeklyReportEmail(to: string, reportHtml: string): Promise<void> {
     try {
       await this.transporter.sendMail({
-        from: \"Tutaly Ads" <\>\,
+        from: `"Tutaly Ads" <${this.fromEmail}>`,
         to,
         subject: 'Weekly Ad Performance Report',
         html: this.getAdTemplate('Weekly Performance Report', reportHtml)
       });
-    } catch (e) { console.error('Failed to send ad weekly report email:', e.message); }
+    } catch (e) { console.error('Failed to send ad weekly report email:', (e as Error).message); }
   }
 }

@@ -16,7 +16,9 @@ export class SettingsService {
    * Commission Rate Management
    */
   async getCommissionRate(): Promise<number> {
-    const setting = await this.settingsRepo.findOne({ where: { key: 'commission_rate' } });
+    const setting = await this.settingsRepo.findOne({
+      where: { key: 'commission_rate' },
+    });
     if (!setting) {
       return 20; // Default 20%
     }
@@ -24,7 +26,9 @@ export class SettingsService {
   }
 
   async updateCommissionRate(rate: number, adminId: string) {
-    let setting = await this.settingsRepo.findOne({ where: { key: 'commission_rate' } });
+    let setting = await this.settingsRepo.findOne({
+      where: { key: 'commission_rate' },
+    });
     if (!setting) {
       setting = this.settingsRepo.create({ key: 'commission_rate' });
     }
@@ -32,7 +36,7 @@ export class SettingsService {
     setting.description = 'Platform global commission rate percentage';
     setting.updatedById = adminId;
     await this.settingsRepo.save(setting);
-    
+
     this.logger.log(`Commission rate updated to ${rate}% by admin ${adminId}`);
     return { success: true, data: { rate } };
   }
@@ -41,21 +45,40 @@ export class SettingsService {
    * Cookie Consent Management
    */
   async getCookieSettings() {
-    const setting = await this.settingsRepo.findOne({ where: { key: 'cookie_settings' } });
+    const setting = await this.settingsRepo.findOne({
+      where: { key: 'cookie_settings' },
+    });
     if (!setting) {
       return {
         categories: [
-          { id: 'essential', name: 'Essential', description: 'Required for the site to function.', required: true },
-          { id: 'analytics', name: 'Analytics', description: 'Help us improve by tracking usage.', required: false },
-          { id: 'marketing', name: 'Marketing', description: 'Used to deliver personalized ads.', required: false },
-        ]
+          {
+            id: 'essential',
+            name: 'Essential',
+            description: 'Required for the site to function.',
+            required: true,
+          },
+          {
+            id: 'analytics',
+            name: 'Analytics',
+            description: 'Help us improve by tracking usage.',
+            required: false,
+          },
+          {
+            id: 'marketing',
+            name: 'Marketing',
+            description: 'Used to deliver personalized ads.',
+            required: false,
+          },
+        ],
       };
     }
     return setting.value;
   }
 
   async updateCookieSettings(categories: any[], adminId: string) {
-    let setting = await this.settingsRepo.findOne({ where: { key: 'cookie_settings' } });
+    let setting = await this.settingsRepo.findOne({
+      where: { key: 'cookie_settings' },
+    });
     if (!setting) {
       setting = this.settingsRepo.create({ key: 'cookie_settings' });
     }

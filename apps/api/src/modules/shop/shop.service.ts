@@ -432,27 +432,29 @@ export class ShopService {
 
     // Route to the selected payment gateway
     const gatewayInstance = this.paymentFactory.create(gateway);
-    return gatewayInstance.initializePayment({
-      orders,
-      totalAmount,
-      currency,
-      reference,
-      customerEmail: buyer?.email || 'buyer@tutaly.com',
-      customerName: buyer?.email ? buyer.email.split('@')[0] : 'Tutaly Buyer',
-      redirectUrl: `${process.env.WEB_URL || 'http://localhost:3000'}/shop/checkout/success`,
-      metadata: {
-        order_ids: orders.map((o) => o.id).join(','),
-        payment_refs: orders.map((o) => o.paymentRef).join(','),
-      },
-    }).then(async (result) => {
-      if (result.success) {
-        await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
-      } else {
-        await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
-        this.logger.error(`Gateway initialization failed: ${result.error}`);
-      }
-      return result;
-    });
+    return gatewayInstance
+      .initializePayment({
+        orders,
+        totalAmount,
+        currency,
+        reference,
+        customerEmail: buyer?.email || 'buyer@tutaly.com',
+        customerName: buyer?.email ? buyer.email.split('@')[0] : 'Tutaly Buyer',
+        redirectUrl: `${process.env.WEB_URL || 'http://localhost:3000'}/shop/checkout/success`,
+        metadata: {
+          order_ids: orders.map((o) => o.id).join(','),
+          payment_refs: orders.map((o) => o.paymentRef).join(','),
+        },
+      })
+      .then(async (result) => {
+        if (result.success) {
+          await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
+        } else {
+          await this.tokenService.setJobCache(this.cartKey(userId), '[]', 1);
+          this.logger.error(`Gateway initialization failed: ${result.error}`);
+        }
+        return result;
+      });
   }
 
   // ─── Generic Webhook Handler ──────────────────────────────────────
@@ -465,16 +467,23 @@ export class ShopService {
   ) {
     const gateway = this.paymentFactory.createByName(gatewayName);
 
-    const isValid = await gateway.verifyWebhookSignature(headers, payload, rawBody);
+    const isValid = await gateway.verifyWebhookSignature(
+      headers,
+      payload,
+      rawBody,
+    );
     if (!isValid) {
       throw new ForbiddenException(`Invalid ${gatewayName} webhook signature.`);
     }
 
     const result = await gateway.handleWebhookEvent(payload);
-    
+
     if (result.processed && result.reference) {
       // The gateway successfully validated the event and parsed the reference
-      await this.processSuccessfulPayment(result.reference, payload.data?.meta || payload.data?.metadata || {});
+      await this.processSuccessfulPayment(
+        result.reference,
+        payload.data?.meta || payload.data?.metadata || {},
+      );
     }
 
     return { success: true };

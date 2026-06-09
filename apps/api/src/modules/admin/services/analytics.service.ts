@@ -5,7 +5,10 @@ import { User, UserRole } from '../../user/entities/user.entity';
 import { Job } from '../../job/entities/job.entity';
 import { Application } from '../../job/entities/job.entity';
 import { Order, OrderStatus } from '../../shop/entities/order.entity';
-import { CompanyReview, ReviewStatus } from '../../review/entities/review.entity';
+import {
+  CompanyReview,
+  ReviewStatus,
+} from '../../review/entities/review.entity';
 
 @Injectable()
 export class AnalyticsService {
@@ -14,9 +17,11 @@ export class AnalyticsService {
   constructor(
     @InjectRepository(User) private readonly userRepo: Repository<User>,
     @InjectRepository(Job) private readonly jobRepo: Repository<Job>,
-    @InjectRepository(Application) private readonly applicationRepo: Repository<Application>,
+    @InjectRepository(Application)
+    private readonly applicationRepo: Repository<Application>,
     @InjectRepository(Order) private readonly orderRepo: Repository<Order>,
-    @InjectRepository(CompanyReview) private readonly reviewRepo: Repository<CompanyReview>,
+    @InjectRepository(CompanyReview)
+    private readonly reviewRepo: Repository<CompanyReview>,
   ) {}
 
   /**
@@ -25,8 +30,12 @@ export class AnalyticsService {
    */
   async getUserAnalytics() {
     const totalUsers = await this.userRepo.count();
-    const totalSeekers = await this.userRepo.count({ where: { role: UserRole.SEEKER } });
-    const totalEmployers = await this.userRepo.count({ where: { role: UserRole.EMPLOYER } });
+    const totalSeekers = await this.userRepo.count({
+      where: { role: UserRole.SEEKER },
+    });
+    const totalEmployers = await this.userRepo.count({
+      where: { role: UserRole.EMPLOYER },
+    });
 
     // Registrations over the last 12 months
     const registrationsByMonth = await this.userRepo
@@ -48,7 +57,10 @@ export class AnalyticsService {
       .where("u.updatedAt >= NOW() - INTERVAL '30 days'")
       .getCount();
 
-    const retentionRate = totalUsers > 0 ? Math.round((activeUsersLast30Days / totalUsers) * 100) : 0;
+    const retentionRate =
+      totalUsers > 0
+        ? Math.round((activeUsersLast30Days / totalUsers) * 100)
+        : 0;
 
     return {
       totalUsers,
@@ -73,7 +85,10 @@ export class AnalyticsService {
   async getJobAnalytics() {
     const totalJobs = await this.jobRepo.count();
     const totalApplications = await this.applicationRepo.count();
-    const avgApplicationsPerJob = totalJobs > 0 ? Math.round((totalApplications / totalJobs) * 100) / 100 : 0;
+    const avgApplicationsPerJob =
+      totalJobs > 0
+        ? Math.round((totalApplications / totalJobs) * 100) / 100
+        : 0;
 
     // Top industries
     const topIndustries = await this.jobRepo
@@ -204,13 +219,20 @@ export class AnalyticsService {
    */
   async getReviewAnalytics() {
     const totalReviews = await this.reviewRepo.count();
-    const approvedReviews = await this.reviewRepo.count({ where: { status: ReviewStatus.APPROVED } });
-    const pendingReviews = await this.reviewRepo.count({ where: { status: ReviewStatus.PENDING } });
-    const rejectedReviews = await this.reviewRepo.count({ where: { status: ReviewStatus.REJECTED } });
+    const approvedReviews = await this.reviewRepo.count({
+      where: { status: ReviewStatus.APPROVED },
+    });
+    const pendingReviews = await this.reviewRepo.count({
+      where: { status: ReviewStatus.PENDING },
+    });
+    const rejectedReviews = await this.reviewRepo.count({
+      where: { status: ReviewStatus.REJECTED },
+    });
 
-    const approvalRate = totalReviews > 0
-      ? Math.round((approvedReviews / totalReviews) * 10000) / 100
-      : 0;
+    const approvalRate =
+      totalReviews > 0
+        ? Math.round((approvedReviews / totalReviews) * 10000) / 100
+        : 0;
 
     // Top reviewed companies
     const topCompanies = await this.reviewRepo

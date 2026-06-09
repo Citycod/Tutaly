@@ -1,5 +1,16 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn } from 'typeorm';
-import { AdGoal, AdFormat, CampaignStatus, PaymentGateway } from '../enums/ads.enums';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  UpdateDateColumn,
+} from 'typeorm';
+import {
+  AdGoal,
+  AdFormat,
+  CampaignStatus,
+  PaymentGateway,
+} from '../enums/ads.enums';
 
 @Entity('ad_campaigns')
 export class AdCampaign {
@@ -72,7 +83,11 @@ export class AdCampaign {
   @Column({ default: 0 })
   click_count: number;
 
-  @Column({ type: 'enum', enum: CampaignStatus, default: CampaignStatus.PENDING_PAYMENT })
+  @Column({
+    type: 'enum',
+    enum: CampaignStatus,
+    default: CampaignStatus.PENDING_PAYMENT,
+  })
   status: CampaignStatus;
 
   @Column({ nullable: true })
@@ -83,6 +98,9 @@ export class AdCampaign {
 
   @Column({ nullable: true })
   payment_ref: string;
+
+  @Column({ default: 'NGN' })
+  currency: string;
 
   @Column({ type: 'enum', enum: PaymentGateway, nullable: true })
   payment_gateway: PaymentGateway;

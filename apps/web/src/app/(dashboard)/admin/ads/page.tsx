@@ -2,220 +2,352 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter } from 'next/navigation';
-import { PlusCircle, Image as ImageIcon, ExternalLink, Calendar, PauseCircle, PlayCircle, Trash2, Edit } from 'lucide-react';
+import { 
+  Megaphone, 
+  CheckCircle, 
+  XCircle, 
+  TrendingUp, 
+  Clock, 
+  AlertCircle,
+  MousePointerClick,
+  Eye,
+  Link as LinkIcon
+} from 'lucide-react';
 import { apiAuth } from '@/lib/api';
 import Link from 'next/link';
 
-interface Ad {
+interface Advertiser {
   id: string;
-  type: string;
-  imageUrl: string;
-  targetUrl: string;
-  placement: string;
-  startsAt: string;
-  endsAt: string;
-  isActive: boolean;
+  name: string;
+  email: string;
+}
+
+interface JobDetails {
+  id: string;
+  title: string;
+}
+
+interface AdCampaign {
+  id: string;
+  advertiser_id: string;
+  job_id: string | null;
+  product_id: string | null;
+  goal: string;
+  format: string;
+  status: string;
+  total_budget: string | number;
+  total_spent: string | number;
+  impression_count: number;
+  click_count: number;
+  starts_at: string;
+  ends_at: string | null;
   createdAt: string;
+  advertiser?: Advertiser | null;
+  job?: JobDetails | null;
 }
 
-interface PaginationMeta {
-  total: number;
-  page: number;
-  limit: number;
-  totalPages: number;
-}
-
-export default function AdminAdsPage() {
+export default function AdminAdsModerationPage() {
   const router = useRouter();
   
-  const [ads, setAds] = useState<Ad[]>([]);
+  const [campaigns, setCampaigns] = useState<AdCampaign[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
-  const [statusFilter, setStatusFilter] = useState<string>('all');
-  const [meta, setMeta] = useState<PaginationMeta | null>(null);
-  const [page, setPage] = useState(1);
+  const [tab, setTab] = useState<'queue' | 'all'>('queue');
 
-  const fetchAds = useCallback(async () => {
+  // Modal State
+  const [rejectModalOpen, setRejectModalOpen] = useState(false);
+  const [rejectingCampaignId, setRejectingCampaignId] = useState<string | null>(null);
+  const [rejectReason, setRejectReason] = useState('');
+  const [predefinedReason, setPredefinedReason] = useState('');
+
+  const PREDEFINED_REASONS = [
+    'Violates Platform Policy',
+    'Inappropriate Content',
+    'Misleading or False Information',
+    'Low Quality Media',
+    'Irrelevant to Audience'
+  ];
+
+  const fetchCampaigns = useCallback(async () => {
     try {
       setLoading(true);
       setError('');
       const token = localStorage.getItem('access_token');
       
-      const params: any = { page, limit: 20 };
-      if (statusFilter !== 'all') {
-        params.status = statusFilter;
-      }
-
-      const res = await apiAuth.withToken(token || undefined).get('/admin/ads', { params });
-      setAds(res.data.items || []);
-      setMeta(res.data.meta || null);
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
+      const endpoint = tab === 'queue' ? '/admin/ads/queue' : '/admin/ads/all';
+      const res = await apiAuth.withToken(token || undefined).get(endpoint);
+      
+      setCampaigns(res.data || []);
+    } catch (err: unknown) {
+      const error = err as { response?: { status?: number, data?: { message?: string } }, message?: string };
+      if (error.response?.status === 401 || error.response?.status === 403) {
         router.push('/auth/signin');
         return;
       }
-      setError(err.response?.data?.message || err.message || 'Error loading ads');
+      setError(error.response?.data?.message || error.message || 'Error loading campaigns');
     } finally {
       setLoading(false);
     }
-  }, [page, statusFilter, router]);
+  }, [tab, router]);
 
   useEffect(() => {
-    fetchAds();
-  }, [fetchAds]);
+    fetchCampaigns();
+  }, [fetchCampaigns]);
 
-  const handleToggleActive = async (id: string, currentStatus: boolean) => {
+  const handleApprove = async (id: string) => {
+    if (!confirm('Are you sure you want to approve this campaign? It will become active immediately.')) return;
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token || undefined).patch(`/admin/ads/${id}`, {
-        isActive: !currentStatus,
-      });
-      fetchAds();
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+      await apiAuth.withToken(token || undefined).patch(`/admin/ads/${id}/approve`);
+      fetchCampaigns();
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }, message?: string };
+      alert(error.response?.data?.message || error.message);
     }
   };
 
-  const handleDelete = async (id: string) => {
-    if (!confirm('Are you sure you want to delete this ad?')) return;
-    try {
-      const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token || undefined).delete(`/admin/ads/${id}`);
-      fetchAds();
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
-    }
+  const openRejectModal = (id: string) => {
+    setRejectingCampaignId(id);
+    setRejectReason('');
+    setPredefinedReason('');
+    setRejectModalOpen(true);
   };
 
-  const statusBadge = (ad: Ad) => {
-    const now = new Date();
-    const endsAt = new Date(ad.endsAt);
+  const handleReject = async () => {
+    if (!rejectingCampaignId) return;
     
-    if (endsAt <= now) {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gray-100 text-gray-600">Expired</span>;
+    const finalReason = predefinedReason 
+      ? (rejectReason ? `${predefinedReason} - ${rejectReason}` : predefinedReason)
+      : rejectReason;
+
+    if (!finalReason.trim()) {
+      alert("Please provide a rejection reason.");
+      return;
     }
-    if (!ad.isActive) {
-      return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800">Paused</span>;
+
+    try {
+      const token = localStorage.getItem('access_token');
+      await apiAuth.withToken(token || undefined).patch(`/admin/ads/${rejectingCampaignId}/reject`, {
+        reason: finalReason
+      });
+      setRejectModalOpen(false);
+      fetchCampaigns();
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }, message?: string };
+      alert(error.response?.data?.message || error.message);
     }
-    return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">Active</span>;
+  };
+
+  const formatCurrency = (amount: string | number) => {
+    return new Intl.NumberFormat('en-NG', { style: 'currency', currency: 'NGN' }).format(Number(amount));
+  };
+
+  const statusBadge = (status: string) => {
+    switch (status) {
+      case 'pending_payment':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 border border-gray-200 shadow-sm">Awaiting Payment</span>;
+      case 'pending_review':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-blue-100 text-blue-800 border border-blue-200 shadow-sm">In Review</span>;
+      case 'active':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-green-100 text-green-800 border border-green-200 shadow-sm">Active</span>;
+      case 'completed':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-purple-100 text-purple-800 border border-purple-200 shadow-sm">Completed</span>;
+      case 'paused':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-yellow-100 text-yellow-800 border border-yellow-200 shadow-sm">Paused</span>;
+      case 'rejected':
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-red-100 text-red-800 border border-red-200 shadow-sm">Rejected</span>;
+      default:
+        return <span className="px-3 py-1 text-xs font-bold rounded-full bg-gray-100 text-gray-600 uppercase shadow-sm">{status.replace('_', ' ')}</span>;
+    }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
+      {/* Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Advertising</h1>
-          <p className="text-gray-500 mt-1">Manage banner ads, sponsored listings, and placements.</p>
+          <h1 className="text-3xl font-black text-gray-900 flex items-center gap-3">
+            <Megaphone className="w-8 h-8 text-teal-600" />
+            Ads Moderation
+          </h1>
+          <p className="text-gray-500 mt-2 font-medium">Review, approve, and monitor advertiser campaigns across the platform.</p>
         </div>
-        <Link 
-          href="/admin/ads/create"
-          className="bg-teal-600 text-white px-5 py-2.5 rounded-xl font-bold hover:bg-teal-700 shadow-lg shadow-teal-600/20 flex items-center justify-center gap-2 transition-colors"
+      </div>
+
+      {/* Tabs */}
+      <div className="flex gap-3 border-b border-gray-200 pb-3 overflow-x-auto scrollbar-hide">
+        <button
+          onClick={() => setTab('queue')}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold capitalize whitespace-nowrap transition-all ${
+            tab === 'queue' 
+              ? 'bg-teal-600 text-white shadow-md shadow-teal-600/20' 
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+          }`}
         >
-          <PlusCircle className="w-5 h-5" />
-          Create Ad
-        </Link>
+          Pending Review
+        </button>
+        <button
+          onClick={() => setTab('all')}
+          className={`px-5 py-2.5 rounded-xl text-sm font-bold capitalize whitespace-nowrap transition-all ${
+            tab === 'all' 
+              ? 'bg-gray-900 text-white shadow-md shadow-gray-900/20' 
+              : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-300 hover:bg-gray-50'
+          }`}
+        >
+          All Campaigns
+        </button>
       </div>
 
-      <div className="flex gap-2 border-b border-gray-100 pb-2 overflow-x-auto scrollbar-hide">
-        {['all', 'active', 'paused', 'expired'].map(s => (
-          <button
-            key={s}
-            onClick={() => { setStatusFilter(s); setPage(1); }}
-            className={`px-4 py-2 rounded-xl text-sm font-bold capitalize whitespace-nowrap transition-all ${
-              statusFilter === s 
-                ? 'bg-gray-900 text-white shadow-md' 
-                : 'bg-white text-gray-600 border border-gray-200 hover:border-gray-400'
-            }`}
-          >
-            {s}
-          </button>
-        ))}
-      </div>
+      {error && (
+        <div className="flex items-center gap-3 text-red-700 bg-red-50 border border-red-200 p-4 rounded-xl text-sm font-medium shadow-sm">
+          <AlertCircle className="w-5 h-5 flex-shrink-0" />
+          {error}
+        </div>
+      )}
 
-      {error && <div className="text-red-500 bg-red-50 p-4 rounded-lg text-sm">{error}</div>}
-
-      <div className="bg-white shadow-sm border border-gray-100 rounded-3xl overflow-hidden">
+      {/* Campaigns Table / List */}
+      <div className="bg-white/80 backdrop-blur-xl shadow-xl shadow-gray-200/50 border border-gray-100 rounded-3xl overflow-hidden relative">
         {loading ? (
-          <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+          <div className="flex flex-col justify-center items-center h-64 gap-4">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-t-2 border-teal-600"></div>
+            <p className="text-gray-500 font-medium">Loading campaigns...</p>
           </div>
-        ) : ads.length === 0 ? (
-          <div className="p-16 text-center text-gray-500">
-            <ImageIcon className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-1">No ads found</h3>
-            <p className="text-gray-500 mb-6">You haven't created any advertisements yet.</p>
-            <Link 
-              href="/admin/ads/create"
-              className="inline-flex items-center gap-2 text-teal-600 font-bold hover:text-teal-700"
-            >
-              <PlusCircle className="w-5 h-5" /> Create your first ad
-            </Link>
+        ) : campaigns.length === 0 ? (
+          <div className="p-20 text-center flex flex-col items-center">
+            <div className="w-20 h-20 bg-gray-50 rounded-2xl flex items-center justify-center mb-5 border border-gray-100 shadow-inner">
+              <Megaphone className="w-10 h-10 text-gray-300" />
+            </div>
+            <h3 className="text-2xl font-black text-gray-900 mb-2">Queue is Empty</h3>
+            <p className="text-gray-500 font-medium max-w-sm">
+              {tab === 'queue' 
+                ? "There are currently no campaigns waiting for your review. Great job!" 
+                : "No campaigns have been created on the platform yet."}
+            </p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50/50">
+              <thead className="bg-gray-50/80 backdrop-blur-sm border-b border-gray-100">
                 <tr>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Ad Details</th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Placement & Type</th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Date Range</th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Status</th>
-                  <th scope="col" className="px-6 py-4 text-right text-xs font-black text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Advertiser / Target</th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Budget & Spent</th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Metrics</th>
+                  <th scope="col" className="px-6 py-5 text-left text-xs font-black text-gray-500 uppercase tracking-widest">Status</th>
+                  <th scope="col" className="px-6 py-5 text-right text-xs font-black text-gray-500 uppercase tracking-widest">Actions</th>
                 </tr>
               </thead>
               <tbody className="bg-white divide-y divide-gray-50">
-                {ads.map((ad) => (
-                  <tr key={ad.id} className="hover:bg-gray-50 transition-colors">
-                    <td className="px-6 py-4">
-                      <div className="flex items-center gap-4">
-                        <div className="h-12 w-20 flex-shrink-0 bg-gray-100 rounded-lg overflow-hidden relative border border-gray-200 flex items-center justify-center">
-                          {ad.imageUrl ? (
-                            <img src={ad.imageUrl} alt="Ad preview" className="object-cover w-full h-full" />
+                {campaigns.map((campaign) => (
+                  <tr key={campaign.id} className="hover:bg-gray-50/80 transition-colors group">
+                    
+                    {/* Advertiser / Target Column */}
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-1">
+                        <div className="font-bold text-gray-900 text-sm">
+                          {campaign.advertiser ? campaign.advertiser.name : campaign.advertiser_id.substring(0,8)}
+                        </div>
+                        {campaign.advertiser && (
+                          <div className="text-xs text-gray-500">{campaign.advertiser.email}</div>
+                        )}
+                        <div className="mt-3 flex items-start gap-2 bg-gray-50 p-2 rounded-lg border border-gray-100">
+                          {campaign.job ? (
+                            <LinkIcon className="w-4 h-4 text-teal-600 mt-0.5" />
                           ) : (
-                            <ImageIcon className="text-gray-400 w-6 h-6" />
+                            <Megaphone className="w-4 h-4 text-blue-500 mt-0.5" />
                           )}
+                          <div>
+                            <div className="text-xs font-bold text-gray-700 capitalize">
+                              {campaign.format.replace('_', ' ')}
+                            </div>
+                            <div className="text-xs text-gray-500 truncate max-w-[200px]" title={campaign.job ? campaign.job.title : 'General Ad'}>
+                              {campaign.job ? campaign.job.title : 'General Placement'}
+                            </div>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+
+                    {/* Budget & Spent Column */}
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-2">
+                        <div>
+                          <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Total Budget</div>
+                          <div className="text-sm font-black text-gray-900">{formatCurrency(campaign.total_budget)}</div>
                         </div>
                         <div>
-                          <a href={ad.targetUrl} target="_blank" rel="noreferrer" className="text-sm font-bold text-blue-600 hover:underline flex items-center gap-1">
-                            Target Link <ExternalLink className="w-3 h-3" />
-                          </a>
-                          <div className="text-xs text-gray-500 mt-1 truncate max-w-[200px]">{ad.targetUrl}</div>
+                          <div className="text-xs text-gray-500 font-medium uppercase tracking-wider mb-1">Total Spent</div>
+                          <div className="text-sm font-bold text-gray-700 flex items-center gap-2">
+                            {formatCurrency(campaign.total_spent)}
+                            <span className="text-xs text-gray-400 font-medium">
+                              ({Math.round((Number(campaign.total_spent) / Number(campaign.total_budget)) * 100)}%)
+                            </span>
+                          </div>
+                          {/* Progress Bar */}
+                          <div className="w-full bg-gray-100 rounded-full h-1.5 mt-1.5 overflow-hidden">
+                            <div 
+                              className={`h-1.5 rounded-full ${Number(campaign.total_spent) >= Number(campaign.total_budget) ? 'bg-purple-500' : 'bg-teal-500'}`}
+                              style={{ width: `${Math.min(100, (Number(campaign.total_spent) / Number(campaign.total_budget)) * 100)}%` }}
+                            ></div>
+                          </div>
                         </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-bold text-gray-900 capitalize">{ad.placement.replace('_', ' ')}</div>
-                      <div className="text-sm text-gray-500 capitalize">{ad.type.replace('_', ' ')}</div>
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm text-gray-900 flex items-center gap-1">
-                        <Calendar className="w-3 h-3 text-gray-400" /> 
-                        {new Date(ad.startsAt).toLocaleDateString()}
+
+                    {/* Metrics Column */}
+                    <td className="px-6 py-5">
+                      <div className="flex flex-col gap-2">
+                        <div className="flex items-center gap-2">
+                          <Eye className="w-4 h-4 text-blue-500" />
+                          <span className="text-sm font-bold text-gray-900">{campaign.impression_count}</span>
+                          <span className="text-xs text-gray-500">Impressions</span>
+                        </div>
+                        <div className="flex items-center gap-2">
+                          <MousePointerClick className="w-4 h-4 text-teal-600" />
+                          <span className="text-sm font-bold text-gray-900">{campaign.click_count}</span>
+                          <span className="text-xs text-gray-500">Clicks</span>
+                        </div>
+                        <div className="flex items-center gap-2 mt-1">
+                          <TrendingUp className="w-4 h-4 text-gray-400" />
+                          <span className="text-xs font-bold text-gray-600">
+                            {campaign.impression_count > 0 
+                              ? ((campaign.click_count / campaign.impression_count) * 100).toFixed(2) 
+                              : '0.00'}% CTR
+                          </span>
+                        </div>
                       </div>
-                      <div className="text-xs text-gray-500 mt-1">
-                        to {new Date(ad.endsAt).toLocaleDateString()}
+                    </td>
+
+                    {/* Status Column */}
+                    <td className="px-6 py-5 whitespace-nowrap">
+                      <div className="flex flex-col gap-2 items-start">
+                        {statusBadge(campaign.status)}
+                        <div className="text-xs text-gray-500 flex items-center gap-1 mt-1 font-medium">
+                          <Clock className="w-3 h-3" />
+                          {new Date(campaign.createdAt).toLocaleDateString()}
+                        </div>
                       </div>
                     </td>
-                    <td className="px-6 py-4 whitespace-nowrap">
-                      {statusBadge(ad)}
-                    </td>
-                    <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
-                      <div className="flex justify-end gap-2">
-                        <button 
-                          onClick={() => handleToggleActive(ad.id, ad.isActive)}
-                          className={`p-2 rounded-lg transition-colors ${ad.isActive ? 'bg-yellow-50 text-yellow-600 hover:bg-yellow-100' : 'bg-green-50 text-green-600 hover:bg-green-100'}`}
-                          title={ad.isActive ? 'Pause Ad' : 'Resume Ad'}
-                        >
-                          {ad.isActive ? <PauseCircle className="w-4 h-4" /> : <PlayCircle className="w-4 h-4" />}
-                        </button>
-                        <button 
-                          onClick={() => handleDelete(ad.id)}
-                          className="p-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-                          title="Delete Ad"
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
-                      </div>
+
+                    {/* Actions Column */}
+                    <td className="px-6 py-5 whitespace-nowrap text-right">
+                      {campaign.status === 'pending_review' ? (
+                        <div className="flex flex-col gap-2 items-end">
+                          <button 
+                            onClick={() => handleApprove(campaign.id)}
+                            className="bg-green-50 hover:bg-green-100 text-green-700 px-4 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-sm border border-green-200"
+                          >
+                            <CheckCircle className="w-4 h-4" /> Approve
+                          </button>
+                          <button 
+                            onClick={() => openRejectModal(campaign.id)}
+                            className="bg-red-50 hover:bg-red-100 text-red-700 px-4 py-2 rounded-xl text-sm font-bold transition-colors flex items-center gap-2 shadow-sm border border-red-200"
+                          >
+                            <XCircle className="w-4 h-4" /> Reject
+                          </button>
+                        </div>
+                      ) : (
+                        <div className="text-xs font-medium text-gray-400 italic">No actions available</div>
+                      )}
                     </td>
                   </tr>
                 ))}
@@ -224,6 +356,63 @@ export default function AdminAdsPage() {
           </div>
         )}
       </div>
+
+      {/* Reject Modal */}
+      {rejectModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+          <div className="absolute inset-0 bg-gray-900/40 backdrop-blur-sm" onClick={() => setRejectModalOpen(false)}></div>
+          <div className="bg-white rounded-3xl shadow-2xl w-full max-w-lg relative z-10 overflow-hidden animate-in fade-in zoom-in-95 duration-200">
+            <div className="p-6 border-b border-gray-100">
+              <h2 className="text-2xl font-black text-gray-900 flex items-center gap-2">
+                <AlertCircle className="w-6 h-6 text-red-500" />
+                Reject Campaign
+              </h2>
+              <p className="text-sm text-gray-500 mt-1 font-medium">Please provide a reason for rejecting this ad campaign.</p>
+            </div>
+            
+            <div className="p-6 space-y-5">
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Common Reasons</label>
+                <select 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all"
+                  value={predefinedReason}
+                  onChange={(e) => setPredefinedReason(e.target.value)}
+                >
+                  <option value="">-- Select a reason (optional) --</option>
+                  {PREDEFINED_REASONS.map(reason => (
+                    <option key={reason} value={reason}>{reason}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-bold text-gray-700 mb-2">Additional Comments</label>
+                <textarea 
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-3 text-sm font-medium focus:outline-none focus:ring-2 focus:ring-red-500 focus:border-transparent transition-all min-h-[100px] resize-y"
+                  placeholder="Provide specific details about why this campaign was rejected..."
+                  value={rejectReason}
+                  onChange={(e) => setRejectReason(e.target.value)}
+                />
+              </div>
+            </div>
+
+            <div className="p-6 bg-gray-50/80 border-t border-gray-100 flex justify-end gap-3">
+              <button 
+                onClick={() => setRejectModalOpen(false)}
+                className="px-5 py-2.5 rounded-xl font-bold text-gray-600 hover:bg-gray-200 transition-colors"
+              >
+                Cancel
+              </button>
+              <button 
+                onClick={handleReject}
+                className="px-5 py-2.5 rounded-xl font-bold bg-red-600 text-white shadow-lg shadow-red-600/20 hover:bg-red-700 transition-colors flex items-center gap-2"
+              >
+                <XCircle className="w-5 h-5" /> Confirm Rejection
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

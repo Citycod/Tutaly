@@ -48,6 +48,11 @@ export class SeekerProfile extends BaseEntity {
   @Column({ name: 'contact_whatsapp', nullable: true })
   contactWhatsapp: string; // WhatsApp for communication
 
-  @Column({ name: 'seller_plan', type: 'enum', enum: SellerPlan, default: SellerPlan.FREE })
+  @Column({
+    name: 'seller_plan',
+    type: 'enum',
+    enum: SellerPlan,
+    default: SellerPlan.FREE,
+  })
   sellerPlan: SellerPlan;
 }

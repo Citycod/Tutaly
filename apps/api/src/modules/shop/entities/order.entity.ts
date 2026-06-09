@@ -74,7 +74,11 @@ export class Order extends BaseEntity {
   @Column({ name: 'confirmed_at', type: 'timestamp', nullable: true })
   confirmedAt: Date | null; // When buyer confirms receipt (physical only)
 
-  @Column({ name: 'auto_confirm_scheduled_at', type: 'timestamp', nullable: true })
+  @Column({
+    name: 'auto_confirm_scheduled_at',
+    type: 'timestamp',
+    nullable: true,
+  })
   autoConfirmScheduledAt: Date | null; // 48hr auto-confirm scheduled time
 
   @Column({ default: 1 })

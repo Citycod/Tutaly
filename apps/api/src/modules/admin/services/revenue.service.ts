@@ -1,7 +1,11 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Order, OrderStatus, PaymentGateway } from '../../shop/entities/order.entity';
+import {
+  Order,
+  OrderStatus,
+  PaymentGateway,
+} from '../../shop/entities/order.entity';
 
 function toPlain<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
@@ -184,15 +188,15 @@ export class RevenueService {
 
     return {
       totalEarned: Number(totalEarned?.total || 0),
-      perCategory: perCategory.map(c => ({
+      perCategory: perCategory.map((c) => ({
         category: c.category || 'Uncategorized',
-        commission: Number(c.commission || 0)
+        commission: Number(c.commission || 0),
       })),
-      perSeller: perSeller.map(s => ({
+      perSeller: perSeller.map((s) => ({
         sellerId: s.sellerId,
         email: s.email,
-        commission: Number(s.commission || 0)
-      }))
+        commission: Number(s.commission || 0),
+      })),
     };
   }
 
@@ -202,13 +206,14 @@ export class RevenueService {
   async reconcileRevenue(gateway: string, startDate: string, endDate: string) {
     // In reality, this would fetch from Stripe/Flutterwave/Paystack API
     // and compare against our local order records.
-    this.logger.log(`Reconciling revenue for ${gateway} from ${startDate} to ${endDate}`);
+    this.logger.log(
+      `Reconciling revenue for ${gateway} from ${startDate} to ${endDate}`,
+    );
     return {
       success: true,
       message: `Reconciliation simulated for ${gateway}`,
       discrepanciesFound: 0,
-      details: 'All local records match gateway logs (simulated).'
+      details: 'All local records match gateway logs (simulated).',
     };
   }
 }
-

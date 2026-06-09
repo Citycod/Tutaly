@@ -2,7 +2,7 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ArrowLeft, Save, Upload } from 'lucide-react';
+import { ArrowLeft, Save } from 'lucide-react';
 import { apiAuth } from '@/lib/api';
 import Link from 'next/link';
 
@@ -34,8 +34,9 @@ export default function CreateAdPage() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).post('/admin/ads', formData);
       router.push('/admin/ads');
-    } catch (err: any) {
-      setError(err.response?.data?.message || err.message || 'Failed to create ad');
+    } catch (err: unknown) {
+      const error = err as { response?: { data?: { message?: string } }, message?: string };
+      setError(error.response?.data?.message || error.message || 'Failed to create ad');
       setLoading(false);
     }
   };

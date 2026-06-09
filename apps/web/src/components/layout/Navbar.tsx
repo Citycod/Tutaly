@@ -3,10 +3,12 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { Menu, X, ShoppingCart } from "lucide-react";
+import { useCart } from "@/components/providers/CartProvider";
 
 export default function Navbar() {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { cartItemCount } = useCart();
 
   useEffect(() => {
     // Check local storage for auth stat on client side mount
@@ -53,6 +55,11 @@ export default function Navbar() {
         <div className="flex items-center space-x-4">
           <Link href="/shop/cart" className="p-2 text-gray-600 hover:text-teal-600 transition-colors relative">
             <ShoppingCart className="h-6 w-6" />
+            {cartItemCount > 0 && (
+              <span className="absolute top-0 right-0 inline-flex items-center justify-center px-2 py-1 text-xs font-bold leading-none text-white transform translate-x-1/4 -translate-y-1/4 bg-red-600 rounded-full">
+                {cartItemCount}
+              </span>
+            )}
           </Link>
 
           {isAuthenticated ? (
@@ -94,7 +101,7 @@ export default function Navbar() {
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/reviews" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Reviews</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/salaries" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Salaries</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Shop</Link>
-            <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop/cart" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">Cart</Link>
+            <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop/cart" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-teal-600">Cart ({cartItemCount})</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/connect" className="block rounded-md px-3 py-2 text-base font-medium text-gray-700 hover:bg-gray-50 hover:text-accent-teal">Community</Link>
             
             <div className="mt-4 border-t border-gray-200 pt-4">

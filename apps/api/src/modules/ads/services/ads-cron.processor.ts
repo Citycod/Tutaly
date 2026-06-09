@@ -40,7 +40,7 @@ export class AdsCronProcessor {
           campaign.advertiser_id,
           NotificationType.AD_BUDGET_50,
           'Your ad campaign has reached 50% of its budget.',
-          campaign.id
+          campaign.id,
         );
       }
 
@@ -52,7 +52,7 @@ export class AdsCronProcessor {
           campaign.advertiser_id,
           NotificationType.AD_BUDGET_80,
           'Your ad campaign has reached 80% of its budget.',
-          campaign.id
+          campaign.id,
         );
       }
 
@@ -62,12 +62,12 @@ export class AdsCronProcessor {
         campaign.notified_complete = true;
         await this.campaignRepo.save(campaign);
         this.logger.log(`Campaign ${campaign.id} completed (budget exhausted)`);
-        
+
         await this.notificationService.createAdNotification(
           campaign.advertiser_id,
           NotificationType.AD_BUDGET_EXHAUSTED,
           'Your ad campaign budget is exhausted and the campaign has been paused.',
-          campaign.id
+          campaign.id,
         );
       }
       // Check if end date passed
@@ -75,25 +75,27 @@ export class AdsCronProcessor {
         campaign.status = CampaignStatus.COMPLETED;
         await this.campaignRepo.save(campaign);
         this.logger.log(`Campaign ${campaign.id} completed (end date passed)`);
-        
+
         await this.notificationService.createAdNotification(
           campaign.advertiser_id,
           NotificationType.AD_CAMPAIGN_ENDED,
           'Your ad campaign has reached its scheduled end date and is now completed.',
-          campaign.id
+          campaign.id,
         );
 
         // Process refund
         const unspent = budget - spent;
         if (unspent > 100) {
-          this.logger.log(`Refunding ₦${unspent} to advertiser for campaign ${campaign.id}`);
+          this.logger.log(
+            `Refunding ₦${unspent} to advertiser for campaign ${campaign.id}`,
+          );
           // Mock refund processing
           await this.notificationService.createAdNotification(
             campaign.advertiser_id,
             NotificationType.AD_REFUND_PROCESSED,
             `A refund of ₦${unspent} has been processed for your unspent ad budget.`,
             campaign.id,
-            { amount: unspent }
+            { amount: unspent },
           );
         }
       }
@@ -103,13 +105,13 @@ export class AdsCronProcessor {
   @Process('weekly-ad-report')
   async handleWeeklyReport(job: Job) {
     this.logger.log('Generating weekly ad reports...');
-    
+
     // We only care about campaigns that are active or were recently completed
     const activeOrRecentlyCompleted = await this.campaignRepo.find({
       where: [
         { status: CampaignStatus.ACTIVE },
-        { status: CampaignStatus.COMPLETED }
-      ]
+        { status: CampaignStatus.COMPLETED },
+      ],
     });
 
     const campaignsByUser = new Map<string, AdCampaign[]>();
@@ -120,8 +122,9 @@ export class AdsCronProcessor {
     }
 
     for (const [userId, campaigns] of campaignsByUser.entries()) {
-      let reportHtml = '<h3 style="color: #0D1B2A;">Your Weekly Ad Performance</h3>';
-      
+      let reportHtml =
+        '<h3 style="color: #0D1B2A;">Your Weekly Ad Performance</h3>';
+
       for (const c of campaigns) {
         reportHtml += `
           <div style="margin-bottom: 20px; padding: 15px; background: #f8f9fa; border-radius: 8px;">
@@ -139,7 +142,7 @@ export class AdsCronProcessor {
         NotificationType.AD_WEEKLY_REPORT,
         'Your weekly ad performance report is ready.',
         campaigns[0].id,
-        { reportHtml }
+        { reportHtml },
       );
     }
   }

@@ -218,7 +218,14 @@ export class AuthService {
   async verifyMfa(dto: VerifyMfaDto) {
     const user = await this.userRepo.findOne({
       where: { id: dto.userId },
-      select: ['id', 'email', 'role', 'isEmailVerified', 'isActive', 'tokenVersion'],
+      select: [
+        'id',
+        'email',
+        'role',
+        'isEmailVerified',
+        'isActive',
+        'tokenVersion',
+      ],
     });
 
     if (!user || !user.isActive) {
@@ -385,7 +392,12 @@ export class AuthService {
   // ─── HELPERS ────────────────────────────────────────
   private generateAccessToken(user: User): string {
     return this.jwtService.sign(
-      { sub: user.id, email: user.email, role: user.role, tokenVersion: user.tokenVersion },
+      {
+        sub: user.id,
+        email: user.email,
+        role: user.role,
+        tokenVersion: user.tokenVersion,
+      },
       {
         secret: this.configService.get<string>('JWT_SECRET'),
         expiresIn: '15m',

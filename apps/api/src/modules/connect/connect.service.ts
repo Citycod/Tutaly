@@ -441,7 +441,9 @@ export class ConnectService {
       .leftJoinAndSelect('user.settings', 'settings')
       .where('user.isActive = true')
       // Exclude users who have opted out of discovery
-      .andWhere(`(settings.privacy->>'showInDiscover' IS NULL OR settings.privacy->>'showInDiscover' != 'false')`)
+      .andWhere(
+        `(settings.privacy->>'showInDiscover' IS NULL OR settings.privacy->>'showInDiscover' != 'false')`,
+      )
       .orderBy('user.createdAt', 'DESC')
       .skip((page - 1) * limit)
       .take(limit);
@@ -655,12 +657,21 @@ export class ConnectService {
 
     if (!isOwner) {
       const connection = await this.followRepo.findOne({
-        where: { follower: { id: requesterId }, followee: { id: user.id }, status: FollowStatus.ACCEPTED },
+        where: {
+          follower: { id: requesterId },
+          followee: { id: user.id },
+          status: FollowStatus.ACCEPTED,
+        },
       });
       isConnected = !!connection;
 
-      if (user.settings?.privacy?.profileVisibility === 'connections_only' && !isConnected) {
-        throw new ForbiddenException('This profile is only visible to connections');
+      if (
+        user.settings?.privacy?.profileVisibility === 'connections_only' &&
+        !isConnected
+      ) {
+        throw new ForbiddenException(
+          'This profile is only visible to connections',
+        );
       }
     }
 

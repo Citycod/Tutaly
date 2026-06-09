@@ -1,8 +1,6 @@
 import { MigrationInterface, QueryRunner } from 'typeorm';
 
-export class AddStripePaymentGateway1777949000000
-  implements MigrationInterface
-{
+export class AddStripePaymentGateway1777949000000 implements MigrationInterface {
   name = 'AddStripePaymentGateway1777949000000';
 
   public async up(queryRunner: QueryRunner): Promise<void> {

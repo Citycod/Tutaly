@@ -16,7 +16,11 @@ export class NewsletterSend extends BaseEntity {
   @Column('text')
   body: string;
 
-  @Column({ type: 'enum', enum: BroadcastAudience, default: BroadcastAudience.ALL })
+  @Column({
+    type: 'enum',
+    enum: BroadcastAudience,
+    default: BroadcastAudience.ALL,
+  })
   audience: BroadcastAudience;
 
   @ManyToOne(() => User, { onDelete: 'SET NULL', nullable: true })

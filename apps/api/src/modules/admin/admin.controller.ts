@@ -29,7 +29,11 @@ import {
 } from './services/disputes-resolution.service';
 import { RevenueService } from './services/revenue.service';
 import { AnalyticsService } from './services/analytics.service';
-import { AdvertisingService, CreateAdDto, UpdateAdDto } from './services/advertising.service';
+import {
+  AdvertisingService,
+  CreateAdDto,
+  UpdateAdDto,
+} from './services/advertising.service';
 import { EmailBroadcastService } from './services/email-broadcast.service';
 import { LegalPagesService } from './services/legal-pages.service';
 import { AnnouncementsService } from './services/announcements.service';
@@ -473,9 +477,7 @@ export class AdminController {
   }
 
   @Get('revenue/summary')
-  async getRevenueTimeSeries(
-    @Query('period') period?: string,
-  ) {
+  async getRevenueTimeSeries(@Query('period') period?: string) {
     return this.revenueService.getRevenueTimeSeries(
       (period as 'weekly' | 'monthly') || 'monthly',
     );
@@ -679,7 +681,9 @@ export class AdminController {
     @NestRequest() req: AuthenticatedRequest,
   ) {
     if (typeof rate !== 'number' || rate < 0 || rate > 100) {
-      throw new BadRequestException('Valid rate percentage (0-100) is required');
+      throw new BadRequestException(
+        'Valid rate percentage (0-100) is required',
+      );
     }
     return this.settingsService.updateCommissionRate(rate, req.user.sub);
   }
