@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import {
-  CreateJobDto,
   UpdateJobDto,
   JobQueryDto,
   ApplyJobDto,
@@ -25,10 +24,15 @@ import { RolesGuard } from '../../common/guards/roles.guard';
 import { Roles } from '../../common/decorators/roles.decorator';
 import { UserRole } from '../user/entities/user.entity';
 import type { AuthenticatedRequest } from '../../common/types/request';
+import { AdsService } from '../ads/services/ads.service';
+import { AdGoal, AdFormat } from '../ads/enums/ads.enums';
 
 @Controller('jobs')
 export class JobController {
-  constructor(private readonly jobService: JobService) {}
+  constructor(
+    private readonly jobService: JobService,
+    private readonly adsService: AdsService,
+  ) {}
 
   // ─── PUBLIC ENDPOINTS ────────────────────────────────────
 
@@ -127,12 +131,49 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER)
   @Post()
-  async create(
-    @Body() createJobDto: CreateJobDto,
-    @NestRequest() req: AuthenticatedRequest,
-  ) {
+  async create(@Body() body: any, @NestRequest() req: AuthenticatedRequest) {
+    const { paymentGateway, ...createJobDto } = body;
     const userId = req.user.sub;
-    return this.jobService.create(createJobDto, userId);
+
+    // Create the job
+    const job = await this.jobService.create(createJobDto, userId);
+
+    // If it's featured or urgent, automatically create an AdCampaign and initialize payment
+    let paymentInitialization: any = null;
+
+    if (createJobDto.isFeatured || createJobDto.isUrgent) {
+      // Create campaign
+      const campaign = await this.adsService.createCampaign(userId, {
+        job_id: job.id,
+        goal: AdGoal.PROMOTE_JOB,
+        format: AdFormat.SPONSORED_JOB,
+        destination_url: `/jobs/${job.id}`,
+        placements: ['featured_jobs', 'homepage_hero'],
+        starts_at: new Date(),
+        run_continuously: true,
+        // Calculate budget based on features
+        daily_budget: 1000,
+        total_budget:
+          (createJobDto.isFeatured ? 5000 : 0) +
+          (createJobDto.isUrgent ? 3000 : 0),
+        currency: 'NGN',
+      });
+
+      if (paymentGateway && campaign.total_budget > 0) {
+        paymentInitialization = await this.adsService.initializeAdPayment(
+          campaign.id,
+          paymentGateway,
+          req.user.email || 'employer@tutaly.com',
+          req.user.email || 'Tutaly Employer',
+        );
+      }
+    }
+
+    return {
+      message: 'Job created successfully',
+      job,
+      payment: paymentInitialization,
+    };
   }
 
   @UseGuards(JwtAuthGuard, RolesGuard)

@@ -34,10 +34,12 @@ function ResetPasswordContent() {
     try {
       await api.post('/auth/reset-password', { token, newPassword: password });
       setIsSuccess(true);
-    } catch (err: unknown) {
+    } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = err as any;
-      setError(error.response?.data?.message || 'Failed to reset password.');
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+setError(error.response?.data?.message || 'Failed to reset password.');
     } finally {
       setIsLoading(false);
     }

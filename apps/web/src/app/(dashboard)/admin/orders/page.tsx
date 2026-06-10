@@ -66,8 +66,11 @@ function AdminOrdersContent() {
       });
       setOrders(res.data.items || []);
       setMeta(res.data.meta);
-    } catch (err: unknown) {
-      const error = err as { response?: { status?: number; data?: { message?: string } }; message?: string };
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
       if (error.response?.status === 401 || error.response?.status === 403) {
         router.push('/auth/signin');
         return;
@@ -96,8 +99,11 @@ function AdminOrdersContent() {
         alert(`⚠️ Payment NOT confirmed.\n\nPaystack status: "${data.gatewayStatus}"\n\n${data.message}`);
       }
       fetchOrders();
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } }; message?: string };
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
       alert(error.response?.data?.message || error.message || 'Verification failed');
     } finally {
       setActionLoading(null);
@@ -113,8 +119,11 @@ function AdminOrdersContent() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).patch(`/admin/orders/${orderId}/cancel`, { adminNotes: note });
       fetchOrders();
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } }; message?: string };
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
       alert(error.response?.data?.message || error.message || 'Cancel failed');
     } finally {
       setActionLoading(null);
@@ -130,8 +139,11 @@ function AdminOrdersContent() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).patch(`/admin/orders/${orderId}/flag`, { adminNotes: note });
       fetchOrders();
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } }; message?: string };
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
       alert(error.response?.data?.message || error.message || 'Flag failed');
     } finally {
       setActionLoading(null);
@@ -147,8 +159,11 @@ function AdminOrdersContent() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).patch(`/admin/orders/${id}/resolve`, { resolution, adminNotes: note });
       fetchOrders();
-    } catch (err: unknown) {
-      const error = err as { response?: { data?: { message?: string } }; message?: string };
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
       alert(error.response?.data?.message || error.message || 'Resolve failed');
     } finally {
       setActionLoading(null);

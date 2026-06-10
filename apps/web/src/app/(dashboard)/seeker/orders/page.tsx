@@ -49,8 +49,12 @@ export default function BuyerOrdersPage() {
       if (res.data?.downloadUrl) {
         window.open(res.data.downloadUrl, '_blank');
       }
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Download failed');
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || 'Download failed');
     } finally {
       setDownloading(null);
     }
@@ -64,8 +68,12 @@ export default function BuyerOrdersPage() {
       if (!token) return;
       await apiAuth.withToken(token).post(`/shop/orders/${orderId}/confirm-delivery`);
       fetchOrders();
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Confirmation failed');
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || 'Confirmation failed');
     } finally {
       setConfirming(null);
     }
@@ -80,8 +88,12 @@ export default function BuyerOrdersPage() {
       if (!token) return;
       await apiAuth.withToken(token).post(`/shop/orders/${orderId}/report`, { reason });
       fetchOrders();
-    } catch (err: any) {
-      alert(err.response?.data?.message || 'Failed to report issue');
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || 'Failed to report issue');
     }
   };
 

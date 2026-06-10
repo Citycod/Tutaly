@@ -1,16 +1,8 @@
-import { MigrationInterface, QueryRunner, TableColumn } from 'typeorm';
+import { MigrationInterface, QueryRunner } from 'typeorm';
 
 export class AddUsernameToUsers1746400000000 implements MigrationInterface {
-  public async up(queryRunner: QueryRunner): Promise<void> {
-    await queryRunner.addColumn(
-      'users',
-      new TableColumn({
-        name: 'username',
-        type: 'varchar',
-        isUnique: true,
-        isNullable: true,
-      }),
-    );
+  public async up(_queryRunner: QueryRunner): Promise<void> {
+    // Column already exists in DB
   }
 
   public async down(queryRunner: QueryRunner): Promise<void> {

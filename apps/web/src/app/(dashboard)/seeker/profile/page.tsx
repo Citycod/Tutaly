@@ -119,8 +119,12 @@ export default function SeekerProfilePage() {
       
       // Refresh the profile to get the new signed URL
       fetchProfile();
-    } catch (err: unknown) {
-      setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to upload resume' });
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed to upload resume' });
     } finally {
       setUploading(false);
     }

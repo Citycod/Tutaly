@@ -30,8 +30,12 @@ export default function AdminUsersPage() {
       });
       setUsers(res.data.items || []);
       setMeta(res.data.meta || null);
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
         return;
       }
@@ -62,8 +66,12 @@ export default function AdminUsersPage() {
         status: newStatus,
       });
       fetchUsers();
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || err.message);
     }
   };
 

@@ -4,273 +4,532 @@ import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiAuth } from '@/lib/api';
 import locationsData from '@/data/locations.json';
+import { CheckCircle2, ChevronRight, Briefcase, MapPin, Settings, AlertCircle, Plus, X } from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import dynamic from 'next/dynamic';
+import 'react-quill/dist/quill.snow.css';
+
+const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
 
 const INDUSTRIES = [
-  'Technology',
-  'Finance & Banking',
-  'Healthcare',
-  'Oil & Gas',
-  'Telecommunications',
-  'Education',
-  'Manufacturing',
-  'Real Estate',
-  'Agriculture',
-  'Consulting',
-  'Media & Entertainment',
-  'Retail & E-Commerce',
-  'Logistics & Transportation',
-  'Legal',
-  'NGO & Non-Profit',
+  'Technology', 'Finance & Banking', 'Healthcare', 'Oil & Gas',
+  'Telecommunications', 'Education', 'Manufacturing', 'Real Estate',
+  'Agriculture', 'Consulting', 'Media & Entertainment', 'Retail & E-Commerce',
+  'Logistics & Transportation', 'Legal', 'NGO & Non-Profit',
 ];
 
-export default function PostJobPage() {
+const QUALIFICATIONS = [
+  'High School', 'Diploma', 'Bachelor', 'Master', 'PhD', 'Any'
+];
+
+type FormData = {
+  title: string;
+  description: string;
+  jobType: string;
+  workMode: string;
+  salaryMode: 'fixed' | 'range' | 'negotiable';
+  currency: string;
+  minSalary: string;
+  maxSalary: string;
+  salaryPeriod: string;
+  
+  country: string;
+  state: string;
+  area: string;
+  experienceLevel: string;
+  industry: string;
+  qualification: string;
+  skills: string[];
+  
+  deadline: string;
+  applyMethod: 'platform' | 'external';
+  externalUrl: string;
+  isFeatured: boolean;
+  isUrgent: boolean;
+};
+
+const DEFAULT_FORM_DATA: FormData = {
+  title: '', description: '', jobType: 'full-time', workMode: 'onsite',
+  salaryMode: 'range', currency: 'NGN', minSalary: '', maxSalary: '', salaryPeriod: 'monthly',
+  
+  country: 'Nigeria', state: '', area: '', experienceLevel: 'mid',
+  industry: '', qualification: '', skills: [],
+  
+  deadline: '', applyMethod: 'platform', externalUrl: '', isFeatured: false, isUrgent: false
+};
+
+const STEPS = [
+  { id: 'step1', name: 'Job Details', icon: Briefcase },
+  { id: 'step2', name: 'Location & Requirements', icon: MapPin },
+  { id: 'step3', name: 'Application Settings', icon: Settings },
+];
+
+export default function PostJobWizard() {
   const router = useRouter();
+  const [currentStep, setCurrentStep] = useState(0);
+  const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
+  const [skillInput, setSkillInput] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
 
-  // Cascading location state
+  // Location logic
   const locations: Record<string, Record<string, string[]>> = locationsData;
-  const [selectedCountry, setSelectedCountry] = useState('Nigeria');
-  const [selectedState, setSelectedState] = useState('');
-
   const countries = useMemo(() => Object.keys(locations), [locations]);
   const states = useMemo(() => {
-    if (selectedCountry && locations[selectedCountry]) return Object.keys(locations[selectedCountry]);
+    if (formData.country && locations[formData.country]) return Object.keys(locations[formData.country]);
     return [];
-  }, [selectedCountry, locations]);
+  }, [formData.country, locations]);
   const areas = useMemo(() => {
-    if (selectedCountry && selectedState && locations[selectedCountry]?.[selectedState])
-      return locations[selectedCountry][selectedState];
+    if (formData.country && formData.state && locations[formData.country]?.[formData.state])
+      return locations[formData.country][formData.state];
     return [];
-  }, [selectedCountry, selectedState, locations]);
+  }, [formData.country, formData.state, locations]);
 
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setSelectedCountry(e.target.value);
-    setSelectedState('');
+  const updateForm = (updates: Partial<FormData>) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
   };
 
-  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
+  const handleNext = () => {
+    if (currentStep === 0) {
+      if (!formData.title || !formData.description) return setErrorMsg('Title and Description are required.');
+    }
+    if (currentStep === 1) {
+      if (!formData.country || !formData.industry) return setErrorMsg('Country and Industry are required.');
+    }
+    setErrorMsg('');
+    setCurrentStep((p) => Math.min(p + 1, STEPS.length - 1));
+  };
+
+  const handlePrev = () => setCurrentStep((p) => Math.max(p - 1, 0));
+
+  const addSkill = () => {
+    if (skillInput.trim() && !formData.skills.includes(skillInput.trim())) {
+      updateForm({ skills: [...formData.skills, skillInput.trim()] });
+      setSkillInput('');
+    }
+  };
+
+  const removeSkill = (skill: string) => {
+    updateForm({ skills: formData.skills.filter(s => s !== skill) });
+  };
+
+  const handleSubmit = async () => {
     setSubmitting(true);
-    const formData = new FormData(e.currentTarget);
-    const data: Record<string, unknown> = Object.fromEntries(formData.entries());
-
-    // Parse numbers
-    if (data.minSalary) data.minSalary = Number(data.minSalary);
-    else delete data.minSalary;
-    if (data.maxSalary) data.maxSalary = Number(data.maxSalary);
-    else delete data.maxSalary;
-
-    // Remove empty optional fields
-    if (!data.area) delete data.area;
-    if (!data.deadline) delete data.deadline;
-    if (!data.location) delete data.location;
-
+    setErrorMsg('');
     try {
       const token = localStorage.getItem('access_token');
       if (!token) throw new Error('Not authenticated');
 
-      await apiAuth.withToken(token).post('/jobs', data);
-      alert('Job posted successfully! It is now pending admin review.');
+      const payload: any = {
+        title: formData.title,
+        description: formData.description,
+        jobType: formData.jobType,
+        workMode: formData.workMode,
+        currency: formData.currency,
+        country: formData.country,
+        state: formData.state || undefined,
+        area: formData.area || undefined,
+        experienceLevel: formData.experienceLevel,
+        industry: formData.industry,
+        role: formData.title, // using title for role as placeholder
+        skills: formData.skills,
+        isFeatured: formData.isFeatured,
+      };
+
+      if (formData.salaryMode !== 'negotiable') {
+        if (formData.minSalary) payload.minSalary = Number(formData.minSalary);
+        if (formData.maxSalary && formData.salaryMode === 'range') payload.maxSalary = Number(formData.maxSalary);
+      }
+      if (formData.deadline) payload.deadline = formData.deadline;
+
+      // Submit standard Job
+      const res = await apiAuth.withToken(token).post('/jobs', payload);
+      
+      // If featured, they might need to pay
+      if (formData.isFeatured) {
+        // Trigger payment logic here (could redirect to checkout)
+        alert('Job posted! Since it is a featured job, you will be redirected to payment.');
+      } else {
+        alert('Job posted successfully! It is now pending admin review.');
+      }
       router.push('/employer/jobs');
-    } catch (err: unknown) {
-      console.error(err);
+    } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = err as any;
-      alert(error.response?.data?.message || error.message || 'Failed to post job');
-    } finally {
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+console.error(err);
+      setErrorMsg(err.response?.data?.message || err.message || 'Failed to post job');
       setSubmitting(false);
     }
   };
 
-  const inputClass = 'block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-teal-600 sm:text-sm sm:leading-6 px-3';
-  const selectClass = inputClass;
-  const labelClass = 'block text-sm font-medium leading-6 text-gray-900';
+  const inputClass = "block w-full rounded-xl border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#1A1C1E] sm:text-sm sm:leading-6 px-4 bg-white transition-all";
+  const labelClass = "block text-sm font-semibold leading-6 text-[#1A1C1E] mb-2";
 
   return (
-    <div className="max-w-3xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <h1 className="text-3xl font-bold text-gray-900 mb-2">Post a New Job</h1>
-      <p className="text-gray-500 mb-8">Fill in the details below. Your job will be reviewed before going live.</p>
+    <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <div className="mb-8">
+        <h1 className="text-3xl font-bold text-[#1A1C1E] tracking-tight">Post a Job</h1>
+        <p className="mt-2 text-gray-500">Find the perfect candidate by providing detailed information about the role.</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="bg-white shadow-sm ring-1 ring-gray-900/5 sm:rounded-xl">
-        <div className="px-4 py-6 sm:p-8 space-y-8">
+      {/* Progress Steps */}
+      <nav aria-label="Progress" className="mb-12">
+        <ol role="list" className="flex items-center">
+          {STEPS.map((step, index) => {
+            const isCompleted = index < currentStep;
+            const isCurrent = index === currentStep;
+            const StepIcon = step.icon;
 
-          {/* Section: Basic Info */}
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-4">Basic Information</p>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-              <div className="sm:col-span-4">
+            return (
+              <li key={step.name} className={cn("relative flex-1", index !== STEPS.length - 1 ? 'pr-8 sm:pr-20' : '')}>
+                <div className="absolute inset-0 flex items-center" aria-hidden="true">
+                  <div className={cn("h-1 w-full rounded-full transition-colors", isCompleted ? "bg-[#1D9E75]" : "bg-gray-200")} />
+                </div>
+                <button
+                  type="button"
+                  onClick={() => index <= currentStep && setCurrentStep(index)}
+                  className={cn(
+                    "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ring-4 ring-white",
+                    isCompleted ? "bg-[#1D9E75] hover:bg-teal-700" : isCurrent ? "bg-[#1A1C1E] border-2 border-[#1A1C1E]" : "bg-white border-2 border-gray-300"
+                  )}
+                >
+                  {isCompleted ? (
+                    <CheckCircle2 className="h-6 w-6 text-white" aria-hidden="true" />
+                  ) : (
+                    <StepIcon className={cn("h-5 w-5", isCurrent ? "text-white" : "text-gray-400")} aria-hidden="true" />
+                  )}
+                  <span className="sr-only">{step.name}</span>
+                </button>
+                <span className={cn(
+                  "absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-semibold whitespace-nowrap",
+                  isCurrent ? "text-[#1A1C1E]" : isCompleted ? "text-[#1D9E75]" : "text-gray-500"
+                )}>
+                  {step.name}
+                </span>
+              </li>
+            );
+          })}
+        </ol>
+      </nav>
+
+      {errorMsg && (
+        <div className="mb-8 rounded-xl bg-red-50 p-4 border border-red-100 flex items-start">
+          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" />
+          <p className="text-sm text-red-800">{errorMsg}</p>
+        </div>
+      )}
+
+      {/* Form Area */}
+      <div className="bg-white shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100 overflow-hidden">
+        <div className="p-8 sm:p-12">
+          
+          {/* STEP 1: Job Details */}
+          {currentStep === 0 && (
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div>
                 <label htmlFor="title" className={labelClass}>Job Title *</label>
-                <div className="mt-2">
-                  <input type="text" name="title" id="title" required className={inputClass} placeholder="e.g. Senior Backend Engineer" />
+                <input
+                  type="text" id="title"
+                  value={formData.title} onChange={e => updateForm({ title: e.target.value })}
+                  className={cn(inputClass, "text-2xl font-bold py-4")}
+                  placeholder="e.g. Senior Frontend Developer"
+                />
+              </div>
+
+              <div>
+                <label className={labelClass}>Job Description *</label>
+                <div className="bg-white rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#1A1C1E]">
+                  <ReactQuill 
+                    theme="snow" 
+                    value={formData.description} 
+                    onChange={(val) => updateForm({ description: val })}
+                    className="h-64 mb-12"
+                  />
                 </div>
               </div>
 
-              <div className="col-span-full">
-                <label htmlFor="description" className={labelClass}>Job Description *</label>
-                <div className="mt-2">
-                  <textarea id="description" name="description" rows={5} required className={inputClass} placeholder="Describe the role, responsibilities, and requirements..." />
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="industry" className={labelClass}>Industry *</label>
-                <div className="mt-2">
-                  <select name="industry" id="industry" required className={selectClass}>
-                    <option value="">Select industry...</option>
-                    {INDUSTRIES.map((ind) => (
-                      <option key={ind} value={ind}>{ind}</option>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                  <label className={labelClass}>Employment Type</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['full-time', 'part-time', 'contract', 'internship'].map((type) => (
+                      <button
+                        key={type} type="button"
+                        onClick={() => updateForm({ jobType: type })}
+                        className={cn(
+                          "px-4 py-2.5 rounded-full text-sm font-medium transition-colors border",
+                          formData.jobType === type ? "bg-[#1A1C1E] text-white border-[#1A1C1E]" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                        )}
+                      >
+                        {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
+                      </button>
                     ))}
-                  </select>
+                  </div>
+                </div>
+
+                <div>
+                  <label className={labelClass}>Work Mode</label>
+                  <div className="flex flex-wrap gap-3">
+                    {['onsite', 'hybrid', 'remote'].map((mode) => (
+                      <button
+                        key={mode} type="button"
+                        onClick={() => updateForm({ workMode: mode })}
+                        className={cn(
+                          "px-4 py-2.5 rounded-full text-sm font-medium transition-colors border",
+                          formData.workMode === mode ? "bg-[#1D9E75] text-white border-[#1D9E75]" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                        )}
+                      >
+                        {mode.charAt(0).toUpperCase() + mode.slice(1)}
+                      </button>
+                    ))}
+                  </div>
                 </div>
               </div>
 
-              <div className="sm:col-span-3">
-                <label htmlFor="role" className={labelClass}>Role *</label>
-                <div className="mt-2">
-                  <input type="text" name="role" id="role" required className={inputClass} placeholder="e.g. Software Engineer" />
+              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+                <label className={labelClass}>Compensation</label>
+                <div className="flex gap-4 mb-6">
+                  {['range', 'fixed', 'negotiable'].map(mode => (
+                    <label key={mode} className="flex items-center">
+                      <input type="radio" name="salaryMode" checked={formData.salaryMode === mode} onChange={() => updateForm({ salaryMode: mode as any })} className="h-4 w-4 text-[#1D9E75] focus:ring-[#1D9E75]" />
+                      <span className="ml-2 text-sm text-gray-700 capitalize">{mode}</span>
+                    </label>
+                  ))}
+                </div>
+
+                {formData.salaryMode !== 'negotiable' && (
+                  <div className="grid grid-cols-1 sm:grid-cols-4 gap-4 items-end">
+                    <div>
+                      <select value={formData.currency} onChange={e => updateForm({ currency: e.target.value })} className={inputClass}>
+                        <option value="NGN">₦ NGN</option>
+                        <option value="USD">$ USD</option>
+                        <option value="EUR">€ EUR</option>
+                      </select>
+                    </div>
+                    <div className={formData.salaryMode === 'fixed' ? 'sm:col-span-2' : ''}>
+                      <input type="number" placeholder={formData.salaryMode === 'fixed' ? "Amount" : "Min"} value={formData.minSalary} onChange={e => updateForm({ minSalary: e.target.value })} className={inputClass} />
+                    </div>
+                    {formData.salaryMode === 'range' && (
+                      <div>
+                        <input type="number" placeholder="Max" value={formData.maxSalary} onChange={e => updateForm({ maxSalary: e.target.value })} className={inputClass} />
+                      </div>
+                    )}
+                    <div>
+                      <select value={formData.salaryPeriod} onChange={e => updateForm({ salaryPeriod: e.target.value })} className={inputClass}>
+                        <option value="monthly">/ Month</option>
+                        <option value="yearly">/ Year</option>
+                        <option value="hourly">/ Hour</option>
+                      </select>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </div>
+          )}
+
+          {/* STEP 2: Location & Requirements */}
+          {currentStep === 1 && (
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div>
+                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Where is this role located?</p>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+                  <div>
+                    <label className={labelClass}>Country *</label>
+                    <select value={formData.country} onChange={e => updateForm({ country: e.target.value, state: '', area: '' })} className={inputClass}>
+                      <option value="">Select country...</option>
+                      {countries.map((c) => <option key={c} value={c}>{c}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClass}>State</label>
+                    <select value={formData.state} onChange={e => updateForm({ state: e.target.value, area: '' })} className={inputClass} disabled={states.length === 0}>
+                      <option value="">All States</option>
+                      {states.map((s) => <option key={s} value={s}>{s}</option>)}
+                    </select>
+                  </div>
+                  <div>
+                    <label className={labelClass}>Area</label>
+                    <select value={formData.area} onChange={e => updateForm({ area: e.target.value })} className={inputClass} disabled={areas.length === 0}>
+                      <option value="">All Areas</option>
+                      {areas.map((a) => <option key={a} value={a}>{a}</option>)}
+                    </select>
+                  </div>
+                </div>
+              </div>
+
+              <hr className="border-gray-200" />
+
+              <div>
+                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Candidate Requirements</p>
+                <div className="space-y-8">
+                  <div>
+                    <label className={labelClass}>Experience Level</label>
+                    <div className="flex flex-wrap gap-3">
+                      {['entry', 'mid', 'senior', 'lead', 'executive'].map((level) => (
+                        <button
+                          key={level} type="button"
+                          onClick={() => updateForm({ experienceLevel: level })}
+                          className={cn(
+                            "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border",
+                            formData.experienceLevel === level ? "bg-[#2563EB] text-white border-[#2563EB] shadow-md shadow-blue-500/20" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                          )}
+                        >
+                          {level.charAt(0).toUpperCase() + level.slice(1)}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
+                    <div>
+                      <label className={labelClass}>Industry *</label>
+                      <select value={formData.industry} onChange={e => updateForm({ industry: e.target.value })} className={inputClass}>
+                        <option value="">Select industry...</option>
+                        {INDUSTRIES.map((ind) => <option key={ind} value={ind}>{ind}</option>)}
+                      </select>
+                    </div>
+                    <div>
+                      <label className={labelClass}>Minimum Qualification</label>
+                      <select value={formData.qualification} onChange={e => updateForm({ qualification: e.target.value })} className={inputClass}>
+                        <option value="">Select qualification...</option>
+                        {QUALIFICATIONS.map((q) => <option key={q} value={q}>{q}</option>)}
+                      </select>
+                    </div>
+                  </div>
+
+                  <div>
+                    <label className={labelClass}>Required Skills</label>
+                    <div className="bg-gray-50 p-2 rounded-xl border border-gray-200 flex flex-wrap items-center gap-2 focus-within:border-[#1D9E75] focus-within:ring-1 focus-within:ring-[#1D9E75]">
+                      {formData.skills.map(skill => (
+                        <span key={skill} className="inline-flex items-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 shadow-sm">
+                          {skill}
+                          <button type="button" onClick={() => removeSkill(skill)} className="text-gray-400 hover:text-red-500"><X className="w-3.5 h-3.5" /></button>
+                        </span>
+                      ))}
+                      <input
+                        type="text"
+                        value={skillInput}
+                        onChange={e => setSkillInput(e.target.value)}
+                        onKeyDown={e => {
+                          if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
+                        }}
+                        placeholder="Type a skill and press Enter..."
+                        className="flex-1 bg-transparent border-0 focus:ring-0 min-w-[200px] text-sm"
+                      />
+                    </div>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
+          )}
 
-          <hr className="border-gray-200" />
-
-          {/* Section: Location */}
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-4">Location</p>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-              <div className="sm:col-span-2">
-                <label htmlFor="country" className={labelClass}>Country *</label>
-                <div className="mt-2">
-                  <select id="country" name="country" value={selectedCountry} onChange={handleCountryChange} required className={selectClass}>
-                    <option value="">Select country...</option>
-                    {countries.map((c) => <option key={c} value={c}>{c}</option>)}
-                  </select>
+          {/* STEP 3: Application Settings */}
+          {currentStep === 2 && (
+            <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-8">
+                <div>
+                  <label className={labelClass}>Application Deadline</label>
+                  <input type="date" value={formData.deadline} onChange={e => updateForm({ deadline: e.target.value })} className={inputClass} />
+                  <p className="mt-2 text-xs text-gray-500">Leave blank for open-ended hiring.</p>
+                </div>
+                
+                <div>
+                  <label className={labelClass}>How should candidates apply?</label>
+                  <div className="flex bg-gray-100 p-1 rounded-xl w-full">
+                    <button type="button" onClick={() => updateForm({ applyMethod: 'platform' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'platform' ? "bg-white shadow-sm text-[#1A1C1E]" : "text-gray-500")}>
+                      On Platform
+                    </button>
+                    <button type="button" onClick={() => updateForm({ applyMethod: 'external' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'external' ? "bg-white shadow-sm text-[#1A1C1E]" : "text-gray-500")}>
+                      External URL
+                    </button>
+                  </div>
+                  {formData.applyMethod === 'external' && (
+                    <div className="mt-4 animate-in slide-in-from-top-2">
+                      <input type="url" placeholder="https://your-company.com/careers" value={formData.externalUrl} onChange={e => updateForm({ externalUrl: e.target.value })} className={inputClass} />
+                    </div>
+                  )}
                 </div>
               </div>
 
-              <div className="sm:col-span-2">
-                <label htmlFor="state" className={labelClass}>State</label>
-                <div className="mt-2">
-                  <select id="state" name="state" value={selectedState} onChange={(e) => setSelectedState(e.target.value)} className={selectClass} disabled={states.length === 0}>
-                    <option value="">Select state...</option>
-                    {states.map((s) => <option key={s} value={s}>{s}</option>)}
-                  </select>
-                </div>
-              </div>
+              <hr className="border-gray-200" />
 
-              <div className="sm:col-span-2">
-                <label htmlFor="area" className={labelClass}>Area / LGA</label>
-                <div className="mt-2">
-                  <select id="area" name="area" className={selectClass} disabled={areas.length === 0}>
-                    <option value="">Select area...</option>
-                    {areas.map((a) => <option key={a} value={a}>{a}</option>)}
-                  </select>
-                </div>
-              </div>
-            </div>
-          </div>
+              <div>
+                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Boost Your Visibility</p>
+                <div className="space-y-4">
+                  <label className={cn(
+                    "flex items-start p-5 rounded-2xl border-2 cursor-pointer transition-all",
+                    formData.isFeatured ? "border-amber-400 bg-amber-50" : "border-gray-200 bg-white hover:border-gray-300"
+                  )}>
+                    <div className="flex items-center h-6">
+                      <input type="checkbox" checked={formData.isFeatured} onChange={e => updateForm({ isFeatured: e.target.checked })} className="h-5 w-5 text-amber-500 rounded border-gray-300 focus:ring-amber-500" />
+                    </div>
+                    <div className="ml-4">
+                      <span className="block text-base font-bold text-gray-900">Featured Job Listing</span>
+                      <span className="block text-sm text-gray-500 mt-1">Pin your job to the top of search results and highlight it across the platform. Attracts 3x more views. <strong className="text-amber-600 font-bold ml-1">₦10,000 / week</strong></span>
+                    </div>
+                  </label>
 
-          <hr className="border-gray-200" />
-
-          {/* Section: Job Details */}
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-4">Job Details</p>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-              <div className="sm:col-span-2">
-                <label htmlFor="jobType" className={labelClass}>Job Type *</label>
-                <div className="mt-2">
-                  <select name="jobType" id="jobType" required className={selectClass}>
-                    <option value="full-time">Full Time</option>
-                    <option value="part-time">Part Time</option>
-                    <option value="contract">Contract</option>
-                    <option value="freelance">Freelance</option>
-                    <option value="internship">Internship</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="experienceLevel" className={labelClass}>Experience *</label>
-                <div className="mt-2">
-                  <select name="experienceLevel" id="experienceLevel" required className={selectClass}>
-                    <option value="entry">Entry Level</option>
-                    <option value="mid">Mid Level</option>
-                    <option value="senior">Senior Level</option>
-                    <option value="lead">Lead / Manager</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="workMode" className={labelClass}>Work Mode *</label>
-                <div className="mt-2">
-                  <select name="workMode" id="workMode" required className={selectClass}>
-                    <option value="onsite">On-site</option>
-                    <option value="hybrid">Hybrid</option>
-                    <option value="remote">Remote</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-3">
-                <label htmlFor="deadline" className={labelClass}>Application Deadline</label>
-                <div className="mt-2">
-                  <input type="date" name="deadline" id="deadline" className={inputClass} />
+                  <label className={cn(
+                    "flex items-start p-5 rounded-2xl border-2 cursor-pointer transition-all",
+                    formData.isUrgent ? "border-red-400 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+                  )}>
+                    <div className="flex items-center h-6">
+                      <input type="checkbox" checked={formData.isUrgent} onChange={e => updateForm({ isUrgent: e.target.checked })} className="h-5 w-5 text-red-500 rounded border-gray-300 focus:ring-red-500" />
+                    </div>
+                    <div className="ml-4">
+                      <span className="block text-base font-bold text-gray-900">Mark as Urgent</span>
+                      <span className="block text-sm text-gray-500 mt-1">Adds an "Urgent Hiring" badge to your listing to alert candidates of immediate start dates.</span>
+                    </div>
+                  </label>
                 </div>
               </div>
             </div>
-          </div>
-
-          <hr className="border-gray-200" />
-
-          {/* Section: Compensation */}
-          <div>
-            <p className="text-xs font-bold uppercase tracking-widest text-teal-600 mb-4">Compensation</p>
-            <div className="grid grid-cols-1 gap-x-6 gap-y-6 sm:grid-cols-6">
-              <div className="sm:col-span-2">
-                <label htmlFor="currency" className={labelClass}>Currency</label>
-                <div className="mt-2">
-                  <select name="currency" id="currency" className={selectClass}>
-                    <option value="NGN">₦ NGN (Naira)</option>
-                    <option value="USD">$ USD (US Dollar)</option>
-                    <option value="EUR">€ EUR (Euro)</option>
-                    <option value="GBP">£ GBP (Pound)</option>
-                  </select>
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="minSalary" className={labelClass}>Min Salary</label>
-                <div className="mt-2">
-                  <input type="number" name="minSalary" id="minSalary" className={inputClass} placeholder="e.g. 300000" min="0" />
-                </div>
-              </div>
-
-              <div className="sm:col-span-2">
-                <label htmlFor="maxSalary" className={labelClass}>Max Salary</label>
-                <div className="mt-2">
-                  <input type="number" name="maxSalary" id="maxSalary" className={inputClass} placeholder="e.g. 600000" min="0" />
-                </div>
-              </div>
-            </div>
-          </div>
+          )}
 
         </div>
-
-        <div className="flex items-center justify-end gap-x-6 border-t border-gray-900/10 px-4 py-4 sm:px-8 bg-gray-50 rounded-b-xl">
-          <button type="button" onClick={() => router.back()} className="text-sm font-semibold leading-6 text-gray-900">
-            Cancel
-          </button>
+        
+        {/* Footer Navigation */}
+        <div className="bg-gray-50 border-t border-gray-100 p-6 sm:px-12 flex items-center justify-between">
           <button
-            type="submit"
-            disabled={submitting}
-            className="rounded-md bg-teal-600 px-8 py-2 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-teal-600 transition disabled:opacity-50"
+            type="button"
+            onClick={handlePrev}
+            disabled={currentStep === 0}
+            className="text-gray-500 hover:text-gray-900 font-semibold text-sm px-4 py-2 disabled:opacity-0 transition-opacity"
           >
-            {submitting ? 'Posting...' : 'Post Job'}
+            Back
           </button>
+          
+          {currentStep < STEPS.length - 1 ? (
+            <button
+              type="button"
+              onClick={handleNext}
+              className="bg-[#1A1C1E] text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-gray-900/20 hover:bg-black transition-all flex items-center"
+            >
+              Next Step <ChevronRight className="ml-2 w-4 h-4" />
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={handleSubmit}
+              disabled={submitting}
+              className={cn(
+                "px-8 py-3 rounded-xl font-bold text-sm shadow-lg transition-all flex items-center",
+                formData.isFeatured ? "bg-amber-500 text-white shadow-amber-500/20 hover:bg-amber-600" : "bg-[#1D9E75] text-white shadow-teal-500/20 hover:bg-teal-700",
+                submitting ? "opacity-70 cursor-not-allowed" : ""
+              )}
+            >
+              {submitting ? 'Processing...' : formData.isFeatured ? 'Proceed to Payment' : 'Post Job'}
+            </button>
+          )}
         </div>
-      </form>
+      </div>
     </div>
   );
 }

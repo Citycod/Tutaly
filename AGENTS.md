@@ -20,9 +20,9 @@ You are working on **Tutaly** — a Nigeria-first professional platform combinin
 ## BUSINESS LOGIC RULES
 
 ### User Roles
-- `seeker` — can apply to jobs, purchase from shop, use Connect.
-- `employer` — can post jobs, sell in shop, respond to applications.
-- `admin` — moderate platform.
+- `seeker` — can apply to jobs, purchase from shop, use Connect. CANNOT create ad campaigns (blocked at (advertise) route middleware and POST /ads/campaigns endpoint). CAN see ads — all authenticated users and guests see ads on public pages. Never restrict ad visibility by role.
+- `employer` — can post jobs, sell in shop, respond to applications, create ad campaigns.
+- `admin` — moderate platform, review and approve ad campaigns.
 
 ### Jobs & Location System
 - **Location Hierarchy:** Location uses a three-level system: country → state → area. All three columns exist on the Job entity. Filters are independent and cascading. The static locations data lives in `apps/api/src/shared/data/locations.json`.

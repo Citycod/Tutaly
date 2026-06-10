@@ -13,6 +13,7 @@ import { ReviewModule } from './modules/review/review.module';
 import { SalaryModule } from './modules/salary/salary.module';
 import { SupportModule } from './modules/support/support.module';
 import { AdminModule } from './modules/admin/admin.module';
+import { AdsModule } from './modules/ads/ads.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -24,10 +25,39 @@ import { APP_GUARD } from '@nestjs/core';
     }),
     BullModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        redis:
-          configService.get<string>('REDIS_URL') || 'redis://localhost:6379',
-      }),
+      useFactory: (configService: ConfigService) => {
+        const redisUrlStr =
+          configService.get<string>('REDIS_URL') || 'redis://localhost:6379';
+        let redisConfig: any;
+
+        try {
+          const url = new URL(redisUrlStr);
+          redisConfig = {
+            host: url.hostname,
+            port: parseInt(url.port, 10) || 6379,
+            password: url.password
+              ? decodeURIComponent(url.password)
+              : undefined,
+            username: url.username
+              ? decodeURIComponent(url.username)
+              : undefined,
+            tls:
+              url.protocol === 'rediss:'
+                ? { rejectUnauthorized: false }
+                : undefined,
+            family: 4, // Force IPv4 for Upstash compatibility
+            maxRetriesPerRequest: null,
+            enableReadyCheck: false,
+          };
+        } catch {
+          // Fallback if URL parsing fails
+          redisConfig = redisUrlStr;
+        }
+
+        return {
+          redis: redisConfig,
+        };
+      },
       inject: [ConfigService],
     }),
     DatabaseModule,
@@ -40,11 +70,12 @@ import { APP_GUARD } from '@nestjs/core';
     SalaryModule,
     SupportModule,
     AdminModule,
+    AdsModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',
         ttl: 1000,
-        limit: 3,
+        limit: 20,
       },
       {
         name: 'medium',

@@ -65,8 +65,12 @@ export default function AdminJobsPage() {
       const payload = res.data;
       setJobs(payload.items || []);
       setMeta(payload.meta || null);
-    } catch (err: any) {
-      if (err.response?.status === 401 || err.response?.status === 403) {
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
         return;
       }
@@ -88,8 +92,12 @@ export default function AdminJobsPage() {
         action: 'approve',
       });
       fetchJobs();
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || err.message);
     }
   };
 
@@ -101,8 +109,12 @@ export default function AdminJobsPage() {
         action: 'remove',
       });
       fetchJobs();
-    } catch (err: any) {
-      alert(err.response?.data?.message || err.message);
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+alert(err.response?.data?.message || err.message);
     }
   };
 

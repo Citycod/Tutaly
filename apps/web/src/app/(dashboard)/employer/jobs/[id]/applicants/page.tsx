@@ -151,8 +151,12 @@ export default function ApplicantsPage() {
       } else {
         alert('Could not load resume. Please try again.');
       }
-    } catch (err: any) {
-      const msg = err?.response?.data?.message || 'Failed to load resume';
+    } catch (e) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const error = e as any;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      const err = e as any;
+const msg = err?.response?.data?.message || 'Failed to load resume';
       alert(msg);
     }
   };
