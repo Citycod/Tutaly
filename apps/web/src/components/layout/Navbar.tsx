@@ -22,9 +22,16 @@ export default function Navbar() {
       setIsAuthenticated(!!token);
     };
     
+    const handleLogout = () => setIsAuthenticated(false);
+    
     checkAuth();
     window.addEventListener('focus', checkAuth);
-    return () => window.removeEventListener('focus', checkAuth);
+    window.addEventListener('auth-logout', handleLogout);
+    
+    return () => {
+      window.removeEventListener('focus', checkAuth);
+      window.removeEventListener('auth-logout', handleLogout);
+    };
   }, []);
 
   useEffect(() => {
