@@ -52,9 +52,22 @@ api.interceptors.response.use(
       } catch (refreshError) {
         // Refresh failed (cookie expired or missing) - user is truly logged out
         setMemoryToken(null);
-        // Optional: emit an event or redirect to login here
         if (typeof window !== 'undefined') {
-          window.location.href = '/auth/signin';
+          localStorage.removeItem('access_token');
+          localStorage.removeItem('user');
+          window.dispatchEvent(new Event('auth-logout'));
+          
+          const path = window.location.pathname;
+          // Only redirect forcefully if on a protected route
+          const isProtectedRoute = path.startsWith('/admin') || 
+                                   path.startsWith('/employer') || 
+                                   path.startsWith('/seeker') || 
+                                   path.startsWith('/seller') || 
+                                   path.startsWith('/dashboard');
+                                   
+          if (isProtectedRoute) {
+            window.location.href = '/auth/signin';
+          }
         }
         return Promise.reject(refreshError);
       }
