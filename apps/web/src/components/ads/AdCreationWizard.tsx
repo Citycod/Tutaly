@@ -123,7 +123,7 @@ export default function AdCreationWizard() {
         }
       }
 
-      let placements = formData.placementType === 'automatic' 
+      const placements = formData.placementType === 'automatic' 
         ? ['homepage_top', 'jobs_sidebar', 'connect_sidebar', 'shop_top'] 
         : formData.placements;
 
