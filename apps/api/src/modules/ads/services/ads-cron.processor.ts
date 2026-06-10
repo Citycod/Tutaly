@@ -19,7 +19,7 @@ export class AdsCronProcessor {
   ) {}
 
   @Process('check-ad-budgets')
-  async handleCheckBudgets(job: Job) {
+  async handleCheckBudgets(_job: Job) {
     this.logger.log('Checking ad campaigns for daily budgets and end dates...');
     const activeCampaigns = await this.campaignRepo.find({
       where: { status: CampaignStatus.ACTIVE },
@@ -103,7 +103,7 @@ export class AdsCronProcessor {
   }
 
   @Process('weekly-ad-report')
-  async handleWeeklyReport(job: Job) {
+  async handleWeeklyReport(_job: Job) {
     this.logger.log('Generating weekly ad reports...');
 
     // We only care about campaigns that are active or were recently completed

@@ -22,7 +22,7 @@ export class AdsService {
 
   // Assume flat rates: 1 NGN per impression, 50 NGN per click
   private readonly CPM_RATE = 1000; // per 1000 impressions
-  private readonly CPC_RATE = 50;   // per click
+  private readonly CPC_RATE = 50; // per click
 
   constructor(
     @InjectRepository(AdCampaign)
@@ -57,7 +57,7 @@ export class AdsService {
     }
 
     const gateway = this.paymentGatewayFactory.createByName(gatewayName);
-    
+
     // Generate a unique reference
     const reference = `AD-${campaign.id.substring(0, 8)}-${Date.now()}`;
 
@@ -98,12 +98,14 @@ export class AdsService {
     return campaigns[0];
   }
 
-  async getTodaySpend(campaignId: string): Promise<number> {
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async getTodaySpend(_campaignId: string): Promise<number> {
     // In a real scenario, this queries the sum of impressions/clicks cost for today.
     // For now, we return 0 so it doesn't block serving.
     return 0;
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   private async getNextEligibleCampaign(
     campaigns: AdCampaign[],
     excludeId: string,
@@ -252,26 +254,32 @@ export class AdsService {
 
   // ─── ADMIN ENDPOINTS ──────────────────────────────────────
 
-  private async attachDetailsToCampaigns(campaigns: AdCampaign[]): Promise<any[]> {
+  private async attachDetailsToCampaigns(
+    campaigns: AdCampaign[],
+  ): Promise<any[]> {
     if (campaigns.length === 0) return [];
-    
-    const userIds = [...new Set(campaigns.map(c => c.advertiser_id))];
-    const jobIds = [...new Set(campaigns.map(c => c.job_id).filter(Boolean))];
 
-    const users = userIds.length ? await this.entityManager.query(
-      `SELECT id, email, name FROM users WHERE id = ANY($1)`, 
-      [userIds]
-    ) : [];
-    
-    const jobs = jobIds.length ? await this.entityManager.query(
-      `SELECT id, title FROM jobs WHERE id = ANY($1)`, 
-      [jobIds]
-    ) : [];
+    const userIds = [...new Set(campaigns.map((c) => c.advertiser_id))];
+    const jobIds = [...new Set(campaigns.map((c) => c.job_id).filter(Boolean))];
 
-    return campaigns.map(c => ({
+    const users = userIds.length
+      ? await this.entityManager.query(
+          `SELECT id, email, name FROM users WHERE id = ANY($1)`,
+          [userIds],
+        )
+      : [];
+
+    const jobs = jobIds.length
+      ? await this.entityManager.query(
+          `SELECT id, title FROM jobs WHERE id = ANY($1)`,
+          [jobIds],
+        )
+      : [];
+
+    return campaigns.map((c) => ({
       ...c,
-      advertiser: users.find(u => u.id === c.advertiser_id) || null,
-      job: jobs.find(j => j.id === c.job_id) || null,
+      advertiser: users.find((u) => u.id === c.advertiser_id) || null,
+      job: jobs.find((j) => j.id === c.job_id) || null,
     }));
   }
 
@@ -301,7 +309,7 @@ export class AdsService {
       campaign.advertiser_id,
       NotificationType.AD_APPROVED,
       'Your ad campaign has been approved and is now live.',
-      campaign.id
+      campaign.id,
     );
 
     return campaign;
@@ -324,7 +332,7 @@ export class AdsService {
       NotificationType.AD_REJECTED,
       `Your ad campaign was rejected: ${reason}`,
       campaign.id,
-      { reason }
+      { reason },
     );
 
     return campaign;
@@ -339,22 +347,29 @@ export class AdsService {
 
   // ─── TRACKING ENDPOINTS ───────────────────────────────────
 
-  async recordImpression(campaignId: string, visitorId: string, ipAddress: string): Promise<{ success: boolean }> {
-    const campaign = await this.campaignRepo.findOne({ where: { id: campaignId } });
-    if (!campaign || campaign.status !== CampaignStatus.ACTIVE) return { success: false };
+  async recordImpression(
+    campaignId: string,
+    visitorId: string,
+    _ipAddress: string,
+  ): Promise<{ success: boolean }> {
+    const campaign = await this.campaignRepo.findOne({
+      where: { id: campaignId },
+    });
+    if (!campaign || campaign.status !== CampaignStatus.ACTIVE)
+      return { success: false };
 
     const impression = this.impressionRepo.create({
       campaign_id: campaignId,
       placement: 'default',
       ...(visitorId !== 'guest' ? { user_id: visitorId } : {}),
       device_type: 'desktop', // default device
-      viewed_at: new Date()
+      viewed_at: new Date(),
     });
     await this.impressionRepo.save(impression);
 
     campaign.impression_count += 1;
-    campaign.total_spent = Number(campaign.total_spent) + (this.CPM_RATE / 1000);
-    
+    campaign.total_spent = Number(campaign.total_spent) + this.CPM_RATE / 1000;
+
     if (campaign.total_spent >= campaign.total_budget) {
       campaign.status = CampaignStatus.COMPLETED;
     }
@@ -363,21 +378,28 @@ export class AdsService {
     return { success: true };
   }
 
-  async recordClick(campaignId: string, visitorId: string, ipAddress: string): Promise<{ success: boolean }> {
-    const campaign = await this.campaignRepo.findOne({ where: { id: campaignId } });
-    if (!campaign || campaign.status !== CampaignStatus.ACTIVE) return { success: false };
+  async recordClick(
+    campaignId: string,
+    visitorId: string,
+    _ipAddress: string,
+  ): Promise<{ success: boolean }> {
+    const campaign = await this.campaignRepo.findOne({
+      where: { id: campaignId },
+    });
+    if (!campaign || campaign.status !== CampaignStatus.ACTIVE)
+      return { success: false };
 
     const click = this.clickRepo.create({
       campaign_id: campaignId,
       placement: 'default',
       ...(visitorId !== 'guest' ? { user_id: visitorId } : {}),
-      clicked_at: new Date()
+      clicked_at: new Date(),
     });
     await this.clickRepo.save(click);
 
     campaign.click_count += 1;
     campaign.total_spent = Number(campaign.total_spent) + this.CPC_RATE;
-    
+
     if (campaign.total_spent >= campaign.total_budget) {
       campaign.status = CampaignStatus.COMPLETED;
     }

@@ -9,7 +9,7 @@ export class AddStripePaymentGateway1777949000000 implements MigrationInterface 
     );
   }
 
-  public async down(queryRunner: QueryRunner): Promise<void> {
+  public async down(_queryRunner: QueryRunner): Promise<void> {
     // Note: removing an enum value is not natively supported in Postgres without recreating the type.
     // It is safer to leave it as-is for rollback.
   }

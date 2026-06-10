@@ -101,6 +101,7 @@ export class StripeGateway implements IPaymentGateway {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async verifyWebhookSignature(
     headers: Record<string, any>,
     body: any,
@@ -139,6 +140,7 @@ export class StripeGateway implements IPaymentGateway {
     }
   }
 
+  // eslint-disable-next-line @typescript-eslint/require-await
   async handleWebhookEvent(
     payload: Record<string, any>,
   ): Promise<WebhookResult> {

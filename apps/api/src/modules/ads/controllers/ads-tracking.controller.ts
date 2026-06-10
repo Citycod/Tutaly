@@ -19,13 +19,21 @@ export class AdsTrackingController {
   }
 
   @Post('impression')
-  async logImpression(@Body('campaignId') campaignId: string, @Req() req: any, @Ip() ip: string) {
+  async logImpression(
+    @Body('campaignId') campaignId: string,
+    @Req() req: any,
+    @Ip() ip: string,
+  ) {
     const visitorId = req.user?.sub || 'guest';
     return this.adsService.recordImpression(campaignId, visitorId, ip);
   }
 
   @Post('click')
-  async logClick(@Body('campaignId') campaignId: string, @Req() req: any, @Ip() ip: string) {
+  async logClick(
+    @Body('campaignId') campaignId: string,
+    @Req() req: any,
+    @Ip() ip: string,
+  ) {
     const visitorId = req.user?.sub || 'guest';
     return this.adsService.recordClick(campaignId, visitorId, ip);
   }

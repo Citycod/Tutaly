@@ -29,9 +29,12 @@ export class AdsController {
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN) // Block 'seeker'
   async createCampaign(@Req() req, @Body() body: any) {
     const { paymentGateway, ...campaignData } = body;
-    
+
     // Create the campaign
-    const campaign = await this.adsService.createCampaign(req.user.id, campaignData);
+    const campaign = await this.adsService.createCampaign(
+      req.user.id,
+      campaignData,
+    );
 
     // If paymentGateway is provided, initialize payment immediately
     let paymentInitialization: any = null;
@@ -40,7 +43,7 @@ export class AdsController {
         campaign.id,
         paymentGateway,
         req.user.email || 'employer@tutaly.com',
-        req.user.name || 'Tutaly Employer'
+        req.user.name || 'Tutaly Employer',
       );
     }
 

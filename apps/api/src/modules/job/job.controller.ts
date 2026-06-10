@@ -13,7 +13,6 @@ import {
 } from '@nestjs/common';
 import { JobService } from './job.service';
 import {
-  CreateJobDto,
   UpdateJobDto,
   JobQueryDto,
   ApplyJobDto,
@@ -132,19 +131,16 @@ export class JobController {
   @UseGuards(JwtAuthGuard, RolesGuard)
   @Roles(UserRole.EMPLOYER)
   @Post()
-  async create(
-    @Body() body: any,
-    @NestRequest() req: AuthenticatedRequest,
-  ) {
+  async create(@Body() body: any, @NestRequest() req: AuthenticatedRequest) {
     const { paymentGateway, ...createJobDto } = body;
     const userId = req.user.sub;
-    
+
     // Create the job
     const job = await this.jobService.create(createJobDto, userId);
 
     // If it's featured or urgent, automatically create an AdCampaign and initialize payment
     let paymentInitialization: any = null;
-    
+
     if (createJobDto.isFeatured || createJobDto.isUrgent) {
       // Create campaign
       const campaign = await this.adsService.createCampaign(userId, {
@@ -157,7 +153,9 @@ export class JobController {
         run_continuously: true,
         // Calculate budget based on features
         daily_budget: 1000,
-        total_budget: (createJobDto.isFeatured ? 5000 : 0) + (createJobDto.isUrgent ? 3000 : 0),
+        total_budget:
+          (createJobDto.isFeatured ? 5000 : 0) +
+          (createJobDto.isUrgent ? 3000 : 0),
         currency: 'NGN',
       });
 
@@ -166,7 +164,7 @@ export class JobController {
           campaign.id,
           paymentGateway,
           req.user.email || 'employer@tutaly.com',
-          req.user.email || 'Tutaly Employer'
+          req.user.email || 'Tutaly Employer',
         );
       }
     }
@@ -174,7 +172,7 @@ export class JobController {
     return {
       message: 'Job created successfully',
       job,
-      payment: paymentInitialization
+      payment: paymentInitialization,
     };
   }
 

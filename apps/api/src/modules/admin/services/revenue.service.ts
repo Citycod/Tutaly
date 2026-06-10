@@ -1,10 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import {
-  Order,
-  OrderStatus,
-} from '../../shop/entities/order.entity';
+import { Order, OrderStatus } from '../../shop/entities/order.entity';
 
 function toPlain<T>(obj: T): T {
   return JSON.parse(JSON.stringify(obj));
@@ -202,6 +199,7 @@ export class RevenueService {
   /**
    * Mock implementation for revenue reconciliation against gateway logs.
    */
+  // eslint-disable-next-line @typescript-eslint/require-await
   async reconcileRevenue(gateway: string, startDate: string, endDate: string) {
     // In reality, this would fetch from Stripe/Flutterwave/Paystack API
     // and compare against our local order records.

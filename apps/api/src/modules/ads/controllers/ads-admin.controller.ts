@@ -22,7 +22,10 @@ export class AdsAdminController {
   }
 
   @Patch(':id/reject')
-  async rejectCampaign(@Param('id') id: string, @Body('reason') reason: string) {
+  async rejectCampaign(
+    @Param('id') id: string,
+    @Body('reason') reason: string,
+  ) {
     return this.adsService.rejectCampaign(id, reason);
   }
 
