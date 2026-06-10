@@ -11,10 +11,9 @@ import {
   AlertCircle,
   MousePointerClick,
   Eye,
-  Link as LinkIcon
+  LinkIcon
 } from 'lucide-react';
 import { apiAuth } from '@/lib/api';
-import Link from 'next/link';
 
 interface Advertiser {
   id: string;
@@ -78,7 +77,8 @@ export default function AdminAdsModerationPage() {
       const res = await apiAuth.withToken(token || undefined).get(endpoint);
       
       setCampaigns(res.data || []);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       const error = err as { response?: { status?: number, data?: { message?: string } }, message?: string };
       if (error.response?.status === 401 || error.response?.status === 403) {
         router.push('/auth/signin');
@@ -100,7 +100,8 @@ export default function AdminAdsModerationPage() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).patch(`/admin/ads/${id}/approve`);
       fetchCampaigns();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       const error = err as { response?: { data?: { message?: string } }, message?: string };
       alert(error.response?.data?.message || error.message);
     }
@@ -132,7 +133,8 @@ export default function AdminAdsModerationPage() {
       });
       setRejectModalOpen(false);
       fetchCampaigns();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       const error = err as { response?: { data?: { message?: string } }, message?: string };
       alert(error.response?.data?.message || error.message);
     }

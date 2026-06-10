@@ -48,7 +48,8 @@ export default function SellerOrdersPage() {
         deliveryStatus: newStatus
       });
       fetchOrders(); // Refresh to get updated status
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to update status');
     }
   };

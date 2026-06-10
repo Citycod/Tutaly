@@ -34,7 +34,8 @@ export default function CreateAdPage() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).post('/admin/ads', formData);
       router.push('/admin/ads');
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       const error = err as { response?: { data?: { message?: string } }, message?: string };
       setError(error.response?.data?.message || error.message || 'Failed to create ad');
       setLoading(false);

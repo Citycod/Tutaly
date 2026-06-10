@@ -64,7 +64,8 @@ export default function ProductDetailPage() {
       });
       setAdded(true);
       setTimeout(() => setAdded(false), 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to add to cart');
     } finally {
       setAddingToCart(false);
@@ -99,7 +100,8 @@ export default function ProductDetailPage() {
         setQuoteSuccess(false);
         setQuoteDetails({ requirements: '', budget: '', deadline: '' });
       }, 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to submit quote request');
     } finally {
       setSubmittingQuote(false);

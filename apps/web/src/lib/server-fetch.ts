@@ -6,9 +6,7 @@
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api';
 
-interface FetchOptions extends RequestInit {
-  // Add any custom options here if needed in the future
-}
+type FetchOptions = RequestInit;
 
 export async function serverFetch<T>(endpoint: string, options: FetchOptions = {}): Promise<T> {
   const url = `${API_BASE_URL}${endpoint.startsWith('/') ? endpoint : `/${endpoint}`}`;

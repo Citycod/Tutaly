@@ -42,7 +42,8 @@ export default function SubmitSalaryPage() {
       setTimeout(() => {
         router.push('/salaries');
       }, 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to submit salary');
       setLoading(false);
     }

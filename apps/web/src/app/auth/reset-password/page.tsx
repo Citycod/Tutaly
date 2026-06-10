@@ -34,7 +34,8 @@ function ResetPasswordContent() {
     try {
       await api.post('/auth/reset-password', { token, newPassword: password });
       setIsSuccess(true);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const error = err as any;
       setError(error.response?.data?.message || 'Failed to reset password.');

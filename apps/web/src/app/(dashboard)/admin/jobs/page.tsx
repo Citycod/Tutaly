@@ -65,7 +65,8 @@ export default function AdminJobsPage() {
       const payload = res.data;
       setJobs(payload.items || []);
       setMeta(payload.meta || null);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
         return;
@@ -88,7 +89,8 @@ export default function AdminJobsPage() {
         action: 'approve',
       });
       fetchJobs();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || err.message);
     }
   };
@@ -101,7 +103,8 @@ export default function AdminJobsPage() {
         action: 'remove',
       });
       fetchJobs();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || err.message);
     }
   };

@@ -34,7 +34,8 @@ export default function AdminAnnouncementsPage() {
       const token = localStorage.getItem('access_token');
       const res = await apiAuth.withToken(token || undefined).get('/admin/announcements');
       setAnnouncements(res.data.items || []);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
       }
@@ -65,7 +66,8 @@ export default function AdminAnnouncementsPage() {
       setBody('');
       setExpiresAt('');
       fetchAnnouncements();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || err.message);
     } finally {
       setCreating(false);
@@ -78,7 +80,8 @@ export default function AdminAnnouncementsPage() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token || undefined).patch(`/admin/announcements/${id}/deactivate`);
       fetchAnnouncements();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || err.message);
     }
   };

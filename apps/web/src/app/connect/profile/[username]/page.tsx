@@ -19,7 +19,8 @@ export default function ProfilePage() {
       if (!token) return;
       const res = await apiAuth.withToken(token).get(`/connect/profiles/${username}`);
       setProfile(res.data);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       setError(err?.response?.data?.message || 'Failed to load profile');
     } finally {
       setLoading(false);
@@ -41,7 +42,8 @@ export default function ProfilePage() {
       const token = localStorage.getItem('access_token');
       await apiAuth.withToken(token!).post(`/connect/follow/${profile.id}`);
       alert('Follow request sent');
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err?.response?.data?.message || 'Failed to follow user');
     }
   };

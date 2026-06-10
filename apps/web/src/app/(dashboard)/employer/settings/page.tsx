@@ -48,7 +48,8 @@ export default function EmployerSettingsPage() {
       }
       setSuccessMsg('Settings saved successfully!');
       setTimeout(() => setSuccessMsg(''), 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to save settings. Please try again.');
     } finally {
       setLoading(false);

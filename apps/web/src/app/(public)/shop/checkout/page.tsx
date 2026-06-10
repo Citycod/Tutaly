@@ -104,7 +104,8 @@ export default function CheckoutPage() {
       } else {
         router.push(`/shop/checkout/success?orders=${encodeURIComponent(JSON.stringify(data.orders))}`);
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Checkout failed. Please try again.');
       setCheckingOut(false);
     }

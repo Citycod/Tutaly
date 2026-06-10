@@ -33,7 +33,8 @@ export default function AdminEmailsPage() {
       const token = localStorage.getItem('access_token');
       const res = await apiAuth.withToken(token || undefined).get('/admin/email/history');
       setHistory(res.data.items || []);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
       }
@@ -68,7 +69,8 @@ export default function AdminEmailsPage() {
       fetchHistory(); // Refresh history
       
       setTimeout(() => setSendSuccess(''), 5000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       setSendError(err.response?.data?.message || err.message || 'Failed to send broadcast');
     } finally {
       setSending(false);

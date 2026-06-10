@@ -36,7 +36,8 @@ export default function SignIn() {
       localStorage.setItem('user', JSON.stringify(response.data.user));
 
       router.push('/dashboard');
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const error = err as any;
       setError(error.response?.data?.message || 'Invalid email or password.');

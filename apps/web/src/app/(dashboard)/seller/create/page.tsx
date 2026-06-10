@@ -155,7 +155,8 @@ export default function CreateProductPage() {
       }
 
       router.push('/seller');
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to create product');
     } finally {
       setLoading(false);

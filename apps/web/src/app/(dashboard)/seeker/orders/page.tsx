@@ -49,7 +49,8 @@ export default function BuyerOrdersPage() {
       if (res.data?.downloadUrl) {
         window.open(res.data.downloadUrl, '_blank');
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Download failed');
     } finally {
       setDownloading(null);
@@ -64,7 +65,8 @@ export default function BuyerOrdersPage() {
       if (!token) return;
       await apiAuth.withToken(token).post(`/shop/orders/${orderId}/confirm-delivery`);
       fetchOrders();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Confirmation failed');
     } finally {
       setConfirming(null);
@@ -80,7 +82,8 @@ export default function BuyerOrdersPage() {
       if (!token) return;
       await apiAuth.withToken(token).post(`/shop/orders/${orderId}/report`, { reason });
       fetchOrders();
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to report issue');
     }
   };

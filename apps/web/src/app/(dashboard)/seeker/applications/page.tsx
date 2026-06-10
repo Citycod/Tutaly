@@ -39,7 +39,8 @@ export default function SeekerApplicationsPage() {
 
       const { data } = await apiAuth.withToken(token).get('/jobs/seeker/applications');
       setApplications(data);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       setError(err instanceof Error ? err.message : 'Failed to fetch your applications');
     } finally {
       setLoading(false);

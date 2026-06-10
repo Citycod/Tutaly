@@ -83,7 +83,8 @@ export default function WriteReviewPage() {
       setTimeout(() => {
         router.push('/reviews');
       }, 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       alert(err.response?.data?.message || 'Failed to submit review');
       setLoading(false);
     }

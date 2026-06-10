@@ -26,7 +26,8 @@ export default function AdminLegalPages() {
       const token = localStorage.getItem('access_token');
       const res = await apiAuth.withToken(token || undefined).get('/admin/legal');
       setPages(res.data.data || []);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
       }

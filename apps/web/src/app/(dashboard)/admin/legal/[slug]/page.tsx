@@ -2,7 +2,7 @@
 
 import React, { useEffect, useState, useCallback } from 'react';
 import { useRouter, useParams } from 'next/navigation';
-import { ArrowLeft, Save, FileText, CheckCircle } from 'lucide-react';
+import { ArrowLeft, Save, CheckCircle } from 'lucide-react';
 import { apiAuth } from '@/lib/api';
 import Link from 'next/link';
 
@@ -26,7 +26,8 @@ export default function EditLegalPage() {
       const res = await apiAuth.withToken(token || undefined).get(`/admin/legal/${slug}`);
       setTitle(res.data.data.title);
       setContent(res.data.data.content);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
       }
@@ -54,7 +55,8 @@ export default function EditLegalPage() {
       });
       setSuccessMessage('Page updated successfully.');
       setTimeout(() => setSuccessMessage(''), 3000);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       setError(err.response?.data?.message || err.message || 'Failed to update page');
     } finally {
       setSaving(false);

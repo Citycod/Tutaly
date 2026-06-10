@@ -151,7 +151,8 @@ export default function ApplicantsPage() {
       } else {
         alert('Could not load resume. Please try again.');
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       const msg = err?.response?.data?.message || 'Failed to load resume';
       alert(msg);
     }

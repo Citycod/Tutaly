@@ -90,7 +90,8 @@ export default function AdminRevenuePage() {
         });
         setChartData(formatted);
       }
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
         return;

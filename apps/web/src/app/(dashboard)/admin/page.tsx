@@ -11,7 +11,6 @@ import {
   DollarSign,
   Package,
   ShieldAlert,
-  MessageSquare,
 } from 'lucide-react';
 import { apiAuth } from '@/lib/api';
 
@@ -32,7 +31,8 @@ export default function AdminDashboardPage() {
       const token = localStorage.getItem('access_token');
       const res = await apiAuth.withToken(token || undefined).get('/admin/stats');
       setStats(res.data);
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
         return;

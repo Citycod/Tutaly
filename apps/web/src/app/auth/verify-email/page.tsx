@@ -22,7 +22,8 @@ function VerifyEmailContent() {
         const res = await api.get(`/auth/verify-email?token=${token}`);
         setStatus('success');
         setMessage(res.data.message || 'Your email has been successfully verified!');
-      } catch (err: any) {
+      } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
         setStatus('error');
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const error = err as any;

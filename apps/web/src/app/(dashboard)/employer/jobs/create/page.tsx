@@ -158,7 +158,8 @@ export default function PostJobWizard() {
         alert('Job posted successfully! It is now pending admin review.');
       }
       router.push('/employer/jobs');
-    } catch (err: any) {
+    } catch (error) {
+      const err = error as { response?: { data?: { message?: string } }, message?: string };
       console.error(err);
       setErrorMsg(err.response?.data?.message || err.message || 'Failed to post job');
       setSubmitting(false);
