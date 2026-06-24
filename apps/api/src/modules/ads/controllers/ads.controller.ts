@@ -27,7 +27,7 @@ export class AdsController {
 
   @Post('estimate-reach')
   @Roles(UserRole.EMPLOYER, UserRole.ADMIN)
-  async estimateReach(@Body() body: any) {
+  estimateReach(@Body() body: any) {
     return this.adsService.estimateReach({
       daily_budget: body.daily_budget,
       format: body.format,

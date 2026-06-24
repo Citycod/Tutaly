@@ -53,7 +53,7 @@ export class AuthController {
       res.cookie('refreshToken', result.refreshToken, {
         httpOnly: true,
         secure: true,
-        sameSite: 'none' as const, // Must be 'none' for cross-origin (Vercel ↔ Render)
+        sameSite: 'strict' as const,
         maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
         path: '/',
       });
@@ -80,7 +80,7 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none' as const, // Must be 'none' for cross-origin (Vercel ↔ Render)
+      sameSite: 'strict' as const,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
@@ -107,7 +107,7 @@ export class AuthController {
     res.cookie('refreshToken', result.refreshToken, {
       httpOnly: true,
       secure: true,
-      sameSite: 'none' as const, // Must be 'none' for cross-origin (Vercel ↔ Render)
+      sameSite: 'strict' as const,
       maxAge: 7 * 24 * 60 * 60 * 1000,
       path: '/',
     });
@@ -137,7 +137,7 @@ export class AuthController {
     res.clearCookie('refreshToken', {
       path: '/',
       secure: true,
-      sameSite: 'none' as const,
+      sameSite: 'strict' as const,
     });
     return { message: 'Logged out successfully.' };
   }
