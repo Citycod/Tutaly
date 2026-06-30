@@ -117,8 +117,8 @@ export default function JobResultsWithDetail({
     <>
       {/* ─── Mobile: Job Detail Full-Screen Overlay ─── */}
       {mobileDetailOpen && selectedJob && (
-        <div className="fixed inset-0 bg-gray-50 z-40 lg:hidden overflow-y-auto">
-          <div className="sticky top-0 bg-white border-b border-gray-200 px-4 py-3 flex items-center gap-3 z-10">
+        <div className="fixed inset-0 bg-c100 z-40 lg:hidden overflow-y-auto">
+          <div className="sticky top-0 bg-white border-b border-c200 px-4 py-3 flex items-center gap-3 z-10">
             <button
               onClick={() => {
                 setManualMobileOpen(false);
@@ -127,13 +127,13 @@ export default function JobResultsWithDetail({
                 params.delete('jobId');
                 window.history.replaceState(null, '', `/jobs?${params.toString()}`);
               }}
-              className="p-1.5 rounded-lg hover:bg-gray-100 transition"
+              className="p-1.5 rounded-lg hover:bg-c100 transition"
             >
-              <ArrowLeft className="w-5 h-5 text-gray-700" />
+              <ArrowLeft className="w-5 h-5 text-c700" />
             </button>
             <div className="min-w-0">
-              <h2 className="text-sm font-bold text-gray-900 truncate">{selectedJob.title}</h2>
-              <p className="text-xs text-gray-500 truncate">
+              <h2 className="text-sm font-bold text-c900 truncate">{selectedJob.title}</h2>
+              <p className="text-xs text-c500 truncate">
                 {selectedJob.employer?.email || 'Confidential Company'}
               </p>
             </div>
@@ -147,9 +147,9 @@ export default function JobResultsWithDetail({
       {/* ─── Job List ─── */}
       <div className="flex-1 min-w-0 flex flex-col gap-3">
         {jobs.length === 0 ? (
-          <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-600)', borderRadius: 'var(--r-lg)', padding: '48px', textAlign: 'center' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--c-100)', marginBottom: '8px' }}>No jobs found</h3>
-            <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>
+          <div className="bg-c800 border border-c600 rounded-lg p-12 text-center">
+            <h3 className="text-lg font-semibold text-c100 mb-2">No jobs found</h3>
+            <p className="text-sm text-c400">
               Try loosening your filters or searching with different keywords.
             </p>
           </div>
@@ -171,17 +171,12 @@ export default function JobResultsWithDetail({
                 }}
               >
                 <div
-                  className="floatcard"
-                  style={{
-                    borderColor: isSelected ? 'var(--blue-l)' : 'var(--c-600)',
-                    transform: isSelected ? 'translateX(-4px)' : 'none',
-                    animation: 'none'
-                  }}
+                  className={`floatcard ${isSelected ? 'border-blueL -translate-x-1' : 'border-c600'} transition-transform duration-200`}
                 >
-                  <div className="floatcard__logo" style={{ background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' }}>
+                  <div className="floatcard__logo bg-blue/20 text-blueL">
                     {job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C'}
                   </div>
-                  <div style={{ flex: 1, minWidth: 0 }}>
+                  <div className="flex-1 min-w-0">
                     <div className="floatcard__title truncate">{job.title}</div>
                     <div className="floatcard__company truncate">
                       {job.employer?.email || 'Confidential Company'}
@@ -195,9 +190,9 @@ export default function JobResultsWithDetail({
                       )}
                       <span className="floatcard__tag">{job.workMode}</span>
                       <span className="floatcard__tag">{job.jobType}</span>
-                      {job.isFeatured && <span className="floatcard__new" style={{ background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }}>Featured</span>}
-                      {job.isUrgent && <span className="floatcard__new" style={{ background: 'rgba(204,43,43,0.12)', color: 'var(--red)' }}>Urgent</span>}
-                      <span style={{ fontSize: '11px', color: 'var(--c-500)', marginLeft: 'auto' }}>
+                      {job.isFeatured && <span className="floatcard__new bg-gold/20 text-goldH">Featured</span>}
+                      {job.isUrgent && <span className="floatcard__new bg-red/10 text-red">Urgent</span>}
+                      <span className="text-xs text-c500 ml-auto">
                         {formatTimeAgo(job.createdAt)}
                       </span>
                     </div>
@@ -218,14 +213,7 @@ export default function JobResultsWithDetail({
                   <Link
                     key={page}
                     href={buildPageUrl(page)}
-                    className="btn"
-                    style={{
-                      padding: '8px 14px',
-                      background: isActive ? 'var(--blue)' : 'var(--c-800)',
-                      color: isActive ? '#fff' : 'var(--c-200)',
-                      border: isActive ? '1px solid var(--blue)' : '1px solid var(--c-600)',
-                      borderRadius: 'var(--r-md)'
-                    }}
+                    className={`btn px-3.5 py-2 rounded-md ${isActive ? 'bg-blue text-white border-blue' : 'bg-c800 text-c200 border-c600'}`}
                   >
                     {page}
                   </Link>
@@ -237,7 +225,7 @@ export default function JobResultsWithDetail({
       </div>
 
       {/* ─── Desktop: Detail Panel (side) ─── */}
-      <div className="hidden lg:block lg:w-[380px] xl:w-[420px] shrink-0">
+      <div className="hidden lg:block lg:w-96 xl:w-layout-md shrink-0">
         <div className="sticky top-8">
           <JobDetailPanel job={selectedJob} />
         </div>

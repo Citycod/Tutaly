@@ -169,77 +169,77 @@ alert(err.response?.data?.message || 'Failed to create product');
   if (checking) {
     return (
       <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-teal-600" />
+        <Loader2 className="w-8 h-8 animate-spin text-green" />
       </div>
     );
   }
 
   return (
     <div className="px-4 py-6 sm:p-8 pb-16 max-w-3xl mx-auto">
-      <Link href="/seller" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-teal-600 mb-8 font-medium">
+      <Link href="/seller" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-8 font-medium">
         <ArrowLeft className="w-4 h-4" /> Back to Dashboard
       </Link>
 
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Create New Listing</h1>
-        <p className="text-gray-500 mt-1">Add a new template, tool, or professional service.</p>
+        <h1 className="text-2xl font-bold text-c900">Create New Listing</h1>
+        <p className="text-c500 mt-1">Add a new template, tool, or professional service.</p>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-4 sm:p-8 space-y-6 sm:space-y-8">
+      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-c100 p-4 sm:p-8 space-y-6 sm:space-y-8">
         {/* Type Selection */}
         <div>
-          <label className="block text-sm font-bold text-gray-900 mb-3">Listing Type</label>
+          <label className="block text-sm font-bold text-c900 mb-3">Listing Type</label>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, listingType: 'digital' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'digital' ? 'border-purple-500 ring-2 ring-purple-500 ring-opacity-20 bg-purple-50' : 'border-gray-200 hover:border-purple-300'}`}
+              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'digital' ? 'border-purple-500 ring-2 ring-purple-500 ring-opacity-20 bg-purple-50' : 'border-c200 hover:border-purple-300'}`}
             >
-              <Cpu className={`w-6 h-6 mb-2 ${form.listingType === 'digital' ? 'text-purple-600' : 'text-gray-400'}`} />
-              <h3 className="font-bold text-gray-900 mb-1">Digital</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">Files, templates, scripts</p>
+              <Cpu className={`w-6 h-6 mb-2 ${form.listingType === 'digital' ? 'text-purple-600' : 'text-c400'}`} />
+              <h3 className="font-bold text-c900 mb-1">Digital</h3>
+              <p className="text-xs text-c500 leading-relaxed">Files, templates, scripts</p>
             </button>
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, listingType: 'physical' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'physical' ? 'border-blue-500 ring-2 ring-blue-500 ring-opacity-20 bg-blue-50' : 'border-gray-200 hover:border-blue-300'}`}
+              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'physical' ? 'border-blue ring-2 ring-blue ring-opacity-20 bg-blueL' : 'border-c200 hover:border-blueL'}`}
             >
-              <Package className={`w-6 h-6 mb-2 ${form.listingType === 'physical' ? 'text-blue-600' : 'text-gray-400'}`} />
-              <h3 className="font-bold text-gray-900 mb-1">Physical</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">Books, hardware, merch</p>
+              <Package className={`w-6 h-6 mb-2 ${form.listingType === 'physical' ? 'text-blue' : 'text-c400'}`} />
+              <h3 className="font-bold text-c900 mb-1">Physical</h3>
+              <p className="text-xs text-c500 leading-relaxed">Books, hardware, merch</p>
             </button>
             <button
               type="button"
               onClick={() => setForm(prev => ({ ...prev, listingType: 'service' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'service' ? 'border-amber-500 ring-2 ring-amber-500 ring-opacity-20 bg-amber-50' : 'border-gray-200 hover:border-amber-300'}`}
+              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'service' ? 'border-gold ring-2 ring-gold ring-opacity-20 bg-gold' : 'border-c200 hover:border-gold'}`}
             >
-              <Wrench className={`w-6 h-6 mb-2 ${form.listingType === 'service' ? 'text-amber-600' : 'text-gray-400'}`} />
-              <h3 className="font-bold text-gray-900 mb-1">Service</h3>
-              <p className="text-xs text-gray-500 leading-relaxed">Consulting, design, review</p>
+              <Wrench className={`w-6 h-6 mb-2 ${form.listingType === 'service' ? 'text-gold' : 'text-c400'}`} />
+              <h3 className="font-bold text-c900 mb-1">Service</h3>
+              <p className="text-xs text-c500 leading-relaxed">Consulting, design, review</p>
             </button>
           </div>
         </div>
 
         <div className="space-y-5">
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Title</label>
+            <label className="block text-sm font-medium text-c700 mb-1">Title</label>
             <input
               type="text"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-black"
+              className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
               required
               maxLength={100}
             />
           </div>
 
           <div>
-            <label className="block text-sm font-medium text-gray-700 mb-1">Description</label>
+            <label className="block text-sm font-medium text-c700 mb-1">Description</label>
             <textarea
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={5}
-              className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-black"
+              className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
               required
               minLength={20}
             />
@@ -247,11 +247,11 @@ alert(err.response?.data?.message || 'Failed to create product');
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Category</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Category</label>
               <select
                 value={form.categoryId}
                 onChange={handleCategoryChange}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 bg-white text-black"
+                className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white text-black"
                 required
               >
                 <option value="">Select...</option>
@@ -259,11 +259,11 @@ alert(err.response?.data?.message || 'Failed to create product');
               </select>
             </div>
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Subcategory</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Subcategory</label>
               <select
                 value={form.subcategoryId}
                 onChange={(e) => setForm({ ...form, subcategoryId: e.target.value })}
-                className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 bg-white text-black"
+                className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white text-black"
                 required
                 disabled={!form.categoryId}
               >
@@ -275,8 +275,8 @@ alert(err.response?.data?.message || 'Failed to create product');
         </div>
 
         {/* Pricing */}
-        <div className="border-t border-gray-100 pt-8">
-          <label className="block text-sm font-bold text-gray-900 mb-4">Pricing</label>
+        <div className="border-t border-c100 pt-8">
+          <label className="block text-sm font-bold text-c900 mb-4">Pricing</label>
 
           <div className="flex gap-4 mb-5">
             <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -284,7 +284,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                 type="radio"
                 checked={form.pricingType === 'per_unit'}
                 onChange={() => setForm({ ...form, pricingType: 'per_unit' })}
-                className="text-teal-600 focus:ring-teal-500"
+                className="text-green focus:ring-green"
               /> Fixed Price
             </label>
             <label className="flex items-center gap-2 text-sm cursor-pointer">
@@ -292,7 +292,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                 type="radio"
                 checked={form.pricingType === 'request_quote'}
                 onChange={() => setForm({ ...form, pricingType: 'request_quote' })}
-                className="text-teal-600 focus:ring-teal-500"
+                className="text-green focus:ring-green"
               /> Request Quote
             </label>
           </div>
@@ -300,12 +300,12 @@ alert(err.response?.data?.message || 'Failed to create product');
           {form.pricingType === 'per_unit' && (
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Price</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Price</label>
                 <div className="flex gap-2">
                   <select
                     value={form.currency}
                     onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                    className="w-24 rounded-lg border border-gray-200 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 bg-white font-bold text-black"
+                    className="w-24 rounded-lg border border-c200 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white font-bold text-black"
                   >
                     <option value="NGN">NGN</option>
                     <option value="USD">USD</option>
@@ -315,7 +315,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                     type="number"
                     value={form.price}
                     onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    className="flex-1 rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-black"
+                    className="flex-1 rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
                     required
                     min={1}
                     placeholder="0.00"
@@ -323,22 +323,22 @@ alert(err.response?.data?.message || 'Failed to create product');
                 </div>
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Unit (Optional)</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Unit (Optional)</label>
                 <input
                   type="text"
                   value={form.priceUnit}
                   onChange={(e) => setForm({ ...form, priceUnit: e.target.value })}
                   placeholder="e.g. Hour, Page, Item"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-black"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Minimum Quantity</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Minimum Quantity</label>
                 <input
                   type="number"
                   value={form.minQuantity}
                   onChange={(e) => setForm({ ...form, minQuantity: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-teal-500 text-black"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
                   required
                   min={1}
                 />
@@ -352,7 +352,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                   type="checkbox"
                   checked={form.priceMayVary}
                   onChange={(e) => setForm({ ...form, priceMayVary: e.target.checked })}
-                  className="text-teal-600 focus:ring-teal-500 rounded"
+                  className="text-green focus:ring-green rounded"
                 />
                 Final price may vary based on scope
               </label>
@@ -361,11 +361,11 @@ alert(err.response?.data?.message || 'Failed to create product');
         </div>
 
         {/* Product Images — Available for ALL listing types */}
-        <div className="border-t border-gray-100 pt-8">
-          <label className="block text-sm font-bold text-gray-900 mb-2">
+        <div className="border-t border-c100 pt-8">
+          <label className="block text-sm font-bold text-c900 mb-2">
             Product Images
           </label>
-          <p className="text-sm text-gray-500 mb-4">
+          <p className="text-sm text-c500 mb-4">
             Upload up to 5 images to showcase your {form.listingType === 'digital' ? 'product preview' : form.listingType === 'service' ? 'service portfolio' : 'product'}. JPEG, PNG, WebP or GIF, max 5MB each.
           </p>
 
@@ -373,12 +373,12 @@ alert(err.response?.data?.message || 'Failed to create product');
           {imagePreviewUrls.length > 0 && (
             <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 mb-4">
               {imagePreviewUrls.map((url, index) => (
-                <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-gray-200">
+                <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-c200">
                   <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
                   <button
                     type="button"
                     onClick={() => handleRemoveImage(index)}
-                    className="absolute top-1 right-1 bg-red-500 text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
+                    className="absolute top-1 right-1 bg-red text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
                   >
                     <X className="w-3.5 h-3.5" />
                   </button>
@@ -388,8 +388,8 @@ alert(err.response?.data?.message || 'Failed to create product');
           )}
 
           {productImages.length < 5 && (
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-6 text-center hover:bg-gray-50 transition-colors">
-              <ImagePlus className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+            <div className="border-2 border-dashed border-c300 rounded-xl p-6 text-center hover:bg-c100 transition-colors">
+              <ImagePlus className="w-8 h-8 text-c400 mx-auto mb-3" />
               <input
                 type="file"
                 accept="image/jpeg,image/png,image/webp,image/gif"
@@ -399,10 +399,10 @@ alert(err.response?.data?.message || 'Failed to create product');
                 multiple
               />
               <label htmlFor="product-images-upload" className="cursor-pointer">
-                <span className="font-bold text-teal-600 hover:text-teal-500">Click to upload images</span>
-                <span className="text-gray-500"> or drag and drop</span>
+                <span className="font-bold text-green hover:text-green">Click to upload images</span>
+                <span className="text-c500"> or drag and drop</span>
               </label>
-              <p className="text-xs text-gray-400 mt-2">
+              <p className="text-xs text-c400 mt-2">
                 {productImages.length}/5 images added
               </p>
             </div>
@@ -411,11 +411,11 @@ alert(err.response?.data?.message || 'Failed to create product');
 
         {/* Digital File Upload — Only for digital listings */}
         {form.listingType === 'digital' && (
-          <div className="border-t border-gray-100 pt-8">
-            <label className="block text-sm font-bold text-gray-900 mb-2">Digital File</label>
-            <p className="text-sm text-gray-500 mb-4">Upload the file that buyers will download upon purchase. Held securely in private storage.</p>
-            <div className="border-2 border-dashed border-gray-300 rounded-xl p-8 text-center hover:bg-gray-50 transition-colors">
-              <Upload className="w-8 h-8 text-gray-400 mx-auto mb-3" />
+          <div className="border-t border-c100 pt-8">
+            <label className="block text-sm font-bold text-c900 mb-2">Digital File</label>
+            <p className="text-sm text-c500 mb-4">Upload the file that buyers will download upon purchase. Held securely in private storage.</p>
+            <div className="border-2 border-dashed border-c300 rounded-xl p-8 text-center hover:bg-c100 transition-colors">
+              <Upload className="w-8 h-8 text-c400 mx-auto mb-3" />
               <input
                 type="file"
                 onChange={(e) => setDigitalFile(e.target.files?.[0] || null)}
@@ -424,12 +424,12 @@ alert(err.response?.data?.message || 'Failed to create product');
                 required
               />
               <label htmlFor="digital-upload" className="cursor-pointer">
-                <span className="font-bold text-teal-600 hover:text-teal-500">Click to upload</span>
-                <span className="text-gray-500"> or drag and drop</span>
+                <span className="font-bold text-green hover:text-green">Click to upload</span>
+                <span className="text-c500"> or drag and drop</span>
               </label>
-              <p className="text-xs text-gray-400 mt-2">ZIP, PDF, DOCX up to 100MB</p>
+              <p className="text-xs text-c400 mt-2">ZIP, PDF, DOCX up to 100MB</p>
               {digitalFile && (
-                <div className="mt-4 inline-flex items-center gap-2 bg-teal-50 text-teal-700 px-3 py-1.5 rounded-lg text-sm font-medium">
+                <div className="mt-4 inline-flex items-center gap-2 bg-green text-green px-3 py-1.5 rounded-lg text-sm font-medium">
                   {digitalFile.name}
                 </div>
               )}
@@ -438,16 +438,16 @@ alert(err.response?.data?.message || 'Failed to create product');
         )}
 
         {/* Compliance */}
-        <div className="border-t border-gray-100 pt-8">
-          <label className="flex items-start gap-3 p-4 bg-gray-50 rounded-xl cursor-pointer">
+        <div className="border-t border-c100 pt-8">
+          <label className="flex items-start gap-3 p-4 bg-c100 rounded-xl cursor-pointer">
             <input
               type="checkbox"
               checked={form.isWorkRelatedConfirmed}
               onChange={(e) => setForm({ ...form, isWorkRelatedConfirmed: e.target.checked })}
-              className="mt-1 text-teal-600 focus:ring-teal-500 rounded"
+              className="mt-1 text-green focus:ring-green rounded"
               required
             />
-            <span className="text-sm text-gray-700">
+            <span className="text-sm text-c700">
               I confirm that this listing is strictly related to professional work, career development, or business tools. I understand that non-work related items will be removed and my seller account may be suspended.
             </span>
           </label>
@@ -457,7 +457,7 @@ alert(err.response?.data?.message || 'Failed to create product');
           <button
             type="submit"
             disabled={loading}
-            className="bg-teal-600 hover:bg-teal-500 text-white px-8 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
           >
             {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
             Publish Listing

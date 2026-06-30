@@ -118,72 +118,72 @@ if (err.response?.status === 401 || err.response?.status === 403) {
       case 'completed':
       case 'delivered':
       case 'confirmed':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800 uppercase">{status}</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-green text-green uppercase">{status}</span>;
       case 'refunded':
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red-100 text-red-800 uppercase">{status}</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-red text-red uppercase">{status}</span>;
       default:
-        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-yellow-100 text-yellow-800 uppercase">{status}</span>;
+        return <span className="px-2 py-1 text-xs font-semibold rounded-full bg-gold text-goldH uppercase">{status}</span>;
     }
   };
 
   return (
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div>
-        <h1 className="text-3xl font-black text-gray-900">Revenue & Analytics</h1>
-        <p className="text-gray-500 mt-1">Monitor platform revenue, commissions, and transactions.</p>
+        <h1 className="text-3xl font-black text-c900">Revenue & Analytics</h1>
+        <p className="text-c500 mt-1">Monitor platform revenue, commissions, and transactions.</p>
       </div>
 
-      {error && <div className="text-red-500 bg-red-50 p-4 rounded-lg text-sm">{error}</div>}
+      {error && <div className="text-red bg-red p-4 rounded-lg text-sm">{error}</div>}
 
       {loading && !summary ? (
         <div className="flex justify-center items-center h-64">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green"></div>
         </div>
       ) : summary ? (
         <>
           {/* KPI Cards */}
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex items-center">
-              <div className="bg-teal-50 p-4 rounded-2xl mr-4">
-                <TrendingUp className="w-8 h-8 text-teal-600" />
+            <div className="bg-white rounded-3xl p-6 border border-c100 shadow-sm flex items-center">
+              <div className="bg-green p-4 rounded-2xl mr-4">
+                <TrendingUp className="w-8 h-8 text-green" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-500">Gross Revenue</p>
-                <p className="text-2xl font-black text-gray-900">{formatCurrency(summary.grossRevenue)}</p>
+                <p className="text-sm font-semibold text-c500">Gross Revenue</p>
+                <p className="text-2xl font-black text-c900">{formatCurrency(summary.grossRevenue)}</p>
               </div>
             </div>
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex items-center">
-              <div className="bg-blue-50 p-4 rounded-2xl mr-4">
-                <DollarSign className="w-8 h-8 text-blue-600" />
+            <div className="bg-white rounded-3xl p-6 border border-c100 shadow-sm flex items-center">
+              <div className="bg-blueL p-4 rounded-2xl mr-4">
+                <DollarSign className="w-8 h-8 text-blue" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-500">Total Commission</p>
-                <p className="text-2xl font-black text-gray-900">{formatCurrency(summary.totalCommission)}</p>
+                <p className="text-sm font-semibold text-c500">Total Commission</p>
+                <p className="text-2xl font-black text-c900">{formatCurrency(summary.totalCommission)}</p>
               </div>
             </div>
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex items-center">
+            <div className="bg-white rounded-3xl p-6 border border-c100 shadow-sm flex items-center">
               <div className="bg-purple-50 p-4 rounded-2xl mr-4">
                 <CreditCard className="w-8 h-8 text-purple-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-500">Seller Payables</p>
-                <p className="text-2xl font-black text-gray-900">{formatCurrency(summary.totalSellerPayables)}</p>
+                <p className="text-sm font-semibold text-c500">Seller Payables</p>
+                <p className="text-2xl font-black text-c900">{formatCurrency(summary.totalSellerPayables)}</p>
               </div>
             </div>
-            <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm flex items-center">
+            <div className="bg-white rounded-3xl p-6 border border-c100 shadow-sm flex items-center">
               <div className="bg-orange-50 p-4 rounded-2xl mr-4">
                 <ShoppingBag className="w-8 h-8 text-orange-600" />
               </div>
               <div>
-                <p className="text-sm font-semibold text-gray-500">Total Orders</p>
-                <p className="text-2xl font-black text-gray-900">{summary.totalOrders}</p>
+                <p className="text-sm font-semibold text-c500">Total Orders</p>
+                <p className="text-2xl font-black text-c900">{summary.totalOrders}</p>
               </div>
             </div>
           </div>
 
           {/* Chart Section */}
-          <div className="bg-white rounded-3xl p-6 border border-gray-100 shadow-sm">
-            <h2 className="text-xl font-bold text-gray-900 mb-6">Monthly Revenue Overview</h2>
+          <div className="bg-white rounded-3xl p-6 border border-c100 shadow-sm">
+            <h2 className="text-xl font-bold text-c900 mb-6">Monthly Revenue Overview</h2>
             <div className="h-80 w-full">
               {chartData.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
@@ -201,49 +201,49 @@ if (err.response?.status === 401 || err.response?.status === 403) {
                   </BarChart>
                 </ResponsiveContainer>
               ) : (
-                <div className="h-full flex items-center justify-center text-gray-400">No chart data available</div>
+                <div className="h-full flex items-center justify-center text-c400">No chart data available</div>
               )}
             </div>
           </div>
 
           {/* Transactions Table */}
-          <div className="bg-white rounded-3xl border border-gray-100 shadow-sm overflow-hidden">
-            <div className="px-6 py-5 border-b border-gray-100">
-              <h2 className="text-xl font-bold text-gray-900">Recent Transactions</h2>
+          <div className="bg-white rounded-3xl border border-c100 shadow-sm overflow-hidden">
+            <div className="px-6 py-5 border-b border-c100">
+              <h2 className="text-xl font-bold text-c900">Recent Transactions</h2>
             </div>
             
             <div className="overflow-x-auto">
-              <table className="min-w-full divide-y divide-gray-100">
-                <thead className="bg-gray-50/50">
+              <table className="min-w-full divide-y divide-c100">
+                <thead className="bg-c100/50">
                   <tr>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Date</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Buyer</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Product</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Gateway</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Amount</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Commission</th>
-                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Status</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Date</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Buyer</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Product</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Gateway</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Amount</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Commission</th>
+                    <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Status</th>
                   </tr>
                 </thead>
-                <tbody className="bg-white divide-y divide-gray-50">
+                <tbody className="bg-white divide-y divide-c100">
                   {transactions.map((tx) => (
-                    <tr key={tx.id} className="hover:bg-gray-50 transition-colors">
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                    <tr key={tx.id} className="hover:bg-c100 transition-colors">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-c500">
                         {new Date(tx.createdAt).toLocaleDateString()}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-c900">
                         {tx.buyerEmail}
                       </td>
-                      <td className="px-6 py-4 text-sm text-gray-900 max-w-[200px] truncate">
+                      <td className="px-6 py-4 text-sm text-c900 max-w-layout-sm truncate">
                         {tx.productTitle}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500 capitalize">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-c500 capitalize">
                         {tx.paymentGateway}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-gray-900">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm font-semibold text-c900">
                         {formatCurrency(tx.amountPaid, tx.currency)}
                       </td>
-                      <td className="px-6 py-4 whitespace-nowrap text-sm text-teal-600 font-medium">
+                      <td className="px-6 py-4 whitespace-nowrap text-sm text-green font-medium">
                         {formatCurrency(tx.commissionAmount, tx.currency)}
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap">
@@ -253,7 +253,7 @@ if (err.response?.status === 401 || err.response?.status === 403) {
                   ))}
                   {transactions.length === 0 && (
                     <tr>
-                      <td colSpan={7} className="px-6 py-12 text-center text-gray-500">
+                      <td colSpan={7} className="px-6 py-12 text-center text-c500">
                         No transactions found.
                       </td>
                     </tr>
@@ -264,22 +264,22 @@ if (err.response?.status === 401 || err.response?.status === 403) {
 
             {/* Pagination */}
             {meta && meta.totalPages > 1 && (
-              <div className="px-6 py-4 border-t border-gray-100 flex items-center justify-between">
-                <p className="text-sm text-gray-500">
+              <div className="px-6 py-4 border-t border-c100 flex items-center justify-between">
+                <p className="text-sm text-c500">
                   Page {meta.page} of {meta.totalPages} ({meta.total} total)
                 </p>
                 <div className="flex gap-2">
                   <button
                     onClick={() => setPage((p) => Math.max(1, p - 1))}
                     disabled={page <= 1}
-                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition-colors"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-c600 bg-white border border-c200 rounded-xl hover:bg-c100 disabled:opacity-40 transition-colors"
                   >
                     <ChevronLeft className="w-4 h-4" /> Prev
                   </button>
                   <button
                     onClick={() => setPage((p) => p + 1)}
                     disabled={page >= meta.totalPages}
-                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-500 disabled:opacity-40 transition-colors"
+                    className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-green rounded-xl hover:bg-green disabled:opacity-40 transition-colors"
                   >
                     Next <ChevronRight className="w-4 h-4" />
                   </button>

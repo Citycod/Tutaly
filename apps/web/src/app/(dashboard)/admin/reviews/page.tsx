@@ -73,7 +73,7 @@ export default function AdminReviewsPage() {
   const renderStars = (rating: number) => (
     <div className="flex items-center gap-0.5">
       {[1, 2, 3, 4, 5].map(i => (
-        <Star key={i} className={`w-3.5 h-3.5 ${i <= rating ? 'text-yellow-400 fill-yellow-400' : 'text-gray-200'}`} />
+        <Star key={i} className={`w-3.5 h-3.5 ${i <= rating ? 'text-gold fill-yellow-400' : 'text-c200'}`} />
       ))}
     </div>
   );
@@ -83,40 +83,40 @@ export default function AdminReviewsPage() {
   return (
     <div>
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Review Moderation</h1>
-        <p className="text-gray-500 text-sm mt-1">{total} pending reviews</p>
+        <h1 className="text-2xl font-bold text-c900">Review Moderation</h1>
+        <p className="text-c500 text-sm mt-1">{total} pending reviews</p>
       </div>
 
       {loading ? (
         <div className="space-y-4">
           {[1, 2, 3].map(i => (
-            <div key={i} className="bg-white rounded-3xl border border-gray-100 p-6 animate-pulse">
-              <div className="h-5 bg-gray-200 rounded w-1/4 mb-3" />
-              <div className="h-4 bg-gray-100 rounded w-1/2 mb-2" />
-              <div className="h-4 bg-gray-100 rounded w-3/4" />
+            <div key={i} className="bg-white rounded-3xl border border-c100 p-6 animate-pulse">
+              <div className="h-5 bg-c200 rounded w-1/4 mb-3" />
+              <div className="h-4 bg-c100 rounded w-1/2 mb-2" />
+              <div className="h-4 bg-c100 rounded w-3/4" />
             </div>
           ))}
         </div>
       ) : reviews.length === 0 ? (
-        <div className="bg-white rounded-3xl border border-gray-100 p-12 text-center">
-          <MessageSquare className="w-12 h-12 text-gray-300 mx-auto mb-4" />
-          <h3 className="text-lg font-bold text-gray-900 mb-2">No pending reviews</h3>
-          <p className="text-gray-500 text-sm">All reviews have been moderated. ✨</p>
+        <div className="bg-white rounded-3xl border border-c100 p-12 text-center">
+          <MessageSquare className="w-12 h-12 text-c300 mx-auto mb-4" />
+          <h3 className="text-lg font-bold text-c900 mb-2">No pending reviews</h3>
+          <p className="text-c500 text-sm">All reviews have been moderated. ✨</p>
         </div>
       ) : (
         <div className="space-y-4">
           {reviews.map((review) => (
-            <div key={review.id} className="bg-white rounded-3xl border border-gray-100 p-6 hover:shadow-md transition-shadow">
+            <div key={review.id} className="bg-white rounded-3xl border border-c100 p-6 hover:shadow-md transition-shadow">
               {/* Header */}
               <div className="flex items-start justify-between mb-4">
                 <div>
-                  <h3 className="text-base font-bold text-gray-900">{review.companyName}</h3>
-                  <p className="text-sm text-gray-500 mt-0.5">{review.jobTitle}</p>
-                  <p className="text-xs text-gray-400 mt-1">{new Date(review.createdAt).toLocaleDateString()}</p>
+                  <h3 className="text-base font-bold text-c900">{review.companyName}</h3>
+                  <p className="text-sm text-c500 mt-0.5">{review.jobTitle}</p>
+                  <p className="text-xs text-c400 mt-1">{new Date(review.createdAt).toLocaleDateString()}</p>
                 </div>
                 <div className="flex items-center gap-2">
                   {renderStars(review.ratingOverall)}
-                  <span className="text-sm font-bold text-gray-900 ml-1">{review.ratingOverall}/5</span>
+                  <span className="text-sm font-bold text-c900 ml-1">{review.ratingOverall}/5</span>
                 </div>
               </div>
 
@@ -128,27 +128,27 @@ export default function AdminReviewsPage() {
                   { label: 'Management', value: review.ratingManagement },
                   { label: 'Culture', value: review.ratingCulture },
                 ].map(r => (
-                  <div key={r.label} className="bg-gray-50 rounded-xl p-2.5 text-center">
-                    <p className="text-xs text-gray-500">{r.label}</p>
-                    <p className="text-sm font-bold text-gray-900">{r.value}/5</p>
+                  <div key={r.label} className="bg-c100 rounded-xl p-2.5 text-center">
+                    <p className="text-xs text-c500">{r.label}</p>
+                    <p className="text-sm font-bold text-c900">{r.value}/5</p>
                   </div>
                 ))}
               </div>
 
               {/* Pros & Cons */}
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
-                <div className="bg-green-50 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-green-700 mb-1">👍 Pros</p>
-                  <p className="text-sm text-green-800">{review.pros || '—'}</p>
+                <div className="bg-green rounded-xl p-4">
+                  <p className="text-xs font-semibold text-green mb-1">👍 Pros</p>
+                  <p className="text-sm text-green">{review.pros || '—'}</p>
                 </div>
-                <div className="bg-red-50 rounded-xl p-4">
-                  <p className="text-xs font-semibold text-red-700 mb-1">👎 Cons</p>
-                  <p className="text-sm text-red-800">{review.cons || '—'}</p>
+                <div className="bg-red rounded-xl p-4">
+                  <p className="text-xs font-semibold text-red mb-1">👎 Cons</p>
+                  <p className="text-sm text-red">{review.cons || '—'}</p>
                 </div>
               </div>
 
               <div className="flex items-center justify-between">
-                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${review.recommend ? 'bg-green-100 text-green-700' : 'bg-red-100 text-red-700'}`}>
+                <span className={`text-xs font-medium px-2.5 py-1 rounded-full ${review.recommend ? 'bg-green text-green' : 'bg-red text-red'}`}>
                   {review.recommend ? '✅ Recommends' : '❌ Does not recommend'}
                 </span>
 
@@ -157,7 +157,7 @@ export default function AdminReviewsPage() {
                   <button
                     onClick={() => handleAction(review.id, 'approve')}
                     disabled={actionId === review.id}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-green-700 bg-green-50 hover:bg-green-100 px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-green bg-green hover:bg-green px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
                   >
                     <CheckCircle className="w-4 h-4" />
                     Approve
@@ -165,7 +165,7 @@ export default function AdminReviewsPage() {
                   <button
                     onClick={() => handleAction(review.id, 'reject')}
                     disabled={actionId === review.id}
-                    className="flex items-center gap-1.5 text-sm font-semibold text-red-700 bg-red-50 hover:bg-red-100 px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
+                    className="flex items-center gap-1.5 text-sm font-semibold text-red bg-red hover:bg-red px-4 py-2 rounded-xl transition-colors disabled:opacity-50"
                   >
                     <XCircle className="w-4 h-4" />
                     Reject
@@ -180,21 +180,21 @@ export default function AdminReviewsPage() {
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between pt-6">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-c500">
             Page {meta.page} of {meta.totalPages} ({meta.total} total)
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => setPage(p => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-c600 bg-white border border-c200 rounded-xl hover:bg-c100 disabled:opacity-40 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" /> Previous
             </button>
             <button
               onClick={() => setPage(p => p + 1)}
               disabled={page >= meta.totalPages}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-500 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-green rounded-xl hover:bg-green disabled:opacity-40 transition-colors"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>

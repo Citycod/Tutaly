@@ -169,14 +169,14 @@ console.error(err);
     }
   };
 
-  const inputClass = "block w-full rounded-xl border-0 py-3 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-[#1A1C1E] sm:text-sm sm:leading-6 px-4 bg-white transition-all";
-  const labelClass = "block text-sm font-semibold leading-6 text-[#1A1C1E] mb-2";
+  const inputClass = "block w-full rounded-xl border-0 py-3 text-c900 shadow-sm ring-1 ring-inset ring-c300 placeholder:text-c400 focus:ring-2 focus:ring-inset focus:ring-c900 sm:text-sm sm:leading-6 px-4 bg-white transition-all";
+  const labelClass = "block text-sm font-semibold leading-6 text-c900 mb-2";
 
   return (
     <div className="max-w-4xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-[#1A1C1E] tracking-tight">Post a Job</h1>
-        <p className="mt-2 text-gray-500">Find the perfect candidate by providing detailed information about the role.</p>
+        <h1 className="text-3xl font-bold text-c900 tracking-tight">Post a Job</h1>
+        <p className="mt-2 text-c500">Find the perfect candidate by providing detailed information about the role.</p>
       </div>
 
       {/* Progress Steps */}
@@ -190,26 +190,26 @@ console.error(err);
             return (
               <li key={step.name} className={cn("relative flex-1", index !== STEPS.length - 1 ? 'pr-8 sm:pr-20' : '')}>
                 <div className="absolute inset-0 flex items-center" aria-hidden="true">
-                  <div className={cn("h-1 w-full rounded-full transition-colors", isCompleted ? "bg-[#1D9E75]" : "bg-gray-200")} />
+                  <div className={cn("h-1 w-full rounded-full transition-colors", isCompleted ? "bg-green" : "bg-c200")} />
                 </div>
                 <button
                   type="button"
                   onClick={() => index <= currentStep && setCurrentStep(index)}
                   className={cn(
                     "relative flex h-10 w-10 items-center justify-center rounded-full transition-all duration-300 ring-4 ring-white",
-                    isCompleted ? "bg-[#1D9E75] hover:bg-teal-700" : isCurrent ? "bg-[#1A1C1E] border-2 border-[#1A1C1E]" : "bg-white border-2 border-gray-300"
+                    isCompleted ? "bg-green hover:bg-green" : isCurrent ? "bg-c900 border-2 border-c900" : "bg-white border-2 border-c300"
                   )}
                 >
                   {isCompleted ? (
                     <CheckCircle2 className="h-6 w-6 text-white" aria-hidden="true" />
                   ) : (
-                    <StepIcon className={cn("h-5 w-5", isCurrent ? "text-white" : "text-gray-400")} aria-hidden="true" />
+                    <StepIcon className={cn("h-5 w-5", isCurrent ? "text-white" : "text-c400")} aria-hidden="true" />
                   )}
                   <span className="sr-only">{step.name}</span>
                 </button>
                 <span className={cn(
                   "absolute -bottom-6 left-1/2 -translate-x-1/2 text-xs font-semibold whitespace-nowrap",
-                  isCurrent ? "text-[#1A1C1E]" : isCompleted ? "text-[#1D9E75]" : "text-gray-500"
+                  isCurrent ? "text-c900" : isCompleted ? "text-green" : "text-c500"
                 )}>
                   {step.name}
                 </span>
@@ -220,14 +220,14 @@ console.error(err);
       </nav>
 
       {errorMsg && (
-        <div className="mb-8 rounded-xl bg-red-50 p-4 border border-red-100 flex items-start">
-          <AlertCircle className="h-5 w-5 text-red-400 mt-0.5 mr-3 flex-shrink-0" />
-          <p className="text-sm text-red-800">{errorMsg}</p>
+        <div className="mb-8 rounded-xl bg-red p-4 border border-red flex items-start">
+          <AlertCircle className="h-5 w-5 text-red mt-0.5 mr-3 flex-shrink-0" />
+          <p className="text-sm text-red">{errorMsg}</p>
         </div>
       )}
 
       {/* Form Area */}
-      <div className="bg-white shadow-xl shadow-gray-200/50 rounded-2xl border border-gray-100 overflow-hidden">
+      <div className="bg-white shadow-xl shadow-gray-200/50 rounded-2xl border border-c100 overflow-hidden">
         <div className="p-8 sm:p-12">
           
           {/* STEP 1: Job Details */}
@@ -245,7 +245,7 @@ console.error(err);
 
               <div>
                 <label className={labelClass}>Job Description *</label>
-                <div className="bg-white rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-[#1A1C1E]">
+                <div className="bg-white rounded-xl overflow-hidden focus-within:ring-2 focus-within:ring-c900">
                   <ReactQuill 
                     theme="snow" 
                     value={formData.description} 
@@ -265,7 +265,7 @@ console.error(err);
                         onClick={() => updateForm({ jobType: type })}
                         className={cn(
                           "px-4 py-2.5 rounded-full text-sm font-medium transition-colors border",
-                          formData.jobType === type ? "bg-[#1A1C1E] text-white border-[#1A1C1E]" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                          formData.jobType === type ? "bg-c900 text-white border-c900" : "bg-white text-c700 border-c200 hover:border-c300"
                         )}
                       >
                         {type.replace('-', ' ').replace(/\b\w/g, l => l.toUpperCase())}
@@ -283,7 +283,7 @@ console.error(err);
                         onClick={() => updateForm({ workMode: mode })}
                         className={cn(
                           "px-4 py-2.5 rounded-full text-sm font-medium transition-colors border",
-                          formData.workMode === mode ? "bg-[#1D9E75] text-white border-[#1D9E75]" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                          formData.workMode === mode ? "bg-green text-white border-green" : "bg-white text-c700 border-c200 hover:border-c300"
                         )}
                       >
                         {mode.charAt(0).toUpperCase() + mode.slice(1)}
@@ -293,13 +293,13 @@ console.error(err);
                 </div>
               </div>
 
-              <div className="bg-gray-50 rounded-2xl p-6 border border-gray-100">
+              <div className="bg-c100 rounded-2xl p-6 border border-c100">
                 <label className={labelClass}>Compensation</label>
                 <div className="flex gap-4 mb-6">
                   {['range', 'fixed', 'negotiable'].map(mode => (
                     <label key={mode} className="flex items-center">
-                      <input type="radio" name="salaryMode" checked={formData.salaryMode === mode} onChange={() => updateForm({ salaryMode: mode as any })} className="h-4 w-4 text-[#1D9E75] focus:ring-[#1D9E75]" />
-                      <span className="ml-2 text-sm text-gray-700 capitalize">{mode}</span>
+                      <input type="radio" name="salaryMode" checked={formData.salaryMode === mode} onChange={() => updateForm({ salaryMode: mode as any })} className="h-4 w-4 text-green focus:ring-green" />
+                      <span className="ml-2 text-sm text-c700 capitalize">{mode}</span>
                     </label>
                   ))}
                 </div>
@@ -338,7 +338,7 @@ console.error(err);
           {currentStep === 1 && (
             <div className="space-y-10 animate-in fade-in slide-in-from-right-4 duration-500">
               <div>
-                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Where is this role located?</p>
+                <p className="text-lg font-bold text-c900 mb-6">Where is this role located?</p>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
                   <div>
                     <label className={labelClass}>Country *</label>
@@ -364,10 +364,10 @@ console.error(err);
                 </div>
               </div>
 
-              <hr className="border-gray-200" />
+              <hr className="border-c200" />
 
               <div>
-                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Candidate Requirements</p>
+                <p className="text-lg font-bold text-c900 mb-6">Candidate Requirements</p>
                 <div className="space-y-8">
                   <div>
                     <label className={labelClass}>Experience Level</label>
@@ -378,7 +378,7 @@ console.error(err);
                           onClick={() => updateForm({ experienceLevel: level })}
                           className={cn(
                             "px-5 py-2.5 rounded-xl text-sm font-semibold transition-all border",
-                            formData.experienceLevel === level ? "bg-[#2563EB] text-white border-[#2563EB] shadow-md shadow-blue-500/20" : "bg-white text-gray-700 border-gray-200 hover:border-gray-300"
+                            formData.experienceLevel === level ? "bg-blue text-white border-blue shadow-md shadow-blue-500/20" : "bg-white text-c700 border-c200 hover:border-c300"
                           )}
                         >
                           {level.charAt(0).toUpperCase() + level.slice(1)}
@@ -406,11 +406,11 @@ console.error(err);
 
                   <div>
                     <label className={labelClass}>Required Skills</label>
-                    <div className="bg-gray-50 p-2 rounded-xl border border-gray-200 flex flex-wrap items-center gap-2 focus-within:border-[#1D9E75] focus-within:ring-1 focus-within:ring-[#1D9E75]">
+                    <div className="bg-c100 p-2 rounded-xl border border-c200 flex flex-wrap items-center gap-2 focus-within:border-green focus-within:ring-1 focus-within:ring-green">
                       {formData.skills.map(skill => (
-                        <span key={skill} className="inline-flex items-center gap-1 bg-white border border-gray-200 px-3 py-1.5 rounded-lg text-sm font-medium text-gray-700 shadow-sm">
+                        <span key={skill} className="inline-flex items-center gap-1 bg-white border border-c200 px-3 py-1.5 rounded-lg text-sm font-medium text-c700 shadow-sm">
                           {skill}
-                          <button type="button" onClick={() => removeSkill(skill)} className="text-gray-400 hover:text-red-500"><X className="w-3.5 h-3.5" /></button>
+                          <button type="button" onClick={() => removeSkill(skill)} className="text-c400 hover:text-red"><X className="w-3.5 h-3.5" /></button>
                         </span>
                       ))}
                       <input
@@ -421,7 +421,7 @@ console.error(err);
                           if (e.key === 'Enter') { e.preventDefault(); addSkill(); }
                         }}
                         placeholder="Type a skill and press Enter..."
-                        className="flex-1 bg-transparent border-0 focus:ring-0 min-w-[200px] text-sm"
+                        className="flex-1 bg-transparent border-0 focus:ring-0 min-w-layout-md text-sm"
                       />
                     </div>
                   </div>
@@ -437,16 +437,16 @@ console.error(err);
                 <div>
                   <label className={labelClass}>Application Deadline</label>
                   <input type="date" value={formData.deadline} onChange={e => updateForm({ deadline: e.target.value })} className={inputClass} />
-                  <p className="mt-2 text-xs text-gray-500">Leave blank for open-ended hiring.</p>
+                  <p className="mt-2 text-xs text-c500">Leave blank for open-ended hiring.</p>
                 </div>
                 
                 <div>
                   <label className={labelClass}>How should candidates apply?</label>
-                  <div className="flex bg-gray-100 p-1 rounded-xl w-full">
-                    <button type="button" onClick={() => updateForm({ applyMethod: 'platform' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'platform' ? "bg-white shadow-sm text-[#1A1C1E]" : "text-gray-500")}>
+                  <div className="flex bg-c100 p-1 rounded-xl w-full">
+                    <button type="button" onClick={() => updateForm({ applyMethod: 'platform' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'platform' ? "bg-white shadow-sm text-c900" : "text-c500")}>
                       On Platform
                     </button>
-                    <button type="button" onClick={() => updateForm({ applyMethod: 'external' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'external' ? "bg-white shadow-sm text-[#1A1C1E]" : "text-gray-500")}>
+                    <button type="button" onClick={() => updateForm({ applyMethod: 'external' })} className={cn("flex-1 py-2 text-sm font-medium rounded-lg transition-all", formData.applyMethod === 'external' ? "bg-white shadow-sm text-c900" : "text-c500")}>
                       External URL
                     </button>
                   </div>
@@ -458,34 +458,34 @@ console.error(err);
                 </div>
               </div>
 
-              <hr className="border-gray-200" />
+              <hr className="border-c200" />
 
               <div>
-                <p className="text-lg font-bold text-[#1A1C1E] mb-6">Boost Your Visibility</p>
+                <p className="text-lg font-bold text-c900 mb-6">Boost Your Visibility</p>
                 <div className="space-y-4">
                   <label className={cn(
                     "flex items-start p-5 rounded-2xl border-2 cursor-pointer transition-all",
-                    formData.isFeatured ? "border-amber-400 bg-amber-50" : "border-gray-200 bg-white hover:border-gray-300"
+                    formData.isFeatured ? "border-gold bg-gold" : "border-c200 bg-white hover:border-c300"
                   )}>
                     <div className="flex items-center h-6">
-                      <input type="checkbox" checked={formData.isFeatured} onChange={e => updateForm({ isFeatured: e.target.checked })} className="h-5 w-5 text-amber-500 rounded border-gray-300 focus:ring-amber-500" />
+                      <input type="checkbox" checked={formData.isFeatured} onChange={e => updateForm({ isFeatured: e.target.checked })} className="h-5 w-5 text-gold rounded border-c300 focus:ring-gold" />
                     </div>
                     <div className="ml-4">
-                      <span className="block text-base font-bold text-gray-900">Featured Job Listing</span>
-                      <span className="block text-sm text-gray-500 mt-1">Pin your job to the top of search results and highlight it across the platform. Attracts 3x more views. <strong className="text-amber-600 font-bold ml-1">₦10,000 / week</strong></span>
+                      <span className="block text-base font-bold text-c900">Featured Job Listing</span>
+                      <span className="block text-sm text-c500 mt-1">Pin your job to the top of search results and highlight it across the platform. Attracts 3x more views. <strong className="text-gold font-bold ml-1">₦10,000 / week</strong></span>
                     </div>
                   </label>
 
                   <label className={cn(
                     "flex items-start p-5 rounded-2xl border-2 cursor-pointer transition-all",
-                    formData.isUrgent ? "border-red-400 bg-red-50" : "border-gray-200 bg-white hover:border-gray-300"
+                    formData.isUrgent ? "border-red bg-red" : "border-c200 bg-white hover:border-c300"
                   )}>
                     <div className="flex items-center h-6">
-                      <input type="checkbox" checked={formData.isUrgent} onChange={e => updateForm({ isUrgent: e.target.checked })} className="h-5 w-5 text-red-500 rounded border-gray-300 focus:ring-red-500" />
+                      <input type="checkbox" checked={formData.isUrgent} onChange={e => updateForm({ isUrgent: e.target.checked })} className="h-5 w-5 text-red rounded border-c300 focus:ring-red" />
                     </div>
                     <div className="ml-4">
-                      <span className="block text-base font-bold text-gray-900">Mark as Urgent</span>
-                      <span className="block text-sm text-gray-500 mt-1">Adds an "Urgent Hiring" badge to your listing to alert candidates of immediate start dates.</span>
+                      <span className="block text-base font-bold text-c900">Mark as Urgent</span>
+                      <span className="block text-sm text-c500 mt-1">Adds an "Urgent Hiring" badge to your listing to alert candidates of immediate start dates.</span>
                     </div>
                   </label>
                 </div>
@@ -496,12 +496,12 @@ console.error(err);
         </div>
         
         {/* Footer Navigation */}
-        <div className="bg-gray-50 border-t border-gray-100 p-6 sm:px-12 flex items-center justify-between">
+        <div className="bg-c100 border-t border-c100 p-6 sm:px-12 flex items-center justify-between">
           <button
             type="button"
             onClick={handlePrev}
             disabled={currentStep === 0}
-            className="text-gray-500 hover:text-gray-900 font-semibold text-sm px-4 py-2 disabled:opacity-0 transition-opacity"
+            className="text-c500 hover:text-c900 font-semibold text-sm px-4 py-2 disabled:opacity-0 transition-opacity"
           >
             Back
           </button>
@@ -510,7 +510,7 @@ console.error(err);
             <button
               type="button"
               onClick={handleNext}
-              className="bg-[#1A1C1E] text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-gray-900/20 hover:bg-black transition-all flex items-center"
+              className="bg-c900 text-white px-8 py-3 rounded-xl font-bold text-sm shadow-lg shadow-gray-900/20 hover:bg-black transition-all flex items-center"
             >
               Next Step <ChevronRight className="ml-2 w-4 h-4" />
             </button>
@@ -521,7 +521,7 @@ console.error(err);
               disabled={submitting}
               className={cn(
                 "px-8 py-3 rounded-xl font-bold text-sm shadow-lg transition-all flex items-center",
-                formData.isFeatured ? "bg-amber-500 text-white shadow-amber-500/20 hover:bg-amber-600" : "bg-[#1D9E75] text-white shadow-teal-500/20 hover:bg-teal-700",
+                formData.isFeatured ? "bg-gold text-white shadow-amber-500/20 hover:bg-gold" : "bg-green text-white shadow-sm hover:bg-green",
                 submitting ? "opacity-70 cursor-not-allowed" : ""
               )}
             >

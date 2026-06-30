@@ -57,7 +57,7 @@ export default async function Home() {
     <>
       {/* ── HERO ─────────────────────────────────────────────────── */}
       <section className="hero" aria-label="Hero section">
-        <div className="container" style={{ position: 'relative' }}>
+        <div className="container relative">
 
           <div className="hero__eyebrow">
             <div className="hero__eyebrow-line" aria-hidden="true"></div>
@@ -156,7 +156,7 @@ export default async function Home() {
               // Fallback to static cards if no data
               <>
                 <div className="floatcard">
-                  <div className="floatcard__logo" style={{ background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' }}>A</div>
+                  <div className="floatcard__logo bg-blue/20 text-blueL">A</div>
                   <div>
                     <div className="floatcard__title">Senior Product Manager</div>
                     <div className="floatcard__company">Andela &middot; Remote, Global</div>
@@ -168,7 +168,7 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="floatcard">
-                  <div className="floatcard__logo" style={{ background: 'rgba(29,122,58,0.2)', color: '#2DB85A' }}>F</div>
+                  <div className="floatcard__logo bg-green/20 text-green">F</div>
                   <div>
                     <div className="floatcard__title">Backend Engineer</div>
                     <div className="floatcard__company">Flutterwave &middot; Lagos</div>
@@ -179,7 +179,7 @@ export default async function Home() {
                   </div>
                 </div>
                 <div className="floatcard">
-                  <div className="floatcard__logo" style={{ background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }}>N</div>
+                  <div className="floatcard__logo bg-gold/20 text-goldH">N</div>
                   <div>
                     <div className="floatcard__title">Data Scientist</div>
                     <div className="floatcard__company">Novalink &middot; London</div>
@@ -269,9 +269,9 @@ export default async function Home() {
             <div className="reveal visible">
               <div className="section__label">Salary intelligence</div>
               <h2 className="section__title" id="salary-title">Stop guessing.<br />Start knowing.</h2>
-              <p className="section__subtitle" style={{ marginBottom: '32px' }}>Most professionals walk into a negotiation with no idea what they're actually worth. Tutaly shows you real pay data, in your currency, before you walk in.</p>
+              <p className="section__subtitle mb-8">Most professionals walk into a negotiation with no idea what they're actually worth. Tutaly shows you real pay data, in your currency, before you walk in.</p>
               <Link href="/salaries" className="btn btn--primary btn--lg">Check your salary now</Link>
-              <p style={{ marginTop: '14px', fontSize: '13px', color: 'var(--c-500)' }}>No sign-up needed. Data from 47,000+ salary reports.</p>
+              <p className="mt-3.5 text-sm text-c500">No sign-up needed. Data from 47,000+ salary reports.</p>
             </div>
             <div className="reveal visible">
               <div className="salary-card">
@@ -292,7 +292,7 @@ export default async function Home() {
                     <span>₦1.4M</span>
                   </div>
                   <div className="salary-bar-track">
-                    <div className="salary-bar-fill" style={{ width: '58%' }}>
+                    <div className="salary-bar-fill w-3/5">
                       <div className="salary-bar-marker"></div>
                     </div>
                   </div>
@@ -326,15 +326,15 @@ export default async function Home() {
       {/* ── REVIEWS ────────────────────────────────────────────────── */}
       <section className="section" id="reviews" aria-labelledby="reviews-title">
         <div className="container">
-          <div className="reveal visible" style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 56px' }}>
-            <div className="section__label" style={{ justifyContent: 'center' }}>Company reviews</div>
+          <div className="reveal visible text-center max-w-layout-md mx-auto mb-14">
+            <div className="section__label justify-center">Company reviews</div>
             <h2 className="section__title" id="reviews-title">The honest version of the job description.</h2>
-            <p style={{ fontSize: '16px', color: 'var(--c-300)', lineHeight: '1.65' }}>Before you say yes to an offer, hear from people who already said yes — and what happened after.</p>
+            <p className="text-base text-c300 leading-relaxed">Before you say yes to an offer, hear from people who already said yes — and what happened after.</p>
           </div>
           <div className="reviews-row reveal visible">
             <article className="review-card">
               <div className="review-card__header">
-                <div className="review-card__logo" style={{ background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' }}>F</div>
+                <div className="review-card__logo bg-blue/20 text-blueL">F</div>
                 <div>
                   <div className="review-card__company">Flutterwave</div>
                   <div className="review-card__stars" aria-label="Rating: 4.2 out of 5">
@@ -352,7 +352,7 @@ export default async function Home() {
             </article>
             <article className="review-card">
               <div className="review-card__header">
-                <div className="review-card__logo" style={{ background: 'rgba(29,122,58,0.2)', color: '#2DB85A' }}>P</div>
+                <div className="review-card__logo bg-green/20 text-green">P</div>
                 <div>
                   <div className="review-card__company">Paystack</div>
                   <div className="review-card__stars" aria-label="Rating: 4.6 out of 5">
@@ -370,7 +370,7 @@ export default async function Home() {
             </article>
             <article className="review-card">
               <div className="review-card__header">
-                <div className="review-card__logo" style={{ background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }}>S</div>
+                <div className="review-card__logo bg-gold/20 text-goldH">S</div>
                 <div>
                   <div className="review-card__company">Stripe</div>
                   <div className="review-card__stars" aria-label="Rating: 4.0 out of 5">
@@ -387,7 +387,7 @@ export default async function Home() {
               </div>
             </article>
           </div>
-          <div style={{ textAlign: 'center' }} className="reveal visible">
+          <div className="text-center reveal visible">
             <Link href="/reviews" className="btn btn--ghost btn--lg">Read 12,000+ company reviews</Link>
           </div>
         </div>
@@ -396,16 +396,16 @@ export default async function Home() {
       {/* ── MARKETPLACE ─────────────────────────────────────────────── */}
       <section className="section section--alt" id="marketplace" aria-labelledby="market-title">
         <div className="container">
-          <div className="reveal visible" style={{ display: 'flex', alignItems: 'flex-end', justifyContent: 'space-between', marginBottom: '48px', flexWrap: 'wrap', gap: '20px' }}>
+          <div className="reveal visible flex items-end justify-between mb-12 flex-wrap gap-5">
             <div>
               <div className="section__label">Marketplace</div>
-              <h2 className="section__title" id="market-title" style={{ marginBottom: 0 }}>Career resources built for you.</h2>
+              <h2 className="section__title mb-0" id="market-title">Career resources built for you.</h2>
             </div>
             <Link href="/shop" className="btn btn--ghost">Browse all resources</Link>
           </div>
           <div className="market-grid reveal visible">
             <article className="market-card">
-              <div className="market-card__thumb" style={{ background: 'rgba(27,79,158,0.15)' }}>
+              <div className="market-card__thumb bg-blue/15">
                 📄
                 <span className="market-card__badge tag--blue">Bestseller</span>
               </div>
@@ -419,7 +419,7 @@ export default async function Home() {
               </div>
             </article>
             <article className="market-card">
-              <div className="market-card__thumb" style={{ background: 'rgba(29,122,58,0.15)' }}>
+              <div className="market-card__thumb bg-green/20">
                 📊
                 <span className="market-card__badge tag--green">New</span>
               </div>
@@ -433,7 +433,7 @@ export default async function Home() {
               </div>
             </article>
             <article className="market-card">
-              <div className="market-card__thumb" style={{ background: 'rgba(201,162,39,0.12)' }}>
+              <div className="market-card__thumb bg-gold/15">
                 🎓
                 <span className="market-card__badge tag--gold">Premium</span>
               </div>
@@ -447,7 +447,7 @@ export default async function Home() {
               </div>
             </article>
             <article className="market-card">
-              <div className="market-card__thumb" style={{ background: 'rgba(204,43,43,0.1)' }}>
+              <div className="market-card__thumb bg-red/10">
                 💼
               </div>
               <div className="market-card__body">
@@ -470,7 +470,7 @@ export default async function Home() {
             <div className="reveal visible">
               <div className="section__label">For employers</div>
               <h2 className="section__title" id="employer-title">Find talent without borders.</h2>
-              <p className="section__subtitle" style={{ marginBottom: '40px' }}>190,000+ verified professionals across every major market. Post a job in under 5 minutes. Manage every application from one dashboard.</p>
+              <p className="section__subtitle mb-10">190,000+ verified professionals across every major market. Post a job in under 5 minutes. Manage every application from one dashboard.</p>
               <div className="employer-list">
                 <div className="employer-item">
                   <div className="employer-item__icon" aria-hidden="true">📋</div>
@@ -494,7 +494,7 @@ export default async function Home() {
                   </div>
                 </div>
               </div>
-              <Link href="/employer/jobs/create" className="btn btn--primary btn--lg" style={{ marginTop: '32px' }}>Post a job — starts at ₦25,000</Link>
+              <Link href="/employer/jobs/create" className="btn btn--primary btn--lg mt-8">Post a job — starts at ₦25,000</Link>
             </div>
             <div className="reveal visible">
               <div className="dashboard-preview" role="img" aria-label="Employer dashboard preview">
@@ -502,7 +502,7 @@ export default async function Home() {
                   <div className="dot dot--red"></div>
                   <div className="dot dot--amber"></div>
                   <div className="dot dot--green"></div>
-                  <span style={{ marginLeft: '10px', fontSize: '12px', color: 'var(--c-500)' }}>Employer Dashboard</span>
+                  <span className="ml-2.5 text-xs text-c500">Employer Dashboard</span>
                 </div>
                 <div className="dashboard-body">
                   <div className="dashboard-stats">
@@ -552,15 +552,15 @@ export default async function Home() {
       {/* ── TESTIMONIALS ──────────────────────────────────────────────── */}
       <section className="testimonials" aria-labelledby="testi-title">
         <div className="container">
-          <div className="reveal visible" style={{ textAlign: 'center', marginBottom: '56px' }}>
-            <div className="section__label" style={{ justifyContent: 'center' }}>Real outcomes</div>
+          <div className="reveal visible text-center mb-14">
+            <div className="section__label justify-center">Real outcomes</div>
             <h2 className="section__title" id="testi-title">What changes when you know your worth.</h2>
           </div>
           <div className="testimonials-grid reveal visible">
             <blockquote className="testi">
               <p className="testi__quote">I used Tutaly's salary data to negotiate my offer at Paystack. I went in knowing the market range. Walked out ₦200K above their opening offer.</p>
               <div className="testi__author">
-                <div className="testi__avatar" style={{ background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' }}>KA</div>
+                <div className="testi__avatar bg-blue/20 text-blueL">KA</div>
                 <div>
                   <div className="testi__name">Kemi Adeyemi</div>
                   <div className="testi__title">Product Manager, Lagos</div>
@@ -571,22 +571,22 @@ export default async function Home() {
             <blockquote className="testi">
               <p className="testi__quote">The company reviews saved me from accepting an offer at a place that looked good on paper. Three ex-employees said the same thing about the culture. I passed.</p>
               <div className="testi__author">
-                <div className="testi__avatar" style={{ background: 'rgba(29,122,58,0.2)', color: '#2DB85A' }}>IO</div>
+                <div className="testi__avatar bg-green/20 text-green">IO</div>
                 <div>
                   <div className="testi__name">Ifeanyi Okafor</div>
                   <div className="testi__title">Software Engineer, Abuja</div>
-                  <div className="testi__raise" style={{ color: 'var(--blue-l)' }}>→ Avoided a bad move</div>
+                  <div className="testi__raise text-blueL">→ Avoided a bad move</div>
                 </div>
               </div>
             </blockquote>
             <blockquote className="testi">
               <p className="testi__quote">Found my current role, bought a salary report, and connected with my mentor all on Tutaly. It's actually one platform, not five duct-taped together.</p>
               <div className="testi__author">
-                <div className="testi__avatar" style={{ background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }}>SM</div>
+                <div className="testi__avatar bg-gold/20 text-goldH">SM</div>
                 <div>
                   <div className="testi__name">Sofia Martins</div>
                   <div className="testi__title">Data Analyst, São Paulo</div>
-                  <div className="testi__raise" style={{ color: 'var(--gold-h)' }}>★ New role in 6 weeks</div>
+                  <div className="testi__raise text-goldH">★ New role in 6 weeks</div>
                 </div>
               </div>
             </blockquote>
@@ -598,7 +598,7 @@ export default async function Home() {
       <section className="cta-banner" aria-labelledby="cta-title">
         <div className="container">
           <div className="reveal visible">
-            <div className="section__label" style={{ justifyContent: 'center', marginBottom: '20px' }}>Start today</div>
+            <div className="section__label justify-center mb-5">Start today</div>
             <h2 className="cta-banner__title" id="cta-title">Your next move starts here.</h2>
             <p className="cta-banner__sub">Join 190,000+ professionals who use Tutaly to find better jobs, earn what they're worth, and build careers that last.</p>
             <div className="cta-banner__actions">

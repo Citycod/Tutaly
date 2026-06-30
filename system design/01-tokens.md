@@ -7,7 +7,7 @@
 
 ## Colour Tokens
 
-### Primitive (Raw Brand Values)
+### Primitive (Raw Brand Values))
 
 ```css
 :root {

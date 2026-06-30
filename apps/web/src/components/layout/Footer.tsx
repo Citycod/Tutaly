@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 
 export default function Footer() {
   return (
@@ -7,9 +8,7 @@ export default function Footer() {
         <div className="footer__grid">
           <div>
             <div className="footer__brand-name">
-              <span style={{ fontFamily: 'var(--font)', fontWeight: 800, fontSize: '20px', letterSpacing: '-0.5px', color: 'var(--c-100)' }}>
-                tuta<em style={{ fontStyle: 'normal', color: 'var(--blue-l)' }}>ly</em>
-              </span>
+              <Image src="/logo.png" alt="Tutaly" width={140} height={40} className="h-8 w-auto object-contain" />
             </div>
             <p className="footer__brand-desc">The professional ecosystem for the world's workforce. Find jobs, understand your market value, and build the career you deserve — wherever you are.</p>
             <div style={{ display: 'flex', gap: '10px' }}>

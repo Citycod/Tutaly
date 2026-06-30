@@ -11,8 +11,8 @@ import {
 
 const LISTING_TYPE_MAP: Record<string, { label: string; icon: any; color: string; bg: string }> = {
   digital: { label: 'Digital Product', icon: Cpu, color: 'text-purple-700', bg: 'bg-purple-100' },
-  physical: { label: 'Physical Product', icon: Package, color: 'text-blue-700', bg: 'bg-blue-100' },
-  service: { label: 'Professional Service', icon: Wrench, color: 'text-amber-700', bg: 'bg-amber-100' },
+  physical: { label: 'Physical Product', icon: Package, color: 'text-blueH', bg: 'bg-blueL' },
+  service: { label: 'Professional Service', icon: Wrench, color: 'text-goldH', bg: 'bg-gold' },
 };
 
 export default function ProductDetailPage() {
@@ -122,19 +122,19 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-teal-600" />
+      <div className="min-h-screen bg-c100 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-green" />
       </div>
     );
   }
 
   if (!product) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
+      <div className="min-h-screen bg-c100 flex items-center justify-center px-4">
         <div className="text-center">
-          <AlertCircle className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-          <h1 className="text-2xl font-bold text-gray-900 mb-2">Product Not Found</h1>
-          <Link href="/shop" className="text-teal-600 font-medium hover:text-teal-700">
+          <AlertCircle className="w-16 h-16 text-c300 mx-auto mb-4" />
+          <h1 className="text-2xl font-bold text-c900 mb-2">Product Not Found</h1>
+          <Link href="/shop" className="text-green font-medium hover:text-green">
             ← Back to Shop
           </Link>
         </div>
@@ -146,88 +146,88 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
   const TypeIcon = typeInfo.icon;
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-16 relative">
+    <div className="min-h-screen bg-c100 pt-20 pb-16 relative">
       <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-teal-600 mb-8 font-medium">
+        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-8 font-medium">
           <ArrowLeft className="w-4 h-4" /> Back to Shop
         </Link>
 
         <div className="grid grid-cols-1 lg:grid-cols-5 gap-10">
           {/* Left: Images */}
           <div className="lg:col-span-3">
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 overflow-hidden">
-              <div className="aspect-[16/10] bg-gradient-to-br from-gray-100 to-gray-50 flex items-center justify-center">
+            <div className="bg-white rounded-2xl shadow-sm border border-c200 overflow-hidden">
+              <div className="aspect-video bg-c800 border border-c700 flex items-center justify-center">
                 {product.imageUrls && product.imageUrls[0] ? (
                   <img src={product.imageUrls[0]} alt={product.title} className="w-full h-full object-cover" />
                 ) : (
-                  <TypeIcon className="w-20 h-20 text-gray-300" />
+                  <TypeIcon className="w-20 h-20 text-c300" />
                 )}
               </div>
             </div>
 
             {/* Description */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 mt-6 p-8">
-              <h2 className="text-xl font-bold text-gray-900 mb-4">Description</h2>
-              <p className="text-gray-700 whitespace-pre-wrap leading-relaxed">{product.description}</p>
+            <div className="bg-white rounded-2xl shadow-sm border border-c200 mt-6 p-8">
+              <h2 className="text-xl font-bold text-c900 mb-4">Description</h2>
+              <p className="text-c700 whitespace-pre-wrap leading-relaxed">{product.description}</p>
             </div>
           </div>
 
           {/* Right: Details & Buy */}
           <div className="lg:col-span-2 space-y-6">
             {/* Main Info Card */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-8">
+            <div className="bg-white rounded-2xl shadow-sm border border-c200 p-8">
               <div className={`inline-flex items-center gap-1.5 ${typeInfo.bg} ${typeInfo.color} px-3 py-1 rounded-lg text-sm font-bold mb-4`}>
                 <TypeIcon className="w-4 h-4" /> {typeInfo.label}
               </div>
 
-              <h1 className="text-2xl font-bold text-gray-900 mb-2">{product.title}</h1>
+              <h1 className="text-2xl font-bold text-c900 mb-2">{product.title}</h1>
 
               {product.subcategory && (
-                <p className="text-sm text-gray-500 mb-6">
+                <p className="text-sm text-c500 mb-6">
                   {product.subcategory.category?.name} → {product.subcategory.name}
                 </p>
               )}
 
               {product.pricingType === 'per_unit' ? (
                 <div className="mb-6">
-                  <p className="text-3xl font-black text-teal-700">{formatPrice(product.price, product.currency)}</p>
+                  <p className="text-3xl font-black text-green">{formatPrice(product.price, product.currency)}</p>
                   {product.priceUnit && (
-                    <p className="text-sm text-gray-500">per {product.priceUnit}</p>
+                    <p className="text-sm text-c500">per {product.priceUnit}</p>
                   )}
                   {product.priceMayVary && (
-                    <p className="text-xs text-amber-600 mt-1 flex items-center gap-1">
+                    <p className="text-xs text-gold mt-1 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> Final price may vary
                     </p>
                   )}
                 </div>
               ) : (
-                <div className="mb-6 bg-amber-50 border border-amber-200 rounded-xl p-4">
-                  <p className="font-bold text-amber-800">Custom Pricing</p>
-                  <p className="text-sm text-amber-700">Contact the seller for a quote tailored to your needs.</p>
+                <div className="mb-6 bg-gold border border-gold rounded-xl p-4">
+                  <p className="font-bold text-goldH">Custom Pricing</p>
+                  <p className="text-sm text-goldH">Contact the seller for a quote tailored to your needs.</p>
                 </div>
               )}
 
               {/* Quantity */}
               {product.pricingType === 'per_unit' && (
                 <div className="mb-6">
-                  <label className="block text-sm font-medium text-gray-700 mb-2">Quantity</label>
+                  <label className="block text-sm font-medium text-c700 mb-2">Quantity</label>
                   <div className="flex items-center gap-3">
                     <button
                       onClick={() => setQuantity(Math.max(product.minQuantity || 1, quantity - 1))}
-                      className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50"
+                      className="w-10 h-10 rounded-lg border border-c200 flex items-center justify-center font-bold text-c600 hover:bg-c100"
                     >
                       −
                     </button>
-                    <span className="text-lg font-bold text-gray-900 w-10 text-center">{quantity}</span>
+                    <span className="text-lg font-bold text-c900 w-10 text-center">{quantity}</span>
                     <button
                       onClick={() => setQuantity(quantity + 1)}
-                      className="w-10 h-10 rounded-lg border border-gray-200 flex items-center justify-center font-bold text-gray-600 hover:bg-gray-50"
+                      className="w-10 h-10 rounded-lg border border-c200 flex items-center justify-center font-bold text-c600 hover:bg-c100"
                     >
                       +
                     </button>
                   </div>
                   {product.minQuantity > 1 && (
-                    <p className="text-xs text-gray-500 mt-1">Minimum order: {product.minQuantity}</p>
+                    <p className="text-xs text-c500 mt-1">Minimum order: {product.minQuantity}</p>
                   )}
                 </div>
               )}
@@ -237,7 +237,7 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
                 <button
                   onClick={handleAddToCart}
                   disabled={addingToCart}
-                  className="w-full bg-teal-600 hover:bg-teal-500 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
+                  className="w-full bg-green hover:bg-green text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 disabled:opacity-50"
                 >
                   {addingToCart ? (
                     <Loader2 className="w-5 h-5 animate-spin" />
@@ -250,7 +250,7 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
               ) : (
                 <button 
                   onClick={() => setShowQuoteModal(true)}
-                  className="w-full bg-amber-500 hover:bg-amber-400 text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all"
+                  className="w-full bg-gold hover:bg-gold text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all"
                 >
                   Request a Quote
                 </button>
@@ -259,7 +259,7 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
               {product.pricingType === 'per_unit' && (
                 <Link
                   href="/shop/cart"
-                  className="block text-center text-sm font-medium text-teal-600 hover:text-teal-700 mt-3"
+                  className="block text-center text-sm font-medium text-green hover:text-green mt-3"
                 >
                   View Cart →
                 </Link>
@@ -267,15 +267,15 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
             </div>
 
             {/* Trust badges */}
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6">
+            <div className="bg-white rounded-2xl shadow-sm border border-c200 p-6">
               <div className="space-y-4">
                 <div className="flex items-center gap-3">
-                  <div className="bg-teal-50 p-2 rounded-lg">
-                    <Shield className="w-5 h-5 text-teal-600" />
+                  <div className="bg-green p-2 rounded-lg">
+                    <Shield className="w-5 h-5 text-green" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">Escrow Protection</p>
-                    <p className="text-xs text-gray-500">Payment held securely until you confirm delivery</p>
+                    <p className="text-sm font-bold text-c900">Escrow Protection</p>
+                    <p className="text-xs text-c500">Payment held securely until you confirm delivery</p>
                   </div>
                 </div>
                 {product.listingType === 'digital' && (
@@ -284,18 +284,18 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
                       <Download className="w-5 h-5 text-purple-600" />
                     </div>
                     <div>
-                      <p className="text-sm font-bold text-gray-900">Instant Download</p>
-                      <p className="text-xs text-gray-500">Access your file immediately after payment</p>
+                      <p className="text-sm font-bold text-c900">Instant Download</p>
+                      <p className="text-xs text-c500">Access your file immediately after payment</p>
                     </div>
                   </div>
                 )}
                 <div className="flex items-center gap-3">
-                  <div className="bg-green-50 p-2 rounded-lg">
-                    <CheckCircle2 className="w-5 h-5 text-green-600" />
+                  <div className="bg-green p-2 rounded-lg">
+                    <CheckCircle2 className="w-5 h-5 text-green" />
                   </div>
                   <div>
-                    <p className="text-sm font-bold text-gray-900">Verified Seller</p>
-                    <p className="text-xs text-gray-500">All sellers are vetted and approved by Tutaly</p>
+                    <p className="text-sm font-bold text-c900">Verified Seller</p>
+                    <p className="text-xs text-c500">All sellers are vetted and approved by Tutaly</p>
                   </div>
                 </div>
               </div>
@@ -307,33 +307,33 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
       {/* Quote Request Modal */}
       {showQuoteModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 sm:p-0">
-          <div className="fixed inset-0 bg-gray-900/50 backdrop-blur-sm transition-opacity" onClick={() => !submittingQuote && setShowQuoteModal(false)}></div>
+          <div className="fixed inset-0 bg-c900/50 backdrop-blur-sm transition-opacity" onClick={() => !submittingQuote && setShowQuoteModal(false)}></div>
           
           <div className="relative bg-white rounded-2xl shadow-2xl transform transition-all sm:max-w-lg sm:w-full overflow-hidden animate-in zoom-in-95 duration-200">
             {quoteSuccess ? (
               <div className="p-10 text-center">
-                <div className="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
-                  <CheckCircle className="w-10 h-10 text-green-600" />
+                <div className="w-20 h-20 bg-green rounded-full flex items-center justify-center mx-auto mb-6">
+                  <CheckCircle className="w-10 h-10 text-green" />
                 </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">Quote Sent!</h3>
-                <p className="text-gray-500">The seller will review your requirements and respond shortly.</p>
+                <h3 className="text-2xl font-bold text-c900 mb-2">Quote Sent!</h3>
+                <p className="text-c500">The seller will review your requirements and respond shortly.</p>
               </div>
             ) : (
               <>
-                <div className="flex items-center justify-between p-6 border-b border-gray-100 bg-gray-50">
-                  <h3 className="text-xl font-bold text-gray-900">Request a Custom Quote</h3>
-                  <button onClick={() => setShowQuoteModal(false)} className="text-gray-400 hover:text-gray-600 transition-colors">
+                <div className="flex items-center justify-between p-6 border-b border-c100 bg-c100">
+                  <h3 className="text-xl font-bold text-c900">Request a Custom Quote</h3>
+                  <button onClick={() => setShowQuoteModal(false)} className="text-c400 hover:text-c600 transition-colors">
                     <X className="w-6 h-6" />
                   </button>
                 </div>
                 
                 <form onSubmit={handleRequestQuote} className="p-6 space-y-5">
                   <div>
-                    <label className="block text-sm font-bold text-gray-700 mb-1">Project Requirements <span className="text-red-500">*</span></label>
+                    <label className="block text-sm font-bold text-c700 mb-1">Project Requirements <span className="text-red">*</span></label>
                     <textarea 
                       required
                       placeholder="Describe exactly what you need..."
-                      className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500 min-h-[120px]"
+                      className="w-full bg-white border border-c300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-gold min-h-layout-md"
                       value={quoteDetails.requirements}
                       onChange={e => setQuoteDetails({...quoteDetails, requirements: e.target.value})}
                     ></textarea>
@@ -341,40 +341,40 @@ alert(err.response?.data?.message || 'Failed to submit quote request');
 
                   <div className="grid grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">Target Budget (₦) <span className="text-red-500">*</span></label>
+                      <label className="block text-sm font-bold text-c700 mb-1">Target Budget (₦) <span className="text-red">*</span></label>
                       <input 
                         type="number" 
                         required
                         min="1"
                         placeholder="e.g. 50000"
-                        className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500"
+                        className="w-full bg-white border border-c300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-gold"
                         value={quoteDetails.budget}
                         onChange={e => setQuoteDetails({...quoteDetails, budget: e.target.value})}
                       />
                     </div>
                     <div>
-                      <label className="block text-sm font-bold text-gray-700 mb-1">Deadline (Optional)</label>
+                      <label className="block text-sm font-bold text-c700 mb-1">Deadline (Optional)</label>
                       <input 
                         type="date" 
-                        className="w-full bg-white border border-gray-300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-amber-500"
+                        className="w-full bg-white border border-c300 rounded-xl px-4 py-3 text-sm focus:ring-2 focus:ring-gold"
                         value={quoteDetails.deadline}
                         onChange={e => setQuoteDetails({...quoteDetails, deadline: e.target.value})}
                       />
                     </div>
                   </div>
 
-                  <div className="pt-4 mt-6 border-t border-gray-100 flex justify-end gap-3">
+                  <div className="pt-4 mt-6 border-t border-c100 flex justify-end gap-3">
                     <button 
                       type="button"
                       onClick={() => setShowQuoteModal(false)}
-                      className="px-6 py-2.5 rounded-xl font-bold text-gray-600 hover:bg-gray-100 transition-colors"
+                      className="px-6 py-2.5 rounded-xl font-bold text-c600 hover:bg-c100 transition-colors"
                     >
                       Cancel
                     </button>
                     <button 
                       type="submit"
                       disabled={submittingQuote}
-                      className="flex items-center gap-2 bg-amber-500 hover:bg-amber-600 text-white px-6 py-2.5 rounded-xl font-bold shadow-md transition-colors disabled:opacity-50"
+                      className="flex items-center gap-2 bg-gold hover:bg-gold text-white px-6 py-2.5 rounded-xl font-bold shadow-md transition-colors disabled:opacity-50"
                     >
                       {submittingQuote ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Request'}
                     </button>

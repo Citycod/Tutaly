@@ -70,17 +70,17 @@ alert(err.response?.data?.message || 'Failed to update status');
     <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900 flex items-center gap-3">
-            <ShoppingBag className="w-8 h-8 text-teal-600" />
+          <h1 className="text-3xl font-bold text-c900 flex items-center gap-3">
+            <ShoppingBag className="w-8 h-8 text-green" />
             Manage Orders
           </h1>
-          <p className="text-gray-500 mt-1">Track incoming purchases and update delivery statuses.</p>
+          <p className="text-c500 mt-1">Track incoming purchases and update delivery statuses.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
         {/* Filters */}
-        <div className="p-4 border-b border-gray-100 flex items-center gap-2 overflow-x-auto">
+        <div className="p-4 border-b border-c100 flex items-center gap-2 overflow-x-auto">
           {[
             { id: 'all', label: 'All Orders' },
             { id: 'pending', label: 'Pending' },
@@ -93,35 +93,35 @@ alert(err.response?.data?.message || 'Failed to update status');
               onClick={() => setFilter(tab.id)}
               className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
                 filter === tab.id
-                  ? 'bg-teal-50 text-teal-700 border border-teal-200'
-                  : 'text-gray-500 hover:bg-gray-50 border border-transparent'
+                  ? 'bg-green text-green border border-green'
+                  : 'text-c500 hover:bg-c100 border border-transparent'
               }`}
             >
               {tab.label}
             </button>
           ))}
           
-          <button onClick={fetchOrders} className="ml-auto p-2 text-gray-400 hover:text-teal-600 transition-colors" title="Refresh">
+          <button onClick={fetchOrders} className="ml-auto p-2 text-c400 hover:text-green transition-colors" title="Refresh">
             <RefreshCcw className="w-5 h-5" />
           </button>
         </div>
 
         {/* Content */}
         {loading ? (
-          <div className="p-16 text-center text-gray-500 italic flex flex-col items-center">
-            <RefreshCcw className="w-8 h-8 animate-spin text-teal-600 mb-4" />
+          <div className="p-16 text-center text-c500 italic flex flex-col items-center">
+            <RefreshCcw className="w-8 h-8 animate-spin text-green mb-4" />
             Loading orders...
           </div>
         ) : filteredOrders.length === 0 ? (
           <div className="p-20 text-center flex flex-col items-center">
-            <Package className="w-16 h-16 text-gray-300 mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">No orders found</h3>
-            <p className="text-gray-500">You don't have any orders matching the current filter.</p>
+            <Package className="w-16 h-16 text-c300 mb-4" />
+            <h3 className="text-xl font-bold text-c900 mb-2">No orders found</h3>
+            <p className="text-c500">You don't have any orders matching the current filter.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left text-sm">
-              <thead className="bg-gray-50 text-gray-500 border-b border-gray-100">
+              <thead className="bg-c100 text-c500 border-b border-c100">
                 <tr>
                   <th className="p-4 font-bold">Product</th>
                   <th className="p-4 font-bold">Type</th>
@@ -130,24 +130,24 @@ alert(err.response?.data?.message || 'Failed to update status');
                   <th className="p-4 font-bold text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
+              <tbody className="divide-y divide-c100">
                 {filteredOrders.map(item => (
-                  <tr key={item.id} className="hover:bg-gray-50 transition-colors">
+                  <tr key={item.id} className="hover:bg-c100 transition-colors">
                     <td className="p-4">
-                      <p className="font-bold text-gray-900">{item.product?.title || 'Unknown Product'}</p>
-                      <p className="text-xs text-gray-500 font-mono mt-1">Order #{item.orderId.split('-')[0].toUpperCase()}</p>
+                      <p className="font-bold text-c900">{item.product?.title || 'Unknown Product'}</p>
+                      <p className="text-xs text-c500 font-mono mt-1">Order #{item.orderId.split('-')[0].toUpperCase()}</p>
                     </td>
-                    <td className="p-4 capitalize text-gray-600">{item.product?.listingType || 'N/A'}</td>
+                    <td className="p-4 capitalize text-c600">{item.product?.listingType || 'N/A'}</td>
                     <td className="p-4">
-                      <p className="font-bold text-teal-700">₦{Number(item.priceAtPurchase).toLocaleString()}</p>
-                      <p className="text-xs text-gray-500">Qty: {item.quantity}</p>
+                      <p className="font-bold text-green">₦{Number(item.priceAtPurchase).toLocaleString()}</p>
+                      <p className="text-xs text-c500">Qty: {item.quantity}</p>
                     </td>
                     <td className="p-4">
                       <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        item.deliveryStatus === 'delivered' ? 'bg-green-100 text-green-700' :
-                        item.deliveryStatus === 'shipped' ? 'bg-blue-100 text-blue-700' :
+                        item.deliveryStatus === 'delivered' ? 'bg-green text-green' :
+                        item.deliveryStatus === 'shipped' ? 'bg-blueL text-blueH' :
                         item.deliveryStatus === 'processing' ? 'bg-purple-100 text-purple-700' :
-                        'bg-amber-100 text-amber-700'
+                        'bg-gold text-goldH'
                       }`}>
                         {item.deliveryStatus === 'delivered' ? <CheckCircle className="w-3 h-3" /> :
                          item.deliveryStatus === 'shipped' ? <Truck className="w-3 h-3" /> :
@@ -159,7 +159,7 @@ alert(err.response?.data?.message || 'Failed to update status');
                     <td className="p-4 text-right">
                       {item.product?.listingType !== 'digital' && item.deliveryStatus !== 'delivered' && (
                         <select 
-                          className="text-sm border border-gray-200 rounded-lg px-3 py-1.5 bg-white text-gray-700 focus:outline-none focus:ring-2 focus:ring-teal-500 cursor-pointer"
+                          className="text-sm border border-c200 rounded-lg px-3 py-1.5 bg-white text-c700 focus:outline-none focus:ring-2 focus:ring-green cursor-pointer"
                           value={item.deliveryStatus}
                           onChange={(e) => updateDeliveryStatus(item.orderId, item.id, e.target.value)}
                         >
@@ -170,7 +170,7 @@ alert(err.response?.data?.message || 'Failed to update status');
                         </select>
                       )}
                       {item.product?.listingType === 'digital' && (
-                        <span className="text-xs text-gray-400 italic">Auto-delivered</span>
+                        <span className="text-xs text-c400 italic">Auto-delivered</span>
                       )}
                     </td>
                   </tr>

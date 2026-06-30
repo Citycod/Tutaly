@@ -70,11 +70,11 @@ setError(error.response?.data?.message || 'Invalid email or password.');
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px 24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
+          className="bg-c800 border border-c700 rounded-xl px-6 py-8 shadow-2xl"
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div style={{ background: 'rgba(204,43,43,0.1)', border: '1px solid rgba(204,43,43,0.3)', color: 'var(--red)', padding: '12px', borderRadius: 'var(--r-md)', fontSize: '14px', textAlign: 'center' }}>
+              <div className="bg-red/10 border border-red/30 text-red p-3 rounded-md text-sm text-center">
                 {error}
               </div>
             )}
@@ -85,7 +85,7 @@ setError(error.response?.data?.message || 'Invalid email or password.');
               </label>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-[var(--c-500)]" />
+                  <Mail className="h-5 w-5 text-c500" />
                 </div>
                 <input
                   type="email"
@@ -103,13 +103,13 @@ setError(error.response?.data?.message || 'Invalid email or password.');
                 <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--c-300)' }}>
                   Password
                 </label>
-                <Link href="/auth/forgot-password" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--blue-l)' }} className="hover:text-[var(--blue)] transition-colors">
+                <Link href="/auth/forgot-password" className="text-xs font-semibold text-blueL hover:text-blue transition-colors">
                   Forgot password?
                 </Link>
               </div>
               <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-[var(--c-500)]" />
+                  <Lock className="h-5 w-5 text-c500" />
                 </div>
                 <input
                   type="password"
@@ -153,7 +153,7 @@ setError(error.response?.data?.message || 'Invalid email or password.');
             </div>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/signup" style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-100)' }} className="hover:text-[var(--blue-l)] transition-colors">
+              <Link href="/auth/signup" style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-100)' }} className="hover:text-blueL transition-colors">
                 Create an account
               </Link>
             </div>

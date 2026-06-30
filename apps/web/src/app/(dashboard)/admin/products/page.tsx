@@ -83,8 +83,8 @@ alert(err.response?.data?.message || 'Failed to update product status');
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Shop Catalog</h1>
-          <p className="text-gray-500 mt-1">Manage all templates, physical products, and professional services.</p>
+          <h1 className="text-3xl font-black text-c900">Shop Catalog</h1>
+          <p className="text-c500 mt-1">Manage all templates, physical products, and professional services.</p>
         </div>
       </div>
 
@@ -96,8 +96,8 @@ alert(err.response?.data?.message || 'Failed to update product status');
             onClick={() => router.push(`/admin/products?isActive=${tab.value}`)}
             className={`px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${
               currentActive === tab.value
-                ? 'bg-teal-600 text-white shadow-lg shadow-teal-600/20'
-                : 'bg-white text-gray-600 border border-gray-100 hover:border-teal-200'
+                ? 'bg-green text-white shadow-lg shadow-teal-600/20'
+                : 'bg-white text-c600 border border-c100 hover:border-green'
             }`}
           >
             {tab.label}
@@ -106,42 +106,42 @@ alert(err.response?.data?.message || 'Failed to update product status');
       </div>
 
       {error && (
-        <div className="bg-red-50 border border-red-100 text-red-600 p-4 rounded-2xl flex items-center gap-3">
+        <div className="bg-red border border-red text-red p-4 rounded-2xl flex items-center gap-3">
           <AlertCircle className="w-5 h-5" />
           <p className="font-medium">{error}</p>
         </div>
       )}
 
-      <div className="bg-white shadow-sm border border-gray-100 rounded-3xl overflow-hidden">
+      <div className="bg-white shadow-sm border border-c100 rounded-3xl overflow-hidden">
         {loading ? (
           <div className="flex justify-center items-center h-64">
-            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+            <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green"></div>
           </div>
         ) : products.length === 0 ? (
           <div className="p-16 text-center">
-            <Package className="w-16 h-16 text-gray-200 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-1">No products found</h3>
-            <p className="text-gray-500">There are no products matching your current filters.</p>
+            <Package className="w-16 h-16 text-c200 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-c900 mb-1">No products found</h3>
+            <p className="text-c500">There are no products matching your current filters.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50/50">
+            <table className="min-w-full divide-y divide-c100">
+              <thead className="bg-c100/50">
                 <tr>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Product Info</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Seller</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Category</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Price</th>
-                  <th className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">Status</th>
-                  <th className="px-6 py-4 text-right text-xs font-black text-gray-500 uppercase tracking-wider">Actions</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Product Info</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Seller</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Category</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Price</th>
+                  <th className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">Status</th>
+                  <th className="px-6 py-4 text-right text-xs font-black text-c500 uppercase tracking-wider">Actions</th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-50">
+              <tbody className="bg-white divide-y divide-c100">
                 {products.map((product) => (
-                  <tr key={product.id} className="hover:bg-gray-50/50 transition-colors">
+                  <tr key={product.id} className="hover:bg-c100/50 transition-colors">
                     <td className="px-6 py-4">
                       <div className="flex items-center gap-4">
-                        <div className="w-12 h-12 bg-gray-100 rounded-xl overflow-hidden shrink-0 border border-gray-100 relative">
+                        <div className="w-12 h-12 bg-c100 rounded-xl overflow-hidden shrink-0 border border-c100 relative">
                           {product.imageUrls?.[0] ? (
                             <Image 
                               src={product.imageUrls[0]} 
@@ -151,42 +151,42 @@ alert(err.response?.data?.message || 'Failed to update product status');
                               className="w-full h-full object-cover" 
                             />
                           ) : (
-                            <div className="w-full h-full flex items-center justify-center text-gray-300">
+                            <div className="w-full h-full flex items-center justify-center text-c300">
                               <Package className="w-6 h-6" />
                             </div>
                           )}
                         </div>
                         <div className="min-w-0">
-                          <div className="font-bold text-gray-900 line-clamp-1">{product.title}</div>
-                          <div className="text-[10px] text-gray-400 font-bold uppercase tracking-wider">{product.listingType}</div>
+                          <div className="font-bold text-c900 line-clamp-1">{product.title}</div>
+                          <div className="text-xs text-c400 font-bold uppercase tracking-wider">{product.listingType}</div>
                         </div>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       <div className="flex items-center gap-2">
-                        <Store className="w-4 h-4 text-teal-600" />
-                        <span className="text-sm font-medium text-gray-700">{product.seller?.employerProfile?.companyName || product.seller?.email}</span>
+                        <Store className="w-4 h-4 text-green" />
+                        <span className="text-sm font-medium text-c700">{product.seller?.employerProfile?.companyName || product.seller?.email}</span>
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-xs font-bold text-gray-500 uppercase tracking-tighter">
+                      <div className="text-xs font-bold text-c500 uppercase tracking-tighter">
                         {product.subcategory?.category?.name || 'N/A'}
                       </div>
-                      <div className="text-xs text-gray-400">
+                      <div className="text-xs text-c400">
                         {product.subcategory?.name}
                       </div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
-                      <div className="text-sm font-black text-teal-700">{product.currency} {Number(product.price).toLocaleString()}</div>
-                      <div className="text-[10px] text-gray-400 font-bold uppercase">{product.pricingType.replace('_', ' ')}</div>
+                      <div className="text-sm font-black text-green">{product.currency} {Number(product.price).toLocaleString()}</div>
+                      <div className="text-xs text-c400 font-bold uppercase">{product.pricingType.replace('_', ' ')}</div>
                     </td>
                     <td className="px-6 py-4 whitespace-nowrap">
                       {product.isActive ? (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green-100 text-green-700 rounded-full text-[10px] font-black uppercase">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-green text-green rounded-full text-xs font-black uppercase">
                           <CheckCircle2 className="w-3 h-3" /> Active
                         </span>
                       ) : (
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-gray-100 text-gray-500 rounded-full text-[10px] font-black uppercase">
+                        <span className="inline-flex items-center gap-1 px-2.5 py-1 bg-c100 text-c500 rounded-full text-xs font-black uppercase">
                           <XCircle className="w-3 h-3" /> Inactive
                         </span>
                       )}
@@ -197,14 +197,14 @@ alert(err.response?.data?.message || 'Failed to update product status');
                           href={`/shop/${product.id}`} 
                           target="_blank" 
                           rel="noopener noreferrer"
-                          className="p-2 text-gray-400 hover:text-teal-600 transition-colors"
+                          className="p-2 text-c400 hover:text-green transition-colors"
                           title="View on site"
                         >
                           <ExternalLink className="w-5 h-5" />
                         </a>
                         <button 
                           onClick={() => toggleProductStatus(product.id, product.isActive)}
-                          className={`p-2 transition-colors ${product.isActive ? 'text-red-400 hover:text-red-600' : 'text-green-400 hover:text-green-600'}`}
+                          className={`p-2 transition-colors ${product.isActive ? 'text-red hover:text-red' : 'text-green hover:text-green'}`}
                           title={product.isActive ? 'Deactivate' : 'Activate'}
                         >
                           {product.isActive ? <XCircle className="w-5 h-5" /> : <CheckCircle2 className="w-5 h-5" />}
@@ -222,21 +222,21 @@ alert(err.response?.data?.message || 'Failed to update product status');
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-c500">
             Page {meta.page} of {meta.totalPages} ({meta.total} total)
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-c600 bg-white border border-c200 rounded-xl hover:bg-c100 disabled:opacity-40 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" /> Previous
             </button>
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={page >= meta.totalPages}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-500 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-green rounded-xl hover:bg-green disabled:opacity-40 transition-colors"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>
@@ -251,7 +251,7 @@ export default function AdminProductsPage() {
   return (
     <Suspense fallback={
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+        <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green"></div>
       </div>
     }>
       <AdminProductsContent />

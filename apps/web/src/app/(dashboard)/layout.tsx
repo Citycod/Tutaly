@@ -91,11 +91,11 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex h-[calc(100dvh-64px)] overflow-hidden bg-gray-50 relative">
+    <div className="flex h-screen overflow-hidden bg-c100 relative">
       {/* Sidebar */}
-      <aside className="w-64 border-r border-gray-200 bg-white flex flex-col hidden lg:flex shrink-0">
-        <div className="p-4 border-b border-gray-100 mb-2">
-          <p className="text-xs font-bold text-gray-400 uppercase tracking-wider">
+      <aside className="w-64 border-r border-c200 bg-white flex flex-col hidden lg:flex shrink-0">
+        <div className="p-4 border-b border-c100 mb-2">
+          <p className="text-xs font-bold text-c400 uppercase tracking-wider">
             {isSeller ? 'Seller Dashboard' : isEmployer ? 'Employer Workspace' : isSeeker ? 'Professional Profile' : isAdmin ? 'Admin Control Panel' : 'Dashboard'}
           </p>
         </div>
@@ -109,13 +109,13 @@ export default function DashboardLayout({
                 href={item.href}
                 className={`group flex items-center px-3 py-2.5 text-sm font-medium rounded-lg transition-colors ${
                   isActive
-                    ? 'bg-teal-50 text-teal-700'
-                    : 'text-gray-700 hover:bg-gray-100 hover:text-gray-900'
+                    ? 'bg-green text-green'
+                    : 'text-c700 hover:bg-c100 hover:text-c900'
                 }`}
               >
                 <item.icon
                   className={`mr-3 h-5 w-5 shrink-0 ${
-                    isActive ? 'text-teal-700' : 'text-gray-400 group-hover:text-gray-500'
+                    isActive ? 'text-green' : 'text-c400 group-hover:text-c500'
                   }`}
                   aria-hidden="true"
                 />
@@ -125,13 +125,13 @@ export default function DashboardLayout({
           })}
         </nav>
 
-        <div className="p-4 border-t border-gray-200 mt-auto">
+        <div className="p-4 border-t border-c200 mt-auto">
           <button
             onClick={handleLogout}
-            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium text-gray-700 rounded-lg transition-colors hover:bg-red-50 hover:text-red-700"
+            className="group flex w-full items-center px-3 py-2.5 text-sm font-medium text-c700 rounded-lg transition-colors hover:bg-red hover:text-red"
           >
             <LogOut
-              className="mr-3 h-5 w-5 shrink-0 text-gray-400 group-hover:text-red-500"
+              className="mr-3 h-5 w-5 shrink-0 text-c400 group-hover:text-red"
               aria-hidden="true"
             />
             Sign out
@@ -141,7 +141,7 @@ export default function DashboardLayout({
 
       {/* Main Content Area */}
       <main className="flex-1 overflow-y-auto w-full pb-16 lg:pb-0">
-        <div className="border-b border-gray-100 bg-white">
+        <div className="border-b border-c100 bg-white">
           <AdBanner placement="dashboard_top" />
         </div>
         <div className="p-4 sm:p-8 w-full max-w-7xl mx-auto">
@@ -150,29 +150,29 @@ export default function DashboardLayout({
       </main>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
-        <div className="flex overflow-x-auto justify-start items-center h-16 px-2 [&::-webkit-scrollbar]:hidden [-ms-overflow-style:'none'] [scrollbar-width:'none']">
+      <nav className="lg:hidden absolute bottom-0 left-0 right-0 bg-white border-t border-c200 z-50 shadow-lg pb-safe">
+        <div className="flex overflow-x-auto justify-start items-center h-16 px-2 ">
           {links.map((item) => {
             const isActive = pathname === item.href;
             return (
               <Link
                 key={item.href}
                 href={item.href}
-                className={`flex flex-col items-center justify-center min-w-[72px] shrink-0 px-1 space-y-1 transition-colors ${
-                  isActive ? 'text-teal-700' : 'text-gray-500 hover:text-gray-900'
+                className={`flex flex-col items-center justify-center min-w-layout-xs shrink-0 px-1 space-y-1 transition-colors ${
+                  isActive ? 'text-green' : 'text-c500 hover:text-c900'
                 }`}
               >
-                <item.icon className={`h-5 w-5 ${isActive ? 'text-teal-700' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
-                <span className={`text-[10px] whitespace-nowrap ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
+                <item.icon className={`h-5 w-5 ${isActive ? 'text-green' : ''}`} strokeWidth={isActive ? 2.5 : 2} />
+                <span className={`text-xs whitespace-nowrap ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
               </Link>
             );
           })}
           <button
             onClick={handleLogout}
-            className="flex flex-col items-center justify-center min-w-[72px] shrink-0 px-1 space-y-1 text-gray-500 hover:text-red-600 transition-colors"
+            className="flex flex-col items-center justify-center min-w-layout-xs shrink-0 px-1 space-y-1 text-c500 hover:text-red transition-colors"
           >
             <LogOut className="h-5 w-5" />
-            <span className="text-[10px] font-medium whitespace-nowrap">Sign out</span>
+            <span className="text-xs font-medium whitespace-nowrap">Sign out</span>
           </button>
         </div>
       </nav>

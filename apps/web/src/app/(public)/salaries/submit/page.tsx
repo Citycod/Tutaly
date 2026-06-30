@@ -54,81 +54,81 @@ alert(err.response?.data?.message || 'Failed to submit salary');
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-teal-100">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen bg-c100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-green">
+          <div className="w-16 h-16 bg-green text-green rounded-full flex items-center justify-center mx-auto mb-6">
             <ShieldCheck className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Submitted Anonymously!</h2>
-          <p className="text-gray-600 mb-6">Your salary data helps increase transparency for all Nigerian professionals. Thank you!</p>
-          <div className="animate-pulse text-teal-600 font-medium">Redirecting...</div>
+          <h2 className="text-2xl font-bold text-c900 mb-2">Submitted Anonymously!</h2>
+          <p className="text-c600 mb-6">Your salary data helps increase transparency for all Nigerian professionals. Thank you!</p>
+          <div className="animate-pulse text-green font-medium">Redirecting...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-c100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-2xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900">Share Your Salary</h1>
-          <p className="mt-2 text-gray-600 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-teal-500" /> 100% Anonymous. No user data stored.
+          <h1 className="text-3xl font-bold text-c900">Share Your Salary</h1>
+          <p className="mt-2 text-c600 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-green" /> 100% Anonymous. No user data stored.
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-2xl p-8 border border-gray-100 space-y-6">
+        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-2xl p-8 border border-c100 space-y-6">
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Role / Job Title *</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Role / Job Title *</label>
               <input
                 type="text"
                 name="role"
                 value={formData.role}
                 onChange={handleChange}
-                className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                 required
                 placeholder="e.g. Backend Engineer"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Industry *</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Industry *</label>
               <input
                 type="text"
                 name="industry"
                 value={formData.industry}
                 onChange={handleChange}
-                className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                 required
                 placeholder="e.g. Fintech"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1 flex justify-between">
+              <label className="block text-sm font-medium text-c700 mb-1 flex justify-between">
                 <span>Company</span>
-                <span className="text-gray-400 font-normal">Optional</span>
+                <span className="text-c400 font-normal">Optional</span>
               </label>
               <input
                 type="text"
                 name="company"
                 value={formData.company}
                 onChange={handleChange}
-                className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-black"
+                className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-black"
                 placeholder="Leave blank to hide"
               />
             </div>
 
             <div className="sm:col-span-2">
-              <label className="block text-sm font-medium text-gray-700 mb-1">Salary Details *</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Salary Details *</label>
               <div className="flex rounded-lg shadow-sm">
                 <select
                   name="currency"
                   value={formData.currency}
                   onChange={handleChange}
-                  className="rounded-l-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 w-24 bg-gray-50 text-black"
+                  className="rounded-l-lg border-c300 focus:border-green focus:ring-green w-24 bg-c100 text-black"
                 >
                   <option value="NGN">NGN</option>
                   <option value="USD">USD</option>
@@ -143,13 +143,13 @@ alert(err.response?.data?.message || 'Failed to submit salary');
                   required
                   min="0"
                   placeholder="e.g. 500000"
-                  className="flex-1 text-black border-gray-300 border-x-0 focus:border-teal-500 focus:ring-teal-500 z-10"
+                  className="flex-1 text-black border-c300 border-x-0 focus:border-green focus:ring-green z-10"
                 />
                 <select
                   name="salaryPeriod"
                   value={formData.salaryPeriod}
                   onChange={handleChange}
-                  className="rounded-r-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 w-32 bg-gray-50 text-black"
+                  className="rounded-r-lg border-c300 focus:border-green focus:ring-green w-32 bg-c100 text-black"
                 >
                   <option value="monthly">/ Month</option>
                   <option value="annual">/ Year</option>
@@ -158,25 +158,25 @@ alert(err.response?.data?.message || 'Failed to submit salary');
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Location</label>
               <input
                 type="text"
                 name="location"
                 value={formData.location}
                 onChange={handleChange}
-                className="w-full text-black rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                className="w-full text-black rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                 placeholder="e.g. Lagos, Remote"
               />
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-1">Year</label>
+              <label className="block text-sm font-medium text-c700 mb-1">Year</label>
               <input
                 type="number"
                 name="submissionYear"
                 value={formData.submissionYear}
                 onChange={handleChange}
-                className="w-full text-black rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                className="w-full text-black rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                 required
                 min="2000"
                 max={new Date().getFullYear()}
@@ -188,14 +188,14 @@ alert(err.response?.data?.message || 'Failed to submit salary');
             <button
               type="button"
               onClick={() => router.back()}
-              className="px-6 py-3 rounded-xl font-medium text-gray-700 bg-gray-100 hover:bg-gray-200 transition-colors"
+              className="px-6 py-3 rounded-xl font-medium text-c700 bg-c100 hover:bg-c200 transition-colors"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={loading}
-              className="bg-teal-600 hover:bg-teal-500 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center min-w-[150px]"
+              className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center min-w-layout-sm"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit'}
             </button>

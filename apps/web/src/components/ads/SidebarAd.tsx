@@ -42,8 +42,8 @@ export default function SidebarAd({ placement }: { placement: string }) {
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden relative group mt-4">
-      <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-[10px] text-white font-bold px-1.5 py-0.5 rounded tracking-wider uppercase z-10">
+    <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden relative group mt-4">
+      <div className="absolute top-2 right-2 bg-black/60 backdrop-blur-md text-xs text-white font-bold px-1.5 py-0.5 rounded tracking-wider uppercase z-10">
         Ad
       </div>
       <a 
@@ -54,17 +54,17 @@ export default function SidebarAd({ placement }: { placement: string }) {
         className="block"
       >
         {ad.image_url ? (
-          <div className="aspect-[300/250] bg-gray-100 relative">
+          <div className="aspect-video bg-c100 relative">
             <img src={ad.image_url} alt="Advertisement" className="object-cover w-full h-full" />
           </div>
         ) : (
-          <div className="aspect-[300/250] bg-gradient-to-br from-brand-blue/10 to-brand-green/10 flex flex-col items-center justify-center p-6 text-center border-b border-gray-100">
-            <h4 className="font-bold text-gray-900 mb-2">{ad.format.replace('_', ' ').toUpperCase()}</h4>
-            <p className="text-sm text-gray-600">Promote your business here to thousands of professionals.</p>
+          <div className="aspect-video bg-blue shadow-glow-blue flex flex-col items-center justify-center p-6 text-center border-b border-c100">
+            <h4 className="font-bold text-c900 mb-2">{ad.format.replace('_', ' ').toUpperCase()}</h4>
+            <p className="text-sm text-c600">Promote your business here to thousands of professionals.</p>
           </div>
         )}
-        <div className="p-3 bg-gray-50/50 group-hover:bg-gray-50 transition-colors">
-          <p className="text-xs text-gray-500 font-medium truncate">Sponsored via Tutaly Ads</p>
+        <div className="p-3 bg-c100/50 group-hover:bg-c100 transition-colors">
+          <p className="text-xs text-c500 font-medium truncate">Sponsored via Tutaly Ads</p>
         </div>
       </a>
     </div>

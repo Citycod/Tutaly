@@ -53,17 +53,17 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
   };
 
   return (
-    <div className="min-h-screen bg-[#0D1B2A] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-c900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md text-center">
         <motion.div
           initial={{ opacity: 0, scale: 0.5 }}
           animate={{ opacity: 1, scale: 1 }}
-          className="inline-flex items-center justify-center p-4 bg-teal-500/20 rounded-full mb-6"
+          className="inline-flex items-center justify-center p-4 bg-green/20 rounded-full mb-6"
         >
-          <ShieldCheck className="h-10 w-10 text-[#1D9E75]" />
+          <ShieldCheck className="h-10 w-10 text-green" />
         </motion.div>
         <h2 className="text-3xl font-extrabold text-white">Two-Factor Auth</h2>
-        <p className="mt-2 text-sm text-gray-400">
+        <p className="mt-2 text-sm text-c400">
           We sent a 6-digit code to your registered email.
         </p>
       </div>
@@ -76,13 +76,13 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-sm text-center">
+              <div className="bg-red/10 border border-red/50 text-red p-3 rounded-lg text-sm text-center">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300 mb-2">
+              <label className="block text-sm font-medium text-c300 mb-2">
                 Verification Code
               </label>
               <input
@@ -91,7 +91,7 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
                 required
                 value={code}
                 onChange={(e) => setCode(e.target.value.replace(/\D/g, ''))}
-                className="block w-full text-center text-3xl tracking-[0.5em] font-bold py-3 border border-white/10 rounded-xl bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-[#1D9E75] transition-all"
+                className="block w-full text-center text-3xl tracking-widest font-bold py-3 border border-white/10 rounded-xl bg-white/5 text-white focus:outline-none focus:ring-2 focus:ring-green transition-all"
                 placeholder="000000"
               />
             </div>
@@ -99,7 +99,7 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
             <button
               type="submit"
               disabled={isLoading || code.length < 6}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-[#1D9E75] to-[#147a59] hover:from-[#147a59] hover:to-[#0f5c43] transition-all disabled:opacity-50 disabled:cursor-not-allowed items-center"
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-green hover:from-green  transition-all disabled:opacity-50 disabled:cursor-not-allowed items-center"
             >
               {isLoading ? (
                 <Loader2 className="animate-spin h-5 w-5" />
@@ -115,7 +115,7 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
           <div className="mt-6 text-center">
             <button
               onClick={() => router.push('/auth/signin')}
-              className="text-sm font-medium text-gray-400 hover:text-white transition-colors flex items-center justify-center mx-auto"
+              className="text-sm font-medium text-c400 hover:text-white transition-colors flex items-center justify-center mx-auto"
             >
               Back to Sign In
             </button>
@@ -129,8 +129,8 @@ setError(error.response?.data?.message || 'Invalid OTP code. Please try again.')
 export default function MfaPage() {
   return (
     <Suspense fallback={
-       <div className="min-h-screen bg-[#0D1B2A] flex items-center justify-center">
-         <Loader2 className="animate-spin h-10 w-10 text-[#1D9E75]" />
+       <div className="min-h-screen bg-c900 flex items-center justify-center">
+         <Loader2 className="animate-spin h-10 w-10 text-green" />
        </div>
     }>
       <MfaContent />
