@@ -126,7 +126,7 @@ alert(err.response?.data?.message || 'Failed to upload logo');
   if (loading) {
     return (
       <div className="flex justify-center py-20">
-        <Loader2 className="w-10 h-10 animate-spin text-teal-600" />
+        <Loader2 className="w-10 h-10 animate-spin text-green" />
       </div>
     );
   }
@@ -134,29 +134,29 @@ alert(err.response?.data?.message || 'Failed to upload logo');
   return (
     <div className="max-w-4xl mx-auto pb-10">
       <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Company Profile</h1>
-        <p className="text-gray-500 mt-1">Manage your public employer identity.</p>
+        <h1 className="text-3xl font-bold text-c900">Company Profile</h1>
+        <p className="text-c500 mt-1">Manage your public employer identity.</p>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
-        <div className="p-8 border-b border-gray-100 bg-gray-50/50">
+      <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
+        <div className="p-8 border-b border-c100 bg-c100/50">
           <div className="flex flex-col sm:flex-row items-start sm:items-center gap-6">
             <div className="relative">
-              <div className="w-24 h-24 rounded-2xl bg-white shadow-sm border border-gray-200 flex items-center justify-center overflow-hidden shrink-0">
+              <div className="w-24 h-24 rounded-2xl bg-white shadow-sm border border-c200 flex items-center justify-center overflow-hidden shrink-0">
                 {profile.logoSignedUrl ? (
                   <img src={profile.logoSignedUrl} alt="Company Logo" className="w-full h-full object-cover" />
                 ) : (
-                  <Building2 className="w-10 h-10 text-gray-300" />
+                  <Building2 className="w-10 h-10 text-c300" />
                 )}
               </div>
             </div>
             
             <div className="flex-1">
-              <h2 className="text-xl font-bold text-gray-900 flex items-center gap-2">
+              <h2 className="text-xl font-bold text-c900 flex items-center gap-2">
                 {profile.companyName || 'Your Company'}
-                {profile.isVerified && <CheckCircle2 className="w-5 h-5 text-teal-500" aria-label="Verified Employer" />}
+                {profile.isVerified && <CheckCircle2 className="w-5 h-5 text-green" aria-label="Verified Employer" />}
               </h2>
-              <p className="text-sm text-gray-500 mb-4">{profile.industry || 'No industry set'}</p>
+              <p className="text-sm text-c500 mb-4">{profile.industry || 'No industry set'}</p>
               
               <div>
                 <input
@@ -170,12 +170,12 @@ alert(err.response?.data?.message || 'Failed to upload logo');
                   type="button"
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingLogo}
-                  className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-gray-300 rounded-lg text-sm font-medium text-gray-700 hover:bg-gray-50 transition-colors shadow-sm"
+                  className="inline-flex items-center gap-2 px-4 py-2 bg-white border border-c300 rounded-lg text-sm font-medium text-c700 hover:bg-c100 transition-colors shadow-sm"
                 >
                   {uploadingLogo ? <Loader2 className="w-4 h-4 animate-spin" /> : <Upload className="w-4 h-4" />}
                   {profile.logoSignedUrl ? 'Change Logo' : 'Upload Logo'}
                 </button>
-                <p className="text-xs text-gray-400 mt-2">JPG, PNG or WEBP. Max 2MB.</p>
+                <p className="text-xs text-c400 mt-2">JPG, PNG or WEBP. Max 2MB.</p>
               </div>
             </div>
           </div>
@@ -184,41 +184,41 @@ alert(err.response?.data?.message || 'Failed to upload logo');
         <form onSubmit={handleSave} className="p-8">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
             <div className="space-y-6 md:col-span-2">
-              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">Basic Information</h3>
+              <h3 className="text-lg font-semibold text-c900 border-b pb-2">Basic Information</h3>
               
               <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Company Name</label>
                   <input
                     type="text"
                     name="companyName"
                     value={profile.companyName}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                     required
                   />
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Industry / Sector</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Industry / Sector</label>
                   <input
                     type="text"
                     name="industry"
                     value={profile.industry}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                     placeholder="e.g. Technology, Finance, Healthcare"
                   />
                 </div>
                 
                 <div className="md:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Website URL</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Website URL</label>
                   <input
                     type="url"
                     name="website"
                     value={profile.website}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                     placeholder="https://www.example.com"
                   />
                 </div>
@@ -226,30 +226,30 @@ alert(err.response?.data?.message || 'Failed to upload logo');
             </div>
 
             <div className="space-y-6 md:col-span-2">
-              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2">About the Company</h3>
+              <h3 className="text-lg font-semibold text-c900 border-b pb-2">About the Company</h3>
               
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Company Bio / Description</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Company Bio / Description</label>
                 <textarea
                   name="companyBio"
                   value={profile.companyBio}
                   onChange={handleChange}
                   rows={6}
-                  className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm"
+                  className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm"
                   placeholder="Tell candidates what makes your company a great place to work..."
                 />
               </div>
             </div>
           </div>
 
-          <div className="mt-10 pt-6 border-t border-gray-100 flex items-center justify-between">
+          <div className="mt-10 pt-6 border-t border-c100 flex items-center justify-between">
             <div>
-              {success && <span className="text-green-600 font-medium flex items-center gap-1"><CheckCircle2 className="w-5 h-5" /> Saved successfully</span>}
+              {success && <span className="text-green font-medium flex items-center gap-1"><CheckCircle2 className="w-5 h-5" /> Saved successfully</span>}
             </div>
             <button
               type="submit"
               disabled={saving}
-              className="bg-teal-600 hover:bg-teal-500 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center gap-2"
+              className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center gap-2"
             >
               {saving ? <Loader2 className="w-5 h-5 animate-spin" /> : null}
               {saving ? 'Saving...' : 'Save Profile'}

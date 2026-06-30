@@ -78,7 +78,7 @@ alert(err.response?.data?.message || err.message);
   if (loading) {
     return (
       <div className="flex justify-center items-center h-64">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-teal-600"></div>
+        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-green"></div>
       </div>
     );
   }
@@ -87,74 +87,74 @@ alert(err.response?.data?.message || err.message);
     <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
         <div>
-          <h1 className="text-3xl font-black text-gray-900">Manage Users</h1>
-          <p className="text-gray-500 mt-1">View user accounts and manage platform access.</p>
+          <h1 className="text-3xl font-black text-c900">Manage Users</h1>
+          <p className="text-c500 mt-1">View user accounts and manage platform access.</p>
         </div>
         {meta && (
-          <div className="text-sm text-gray-500 font-medium">
+          <div className="text-sm text-c500 font-medium">
             {meta.total} user{meta.total !== 1 ? 's' : ''} total
           </div>
         )}
       </div>
 
-      {error && <div className="text-red-500 bg-red-50 p-4 rounded-lg">{error}</div>}
+      {error && <div className="text-red bg-red p-4 rounded-lg">{error}</div>}
 
-      <div className="bg-white shadow-sm border border-gray-100 rounded-3xl overflow-hidden">
+      <div className="bg-white shadow-sm border border-c100 rounded-3xl overflow-hidden">
         {users.length === 0 ? (
-          <div className="p-16 text-center text-gray-500">
-            <h3 className="text-xl font-bold text-gray-900 mb-1">No users found</h3>
+          <div className="p-16 text-center text-c500">
+            <h3 className="text-xl font-bold text-c900 mb-1">No users found</h3>
           </div>
         ) : (
           <div className="overflow-x-auto">
-            <table className="min-w-full divide-y divide-gray-100">
-              <thead className="bg-gray-50/50">
+            <table className="min-w-full divide-y divide-c100">
+              <thead className="bg-c100/50">
                 <tr>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">
                     User
                   </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">
                     Role
                   </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">
                     Status
                   </th>
-                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-left text-xs font-black text-c500 uppercase tracking-wider">
                     Joined
                   </th>
-                  <th scope="col" className="px-6 py-4 text-right text-xs font-black text-gray-500 uppercase tracking-wider">
+                  <th scope="col" className="px-6 py-4 text-right text-xs font-black text-c500 uppercase tracking-wider">
                     Actions
                   </th>
                 </tr>
               </thead>
-              <tbody className="bg-white divide-y divide-gray-50">
+              <tbody className="bg-white divide-y divide-c100">
               {users.map((u) => (
                 <tr key={u.id}>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <div className="text-sm font-medium text-gray-900">{u.email}</div>
-                    <div className="text-xs text-gray-500">{u.isEmailVerified ? 'Verified' : 'Unverified'}</div>
+                    <div className="text-sm font-medium text-c900">{u.email}</div>
+                    <div className="text-xs text-c500">{u.isEmailVerified ? 'Verified' : 'Unverified'}</div>
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
-                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-800 capitalize">
+                    <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-c100 text-c800 capitalize">
                       {u.role}
                     </span>
-                    {u.role === 'admin' && <Shield className="h-4 w-4 ml-2 inline text-blue-500" />}
+                    {u.role === 'admin' && <Shield className="h-4 w-4 ml-2 inline text-blue" />}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap">
                     {u.isSuspended ? (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red-100 text-red-800">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-red text-red">
                         Suspended
                       </span>
                     ) : u.isActive ? (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green-100 text-green-800">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-green text-green">
                         Active
                       </span>
                     ) : (
-                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-100 text-gray-600">
+                      <span className="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-c100 text-c600">
                         Inactive
                       </span>
                     )}
                   </td>
-                  <td className="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                  <td className="px-6 py-4 whitespace-nowrap text-sm text-c500">
                     {new Date(u.createdAt).toLocaleDateString()}
                   </td>
                   <td className="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
@@ -164,8 +164,8 @@ alert(err.response?.data?.message || err.message);
                           onClick={() => handleToggleStatus(u.id, u.isActive && !u.isSuspended, u.role)}
                           className={`${
                             u.isActive && !u.isSuspended
-                              ? 'text-red-700 hover:bg-red-100 bg-red-50' 
-                              : 'text-green-700 hover:bg-green-100 bg-green-50'
+                              ? 'text-red hover:bg-red bg-red' 
+                              : 'text-green hover:bg-green bg-green'
                           } px-3 py-1.5 rounded-lg text-xs font-bold flex items-center transition-colors`}
                         >
                           {u.isActive && !u.isSuspended ? (
@@ -192,21 +192,21 @@ alert(err.response?.data?.message || err.message);
       {/* Pagination */}
       {meta && meta.totalPages > 1 && (
         <div className="flex items-center justify-between pt-2">
-          <p className="text-sm text-gray-500">
+          <p className="text-sm text-c500">
             Page {meta.page} of {meta.totalPages} ({meta.total} total)
           </p>
           <div className="flex gap-2">
             <button
               onClick={() => setPage((p) => Math.max(1, p - 1))}
               disabled={page <= 1}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-gray-600 bg-white border border-gray-200 rounded-xl hover:bg-gray-50 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-c600 bg-white border border-c200 rounded-xl hover:bg-c100 disabled:opacity-40 transition-colors"
             >
               <ChevronLeft className="w-4 h-4" /> Previous
             </button>
             <button
               onClick={() => setPage((p) => p + 1)}
               disabled={page >= meta.totalPages}
-              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-teal-600 rounded-xl hover:bg-teal-500 disabled:opacity-40 transition-colors"
+              className="flex items-center gap-1 px-4 py-2 text-sm font-medium text-white bg-green rounded-xl hover:bg-green disabled:opacity-40 transition-colors"
             >
               Next <ChevronRight className="w-4 h-4" />
             </button>

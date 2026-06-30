@@ -26,7 +26,7 @@ export default function Hero() {
             Empowering Careers, <br />
             <span className="text-accent-teal uppercase">Connecting Globally.</span>
           </h1>
-          <p className="mx-auto mt-6 max-w-2xl text-lg text-gray-300">
+          <p className="mx-auto mt-6 max-w-2xl text-lg text-c300">
             The #1 platform for jobs, company reviews, salary insights, and professional networking.
             All in one professional workspace.
           </p>
@@ -35,23 +35,23 @@ export default function Hero() {
         {/* Search Bar */}
         <form onSubmit={handleSearch} className="mx-auto mt-12 max-w-4xl overflow-hidden rounded-2xl bg-white p-2 shadow-2xl md:flex">
           <div className="flex flex-grow items-center px-4 py-3 md:border-r">
-            <Search className="w-5 h-5 text-gray-400 shrink-0" />
+            <Search className="w-5 h-5 text-c400 shrink-0" />
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               placeholder="Job Title or Keyword"
-              className="ml-2 w-full border-none bg-transparent text-gray-900 focus:ring-0 focus:outline-none"
+              className="ml-2 w-full border-none bg-transparent text-c900 focus:ring-0 focus:outline-none"
             />
           </div>
           <div className="flex flex-grow items-center px-4 py-3 md:border-r">
-            <MapPin className="w-5 h-5 text-gray-400 shrink-0" />
+            <MapPin className="w-5 h-5 text-c400 shrink-0" />
             <input
               type="text"
               value={location}
               onChange={(e) => setLocation(e.target.value)}
               placeholder="Location (e.g. Lagos)"
-              className="ml-2 w-full border-none bg-transparent text-gray-900 focus:ring-0 focus:outline-none"
+              className="ml-2 w-full border-none bg-transparent text-c900 focus:ring-0 focus:outline-none"
             />
           </div>
           <button
@@ -72,7 +72,7 @@ export default function Hero() {
           </Link>
           <Link
             href="/employer/jobs/create"
-            className="w-full rounded-full bg-white px-8 py-3 font-semibold text-primary transition-all hover:bg-gray-100 sm:w-auto text-center"
+            className="w-full rounded-full bg-white px-8 py-3 font-semibold text-primary transition-all hover:bg-c100 sm:w-auto text-center"
           >
             Post a Job
           </Link>

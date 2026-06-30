@@ -1,6 +1,7 @@
 'use client';
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { useEffect, useState, useRef } from "react";
 import { Menu, X, ShoppingCart, Bell, Check } from "lucide-react";
@@ -96,10 +97,7 @@ export default function Navbar() {
       <div className="container">
         <div className="nav__inner">
           <Link href="/" className="nav__logo" aria-label="Tutaly home">
-            {/* Replace with actual image later or SVG if available */}
-            <span style={{ fontFamily: 'var(--font)', fontWeight: 800, fontSize: '20px', letterSpacing: '-0.5px', color: 'var(--c-100)' }}>
-              tuta<em style={{ fontStyle: 'normal', color: 'var(--blue-l)' }}>ly</em>
-            </span>
+            <Image src="/logo.png" alt="Tutaly" width={140} height={40} className="h-8 w-auto object-contain" />
           </Link>
           
           <ul className="nav__links" role="list">

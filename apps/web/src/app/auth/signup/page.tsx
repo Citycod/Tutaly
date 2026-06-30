@@ -63,16 +63,16 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
           animate={{ opacity: 1, scale: 1 }}
           className="text-center py-8"
         >
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green-500/20 mb-6">
-            <CheckCircle2 className="h-10 w-10 text-[#1D9E75]" />
+          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green/20 mb-6">
+            <CheckCircle2 className="h-10 w-10 text-green" />
           </div>
           <h3 className="text-2xl font-bold text-white mb-2">Check your email</h3>
-          <p className="text-gray-400 mb-8">
+          <p className="text-c400 mb-8">
             We&apos;ve sent a verification link to <span className="text-white font-medium">{email}</span>.
           </p>
           <Link
             href="/auth/signin"
-            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-[#1D9E75] hover:bg-[#147a59] transition-all"
+            className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-green hover:bg-green transition-all"
           >
             Go to Sign In
           </Link>
@@ -98,23 +98,23 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
               <div
                 onClick={() => setRole('seeker')}
                 className={`relative rounded-xl border p-6 cursor-pointer flex flex-col items-center text-center transition-all ${
-                  role === 'seeker' ? 'border-[#1D9E75] bg-[#1D9E75]/10 shadow-[0_0_15px_rgba(29,158,117,0.3)]' : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  role === 'seeker' ? 'border-green bg-green/10 shadow-[0_0_15px_rgba(29,158,117,0.3)]' : 'border-white/10 bg-white/5 hover:bg-white/10'
                 }`}
               >
-                <User className={`h-8 w-8 mb-3 ${role === 'seeker' ? 'text-[#1D9E75]' : 'text-gray-400'}`} />
+                <User className={`h-8 w-8 mb-3 ${role === 'seeker' ? 'text-green' : 'text-c400'}`} />
                 <h3 className="text-lg font-semibold text-white">I&apos;m a Job Seeker</h3>
-                <p className="text-sm text-gray-400 mt-2">Looking for flexible or full-time opportunities.</p>
+                <p className="text-sm text-c400 mt-2">Looking for flexible or full-time opportunities.</p>
               </div>
 
               <div
                 onClick={() => setRole('employer')}
                 className={`relative rounded-xl border p-6 cursor-pointer flex flex-col items-center text-center transition-all ${
-                  role === 'employer' ? 'border-[#1D9E75] bg-[#1D9E75]/10 shadow-[0_0_15px_rgba(29,158,117,0.3)]' : 'border-white/10 bg-white/5 hover:bg-white/10'
+                  role === 'employer' ? 'border-green bg-green/10 shadow-[0_0_15px_rgba(29,158,117,0.3)]' : 'border-white/10 bg-white/5 hover:bg-white/10'
                 }`}
               >
-                <Briefcase className={`h-8 w-8 mb-3 ${role === 'employer' ? 'text-[#1D9E75]' : 'text-gray-400'}`} />
+                <Briefcase className={`h-8 w-8 mb-3 ${role === 'employer' ? 'text-green' : 'text-c400'}`} />
                 <h3 className="text-lg font-semibold text-white">I&apos;m an Employer</h3>
-                <p className="text-sm text-gray-400 mt-2">Looking to hire talented professionals.</p>
+                <p className="text-sm text-c400 mt-2">Looking to hire talented professionals.</p>
               </div>
             </div>
 
@@ -140,50 +140,50 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
             {role === 'seeker' ? (
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">First Name</label>
+                  <label className="block text-sm font-medium text-c300">First Name</label>
                   <input
                     type="text"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
-                    className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                    className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                     required
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-300">Last Name</label>
+                  <label className="block text-sm font-medium text-c300">Last Name</label>
                   <input
                     type="text"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
-                    className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                    className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                     required
                   />
                 </div>
               </div>
             ) : (
               <div>
-                <label className="block text-sm font-medium text-gray-300">Company Name</label>
+                <label className="block text-sm font-medium text-c300">Company Name</label>
                 <input
                   type="text"
                   value={companyName}
                   onChange={(e) => setCompanyName(e.target.value)}
-                  className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                  className="mt-1 block w-full px-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                   required
                 />
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300">Date of Birth (Must be 18+)</label>
+              <label className="block text-sm font-medium text-c300">Date of Birth (Must be 18+)</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Calendar className="h-5 w-5 text-gray-400" />
+                  <Calendar className="h-5 w-5 text-c400" />
                 </div>
                 <input
                   type="date"
                   value={dateOfBirth}
                   onChange={(e) => setDateOfBirth(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                   required
                 />
               </div>
@@ -219,45 +219,45 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
             className="space-y-6"
           >
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-sm text-center">
+              <div className="bg-red/10 border border-red/50 text-red p-3 rounded-lg text-sm text-center">
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300">Email address</label>
+              <label className="block text-sm font-medium text-c300">Email address</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-c400" />
                 </div>
                 <input
                   type="email"
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                   required
                 />
               </div>
             </div>
 
             <div>
-              <label className="block text-sm font-medium text-gray-300">Password (Min. 8 chars)</label>
+              <label className="block text-sm font-medium text-c300">Password (Min. 8 chars)</label>
               <div className="mt-1 relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-c400" />
                 </div>
                 <input
                   type="password"
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:border-[#1D9E75]"
+                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:border-green"
                   required
                 />
               </div>
             </div>
 
-            <p className="text-xs text-gray-500">
-              By registering, you agree to our <Link href="/terms" className="text-[#1D9E75] hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-[#1D9E75] hover:underline">Privacy Policy</Link>. This site is protected by reCAPTCHA v3.
+            <p className="text-xs text-c500">
+              By registering, you agree to our <Link href="/terms" className="text-green hover:underline">Terms of Service</Link> and <Link href="/privacy" className="text-green hover:underline">Privacy Policy</Link>. This site is protected by reCAPTCHA v3.
             </p>
 
             <div className="flex gap-4">
@@ -288,7 +288,7 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px 24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
+        <div className="bg-c800 border border-c700 rounded-xl px-6 py-8 shadow-2xl">
           
           {!isSuccess && (
             <div className="mb-6 flex justify-between items-center px-4">

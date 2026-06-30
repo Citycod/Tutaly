@@ -12,7 +12,7 @@ const RatingSelect = ({ name, label, value, onChange }: { name: string, label: s
       name={name}
       value={value}
       onChange={onChange}
-      className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+      className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
       required={name === 'ratingOverall'}
     >
       <option value={0} disabled>Select Rating</option>
@@ -97,67 +97,67 @@ alert(err.response?.data?.message || 'Failed to submit review');
 
   if (success) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-teal-100">
-          <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6">
+      <div className="min-h-screen bg-c100 flex items-center justify-center p-4">
+        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-green">
+          <div className="w-16 h-16 bg-green text-green rounded-full flex items-center justify-center mx-auto mb-6">
             <ShieldCheck className="w-8 h-8" />
           </div>
-          <h2 className="text-2xl font-bold text-gray-900 mb-2">Review Submitted!</h2>
-          <p className="text-gray-600 mb-6">Thank you for your anonymous contribution. Your review is pending moderation and will be published shortly.</p>
-          <div className="animate-pulse text-teal-600 font-medium">Redirecting...</div>
+          <h2 className="text-2xl font-bold text-c900 mb-2">Review Submitted!</h2>
+          <p className="text-c600 mb-6">Thank you for your anonymous contribution. Your review is pending moderation and will be published shortly.</p>
+          <div className="animate-pulse text-green font-medium">Redirecting...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-c100 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-gray-900">Write an Anonymous Review</h1>
-          <p className="mt-2 text-gray-600 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-teal-500" /> Your identity is 100% protected
+          <h1 className="text-3xl font-bold text-c900">Write an Anonymous Review</h1>
+          <p className="mt-2 text-c600 flex items-center justify-center gap-2">
+            <ShieldCheck className="w-5 h-5 text-green" /> Your identity is 100% protected
           </p>
         </div>
 
-        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-2xl p-8 border border-gray-100">
+        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-2xl p-8 border border-c100">
 
           <div className="space-y-8">
             {/* Section 1: Basic Info */}
             <div>
-              <h3 className="text-lg font-semibold text-gray-900 border-b pb-2 mb-4">Company Details</h3>
+              <h3 className="text-lg font-semibold text-c900 border-b pb-2 mb-4">Company Details</h3>
               <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Company Name *</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Company Name *</label>
                   <input
                     type="text"
                     name="companyName"
                     value={formData.companyName}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     required
                     placeholder="e.g. Paystack"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Sector</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Sector</label>
                   <input
                     type="text"
                     name="sector"
                     value={formData.sector}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     placeholder="e.g. Fintech"
                   />
                 </div>
                 <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Your Position / Role</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Your Position / Role</label>
                   <input
                     type="text"
                     name="position"
                     value={formData.position}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     placeholder="e.g. Frontend Engineer"
                   />
                 </div>
@@ -181,55 +181,55 @@ alert(err.response?.data?.message || 'Failed to submit review');
               <h3 className="text-lg font-semibold text-black border-b pb-2 mb-4">Your Review</h3>
               <div className="space-y-6">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Pros * (What do you like?)</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Pros * (What do you like?)</label>
                   <textarea
                     name="pros"
                     value={formData.pros}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     required
                     placeholder="Minimum 10 characters..."
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Cons * (What needs improvement?)</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Cons * (What needs improvement?)</label>
                   <textarea
                     name="cons"
                     value={formData.cons}
                     onChange={handleChange}
                     rows={4}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     required
                     placeholder="Minimum 10 characters..."
                   />
                 </div>
 
-                <div className="flex items-center gap-3 bg-gray-50 p-4 rounded-xl border border-gray-200">
+                <div className="flex items-center gap-3 bg-c100 p-4 rounded-xl border border-c200">
                   <input
                     type="checkbox"
                     name="recommend"
                     id="recommend"
                     checked={formData.recommend}
                     onChange={handleChange}
-                    className="h-5 w-5 rounded border-gray-300 text-teal-600 focus:ring-teal-500"
+                    className="h-5 w-5 rounded border-c300 text-green focus:ring-green"
                   />
-                  <label htmlFor="recommend" className="text-sm font-medium text-gray-900">
+                  <label htmlFor="recommend" className="text-sm font-medium text-c900">
                     I would recommend this company to a friend
                   </label>
                 </div>
 
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Display Name (Nickname)</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Display Name (Nickname)</label>
                   <input
                     type="text"
                     name="displayName"
                     value={formData.displayName}
                     onChange={handleChange}
-                    className="w-full rounded-lg border-gray-300 focus:border-teal-500 focus:ring-teal-500 shadow-sm text-gray-900"
+                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
                     required
                   />
-                  <p className="text-xs text-gray-500 mt-1">This is what other users will see. Keep it anonymous.</p>
+                  <p className="text-xs text-c500 mt-1">This is what other users will see. Keep it anonymous.</p>
                 </div>
               </div>
             </div>
@@ -240,7 +240,7 @@ alert(err.response?.data?.message || 'Failed to submit review');
             <button
               type="submit"
               disabled={loading}
-              className="bg-teal-600 hover:bg-teal-500 text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center min-w-[200px]"
+              className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center min-w-[200px]"
             >
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Anonymous Review'}
             </button>

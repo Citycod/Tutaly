@@ -73,59 +73,59 @@ setError(err.response?.data?.message || err.message || 'Failed to update page');
     <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-8 space-y-8">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-4">
-          <Link href="/admin/legal" className="p-2 bg-gray-100 text-gray-500 hover:bg-gray-200 rounded-full transition-colors">
+          <Link href="/admin/legal" className="p-2 bg-c100 text-c500 hover:bg-c200 rounded-full transition-colors">
             <ArrowLeft className="w-5 h-5" />
           </Link>
           <div>
-            <h1 className="text-3xl font-black text-gray-900">Edit {title || 'Document'}</h1>
-            <p className="text-gray-500 mt-1 font-mono text-sm bg-gray-100 px-2 py-0.5 rounded inline-block">/{slug}</p>
+            <h1 className="text-3xl font-black text-c900">Edit {title || 'Document'}</h1>
+            <p className="text-c500 mt-1 font-mono text-sm bg-c100 px-2 py-0.5 rounded inline-block">/{slug}</p>
           </div>
         </div>
       </div>
 
-      {error && <div className="text-red-500 bg-red-50 p-4 rounded-lg text-sm font-medium">{error}</div>}
+      {error && <div className="text-red bg-red p-4 rounded-lg text-sm font-medium">{error}</div>}
       {successMessage && (
-        <div className="text-green-700 bg-green-50 p-4 rounded-lg text-sm font-medium flex items-center gap-2">
+        <div className="text-green bg-green p-4 rounded-lg text-sm font-medium flex items-center gap-2">
           <CheckCircle className="w-5 h-5" /> {successMessage}
         </div>
       )}
 
       {loading ? (
-        <div className="flex justify-center items-center h-64 bg-white shadow-sm border border-gray-100 rounded-3xl">
-          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-teal-600"></div>
+        <div className="flex justify-center items-center h-64 bg-white shadow-sm border border-c100 rounded-3xl">
+          <div className="animate-spin rounded-full h-10 w-10 border-b-2 border-green"></div>
         </div>
       ) : (
-        <form onSubmit={handleSave} className="bg-white border border-gray-100 shadow-sm rounded-3xl overflow-hidden flex flex-col">
+        <form onSubmit={handleSave} className="bg-white border border-c100 shadow-sm rounded-3xl overflow-hidden flex flex-col">
           <div className="p-6 sm:p-8 space-y-6 flex-1">
             
             <div className="space-y-2">
-              <label className="block text-sm font-bold text-gray-700">Document Title</label>
+              <label className="block text-sm font-bold text-c700">Document Title</label>
               <input
                 type="text"
                 required
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                className="w-full border-gray-300 rounded-xl shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4 bg-gray-50"
+                className="w-full border-c300 rounded-xl shadow-sm focus:border-green focus:ring-green py-3 px-4 bg-c100"
               />
             </div>
 
             <div className="space-y-2 flex flex-col">
-              <label className="block text-sm font-bold text-gray-700">Content (HTML Supported)</label>
+              <label className="block text-sm font-bold text-c700">Content (HTML Supported)</label>
               <textarea
                 required
                 value={content}
                 onChange={(e) => setContent(e.target.value)}
-                className="w-full border-gray-300 rounded-xl shadow-sm focus:border-teal-500 focus:ring-teal-500 py-3 px-4 bg-gray-50 font-mono text-sm min-h-[400px] resize-y"
+                className="w-full border-c300 rounded-xl shadow-sm focus:border-green focus:ring-green py-3 px-4 bg-c100 font-mono text-sm min-h-[400px] resize-y"
               ></textarea>
-              <p className="text-xs text-gray-500 mt-2">Use valid HTML tags for formatting. Headings, paragraphs, bold, and lists are supported.</p>
+              <p className="text-xs text-c500 mt-2">Use valid HTML tags for formatting. Headings, paragraphs, bold, and lists are supported.</p>
             </div>
           </div>
 
-          <div className="bg-gray-50 p-6 sm:p-8 flex items-center justify-end border-t border-gray-100">
+          <div className="bg-c100 p-6 sm:p-8 flex items-center justify-end border-t border-c100">
             <button
               type="submit"
               disabled={saving}
-              className="bg-teal-600 text-white px-8 py-3 rounded-xl font-bold hover:bg-teal-700 shadow-lg shadow-teal-600/20 flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
+              className="bg-green text-white px-8 py-3 rounded-xl font-bold hover:bg-green shadow-lg shadow-teal-600/20 flex items-center justify-center gap-2 transition-colors disabled:opacity-50"
             >
               <Save className="w-5 h-5" />
               {saving ? 'Saving...' : 'Save Changes'}

@@ -47,12 +47,12 @@ export default function FeaturedJobsCarousel() {
   };
 
   return (
-    <div style={{ marginBottom: '32px', border: '1px solid var(--gold-h)', background: 'rgba(201,162,39,0.1)', borderRadius: 'var(--r-xl)', padding: '24px', position: 'relative', overflow: 'hidden' }} className="group">
-      <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'var(--gold-h)', fontSize: '11px', fontWeight: 800, padding: '4px 8px', borderRadius: '4px', color: '#000', textTransform: 'uppercase', letterSpacing: '0.05em', display: 'flex', alignItems: 'center', gap: '4px' }}>
+    <div className="group floatcard border border-goldH bg-gold/10 p-6 relative overflow-hidden mb-8">
+      <div className="absolute top-4 right-4 bg-goldH text-[11px] font-extrabold px-2 py-1 rounded text-black uppercase tracking-wider flex items-center gap-1">
         ⭐ Featured
       </div>
-      <h3 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '8px' }}>Sponsored Opportunity</h3>
-      <p style={{ color: 'var(--c-300)', marginBottom: '16px', maxWidth: '600px', lineHeight: '1.6' }}>
+      <h3 className="text-xl font-extrabold text-c100 mb-2">Sponsored Opportunity</h3>
+      <p className="text-c300 mb-4 max-w-[600px] leading-relaxed">
         This is a featured job position. Apply now to fast-track your application!
       </p>
       
@@ -60,8 +60,7 @@ export default function FeaturedJobsCarousel() {
       <Link 
         href={ad.job_id ? `/jobs?jobId=${ad.job_id}` : ad.target_url || '#'}
         onClick={handleClick}
-        className="btn"
-        style={{ background: 'var(--gold-h)', color: '#000', border: 'none' }}
+        className="btn bg-goldH text-black border-none"
       >
         View Details &rarr;
       </Link>

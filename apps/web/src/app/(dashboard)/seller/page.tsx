@@ -9,12 +9,12 @@ import {
 } from 'lucide-react';
 
 const STATUS_MAP: Record<string, { label: string; color: string }> = {
-  pending_payment: { label: 'Awaiting Payment', color: 'bg-yellow-100 text-yellow-700' },
-  paid: { label: 'Paid', color: 'bg-blue-100 text-blue-700' },
-  delivered: { label: 'Delivered', color: 'bg-indigo-100 text-indigo-700' },
-  completed: { label: 'Completed', color: 'bg-green-100 text-green-700' },
-  flagged: { label: 'Flagged (Review)', color: 'bg-red-100 text-red-700' },
-  refunded: { label: 'Refunded', color: 'bg-gray-100 text-gray-700' },
+  pending_payment: { label: 'Awaiting Payment', color: 'bg-gold text-goldH' },
+  paid: { label: 'Paid', color: 'bg-blueL text-blueH' },
+  delivered: { label: 'Delivered', color: 'bg-blueL text-blueH' },
+  completed: { label: 'Completed', color: 'bg-green text-green' },
+  flagged: { label: 'Flagged (Review)', color: 'bg-red text-red' },
+  refunded: { label: 'Refunded', color: 'bg-c100 text-c700' },
 };
 
 export default function SellerShopPage() {
@@ -109,7 +109,7 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
   if (loading) {
     return (
       <div className="p-8 flex justify-center py-20">
-        <Loader2 className="w-10 h-10 animate-spin text-teal-600" />
+        <Loader2 className="w-10 h-10 animate-spin text-green" />
       </div>
     );
   }
@@ -126,10 +126,10 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
   if (sellerStatus === 'pending') {
     return (
       <div className="p-8 pb-16 max-w-2xl">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-10 text-center">
-          <Clock className="w-16 h-16 text-yellow-500 mx-auto mb-6" />
-          <h2 className="text-2xl font-bold text-gray-900 mb-3">Application Under Review</h2>
-          <p className="text-gray-600 max-w-md mx-auto">
+        <div className="bg-white rounded-xl shadow-sm border border-c100 p-10 text-center">
+          <Clock className="w-16 h-16 text-gold mx-auto mb-6" />
+          <h2 className="text-2xl font-bold text-c900 mb-3">Application Under Review</h2>
+          <p className="text-c600 max-w-md mx-auto">
             Your seller application is being reviewed by the Tutaly team. You'll be notified once a decision is made.
           </p>
         </div>
@@ -147,12 +147,12 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
     <div className="p-8 pb-16">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-2xl font-bold text-gray-900">Seller Dashboard</h1>
-          <p className="text-gray-500 mt-1">Manage your listings and fulfil orders.</p>
+          <h1 className="text-2xl font-bold text-c900">Seller Dashboard</h1>
+          <p className="text-c500 mt-1">Manage your listings and fulfil orders.</p>
         </div>
         <Link
           href="/seller/create"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 transition-all shrink-0"
+          className="inline-flex items-center justify-center gap-2 rounded-xl bg-green px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-green transition-all shrink-0"
         >
           <Plus className="w-5 h-5" /> New Listing
         </Link>
@@ -160,41 +160,41 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
 
       {/* Stats */}
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-10">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-teal-50 p-2 rounded-lg"><ShoppingBag className="w-5 h-5 text-teal-600" /></div>
-            <span className="text-sm font-medium text-gray-500">Active Listings</span>
+            <div className="bg-green p-2 rounded-lg"><ShoppingBag className="w-5 h-5 text-green" /></div>
+            <span className="text-sm font-medium text-c500">Active Listings</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{products.filter(p => p.isActive).length}</p>
+          <p className="text-2xl font-bold text-c900">{products.filter(p => p.isActive).length}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-yellow-50 p-2 rounded-lg"><Clock className="w-5 h-5 text-yellow-600" /></div>
-            <span className="text-sm font-medium text-gray-500">Pending Orders</span>
+            <div className="bg-gold p-2 rounded-lg"><Clock className="w-5 h-5 text-gold" /></div>
+            <span className="text-sm font-medium text-c500">Pending Orders</span>
           </div>
-          <p className="text-2xl font-bold text-gray-900">{pendingOrders}</p>
+          <p className="text-2xl font-bold text-c900">{pendingOrders}</p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
           <div className="flex items-center gap-3 mb-2">
-            <div className="bg-green-50 p-2 rounded-lg"><TrendingUp className="w-5 h-5 text-green-600" /></div>
-            <span className="text-sm font-medium text-gray-500">Total Earnings</span>
+            <div className="bg-green p-2 rounded-lg"><TrendingUp className="w-5 h-5 text-green" /></div>
+            <span className="text-sm font-medium text-c500">Total Earnings</span>
           </div>
-          <p className="text-2xl font-bold text-teal-700">{formatPrice(totalRevenue)}</p>
+          <p className="text-2xl font-bold text-green">{formatPrice(totalRevenue)}</p>
         </div>
       </div>
 
       {/* Recent Orders */}
       <div className="mb-10">
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Recent Orders</h2>
+        <h2 className="text-lg font-bold text-c900 mb-4">Recent Orders</h2>
         {orders.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-500">
+          <div className="bg-white rounded-xl border border-c100 p-8 text-center text-c500">
             No orders yet. List a product to start selling!
           </div>
         ) : (
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+          <div className="bg-white rounded-xl shadow-sm border border-c100 overflow-hidden">
             <div className="overflow-x-auto">
               <table className="w-full text-left">
-                <thead className="bg-gray-50 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                <thead className="bg-c100 text-xs font-semibold text-c500 uppercase tracking-wider">
                   <tr>
                     <th className="p-4">Product</th>
                     <th className="p-4">Buyer</th>
@@ -204,15 +204,15 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
                     <th className="p-4">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-c100">
                   {orders.slice(0, 10).map((order: any) => {
                     const statusInfo = STATUS_MAP[order.status] || STATUS_MAP.pending_payment;
                     return (
-                      <tr key={order.id} className="hover:bg-gray-50">
-                        <td className="p-4 font-medium text-gray-900 max-w-[200px] truncate">{order.product?.title}</td>
-                        <td className="p-4 text-sm text-gray-500">{order.buyer?.email}</td>
+                      <tr key={order.id} className="hover:bg-c100">
+                        <td className="p-4 font-medium text-c900 max-w-[200px] truncate">{order.product?.title}</td>
+                        <td className="p-4 text-sm text-c500">{order.buyer?.email}</td>
                         <td className="p-4 text-sm font-medium">{formatPrice(order.amountPaid, order.currency)}</td>
-                        <td className="p-4 text-sm font-bold text-teal-700">{formatPrice(order.sellerEarnings, order.currency)}</td>
+                        <td className="p-4 text-sm font-bold text-green">{formatPrice(order.sellerEarnings, order.currency)}</td>
                         <td className="p-4">
                           <span className={`${statusInfo.color} px-2 py-1 rounded-md text-xs font-bold`}>
                             {statusInfo.label}
@@ -223,7 +223,7 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
                             <button
                               onClick={() => handleMarkDelivered(order.id)}
                               disabled={deliveringId === order.id}
-                              className="text-sm font-medium text-teal-600 hover:text-teal-700 flex items-center gap-1"
+                              className="text-sm font-medium text-green hover:text-green flex items-center gap-1"
                             >
                               {deliveringId === order.id ? <Loader2 className="w-3 h-3 animate-spin" /> : <CheckCircle2 className="w-3 h-3" />}
                               Mark Delivered
@@ -242,22 +242,22 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
 
       {/* Products List */}
       <div>
-        <h2 className="text-lg font-bold text-gray-900 mb-4">Your Listings</h2>
+        <h2 className="text-lg font-bold text-c900 mb-4">Your Listings</h2>
         {products.length === 0 ? (
-          <div className="bg-white rounded-xl border border-gray-100 p-8 text-center text-gray-500">
+          <div className="bg-white rounded-xl border border-c100 p-8 text-center text-c500">
             No listings yet. Create your first product!
           </div>
         ) : (
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
             {products.map((product: any) => (
-              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-gray-100 p-5">
-                <h3 className="font-bold text-gray-900 mb-1 line-clamp-1">{product.title}</h3>
-                <p className="text-sm text-gray-500 capitalize mb-2">{product.listingType}</p>
+              <div key={product.id} className="bg-white rounded-xl shadow-sm border border-c100 p-5">
+                <h3 className="font-bold text-c900 mb-1 line-clamp-1">{product.title}</h3>
+                <p className="text-sm text-c500 capitalize mb-2">{product.listingType}</p>
                 <div className="flex justify-between items-center">
-                  <span className="font-bold text-teal-700">
+                  <span className="font-bold text-green">
                     {product.pricingType === 'per_unit' ? formatPrice(product.price, product.currency) : 'Quote'}
                   </span>
-                  <span className={`text-xs px-2 py-1 rounded-md font-medium ${product.isActive ? 'bg-green-100 text-green-700' : 'bg-gray-100 text-gray-500'}`}>
+                  <span className={`text-xs px-2 py-1 rounded-md font-medium ${product.isActive ? 'bg-green text-green' : 'bg-c100 text-c500'}`}>
                     {product.isActive ? 'Active' : 'Inactive'}
                   </span>
                 </div>

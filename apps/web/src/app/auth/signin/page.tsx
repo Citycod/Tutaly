@@ -70,11 +70,11 @@ setError(error.response?.data?.message || 'Invalid email or password.');
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px 24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
+          className="bg-c800 border border-c700 rounded-xl px-6 py-8 shadow-2xl"
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div style={{ background: 'rgba(204,43,43,0.1)', border: '1px solid rgba(204,43,43,0.3)', color: 'var(--red)', padding: '12px', borderRadius: 'var(--r-md)', fontSize: '14px', textAlign: 'center' }}>
+              <div className="bg-red/10 border border-red/30 text-red p-3 rounded-md text-sm text-center">
                 {error}
               </div>
             )}

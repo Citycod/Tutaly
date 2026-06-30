@@ -67,10 +67,10 @@ interface Applicant {
 }
 
 const STATUS_LABELS: Record<string, { label: string; bg: string; text: string }> = {
-  applied: { label: 'Applied', bg: 'bg-blue-50', text: 'text-blue-700' },
-  reviewing: { label: 'Reviewing', bg: 'bg-yellow-50', text: 'text-yellow-700' },
-  shortlisted: { label: 'Shortlisted', bg: 'bg-green-50', text: 'text-green-700' },
-  rejected: { label: 'Rejected', bg: 'bg-red-50', text: 'text-red-700' },
+  applied: { label: 'Applied', bg: 'bg-blueL', text: 'text-blueH' },
+  reviewing: { label: 'Reviewing', bg: 'bg-gold', text: 'text-goldH' },
+  shortlisted: { label: 'Shortlisted', bg: 'bg-green', text: 'text-green' },
+  rejected: { label: 'Rejected', bg: 'bg-red', text: 'text-red' },
   offered: { label: 'Offered', bg: 'bg-purple-50', text: 'text-purple-700' },
 };
 
@@ -165,8 +165,8 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
   if (selectedApp) {
     const statusInfo = STATUS_LABELS[selectedApp.status] || {
       label: selectedApp.status,
-      bg: 'bg-gray-50',
-      text: 'text-gray-700',
+      bg: 'bg-c100',
+      text: 'text-c700',
     };
 
     return (
@@ -174,33 +174,33 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
         {/* Back button */}
         <button
           onClick={() => setSelectedApp(null)}
-          className="text-teal-600 hover:text-teal-900 flex items-center gap-1 mb-6 text-sm font-medium"
+          className="text-green hover:text-green flex items-center gap-1 mb-6 text-sm font-medium"
         >
           <ArrowLeft className="w-4 h-4" /> Back to Applicants
         </button>
 
         {detailLoading ? (
-          <div className="p-8 text-center text-gray-500 italic">Loading application details...</div>
+          <div className="p-8 text-center text-c500 italic">Loading application details...</div>
         ) : (
           <>
             {/* Header */}
-            <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 mb-6">
+            <div className="bg-white rounded-xl shadow-sm border border-c100 p-6 mb-6">
               <div className="flex items-start justify-between">
                 <div className="flex gap-4">
-                  <div className="h-16 w-16 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold text-2xl shrink-0">
+                  <div className="h-16 w-16 rounded-full bg-green flex items-center justify-center text-green font-bold text-2xl shrink-0">
                     {getApplicantName(selectedApp).charAt(0).toUpperCase()}
                   </div>
                   <div>
-                    <h1 className="text-2xl font-bold text-gray-900">{getApplicantName(selectedApp)}</h1>
-                    <p className="text-gray-500">{selectedApp.email || selectedApp.seeker?.email}</p>
+                    <h1 className="text-2xl font-bold text-c900">{getApplicantName(selectedApp)}</h1>
+                    <p className="text-c500">{selectedApp.email || selectedApp.seeker?.email}</p>
                     {selectedApp.seeker?.seekerProfile?.headline && (
-                      <p className="text-sm text-gray-600 mt-1">{selectedApp.seeker.seekerProfile.headline}</p>
+                      <p className="text-sm text-c600 mt-1">{selectedApp.seeker.seekerProfile.headline}</p>
                     )}
                     <div className="flex items-center gap-3 mt-3">
                       <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-medium ${statusInfo.bg} ${statusInfo.text}`}>
                         {statusInfo.label}
                       </span>
-                      <span className="text-xs text-gray-400">
+                      <span className="text-xs text-c400">
                         Applied {new Date(selectedApp.createdAt).toLocaleDateString()}
                       </span>
                     </div>
@@ -211,20 +211,20 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                 <div className="flex gap-2 shrink-0">
                   {selectedApp.status === 'applied' && (
                     <>
-                      <button onClick={() => updateStatus(selectedApp.id, 'reviewing')} className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blue-100 transition">
+                      <button onClick={() => updateStatus(selectedApp.id, 'reviewing')} className="flex items-center gap-1 bg-blueL text-blueH px-3 py-1.5 rounded-md text-sm font-medium hover:bg-blueL transition">
                         <Eye className="w-4 h-4" /> Review
                       </button>
-                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red-100 transition">
+                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red transition">
                         <X className="w-4 h-4" /> Reject
                       </button>
                     </>
                   )}
                   {selectedApp.status === 'reviewing' && (
                     <>
-                      <button onClick={() => updateStatus(selectedApp.id, 'shortlisted')} className="flex items-center gap-1 bg-green-50 text-green-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-green-100 transition">
+                      <button onClick={() => updateStatus(selectedApp.id, 'shortlisted')} className="flex items-center gap-1 bg-green text-green px-3 py-1.5 rounded-md text-sm font-medium hover:bg-green transition">
                         <Check className="w-4 h-4" /> Shortlist
                       </button>
-                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red-100 transition">
+                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red transition">
                         <X className="w-4 h-4" /> Reject
                       </button>
                     </>
@@ -234,7 +234,7 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                       <button onClick={() => updateStatus(selectedApp.id, 'offered')} className="flex items-center gap-1 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-purple-100 transition">
                         <Clock className="w-4 h-4" /> Offer
                       </button>
-                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red-100 transition">
+                      <button onClick={() => updateStatus(selectedApp.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-sm font-medium hover:bg-red transition">
                         <X className="w-4 h-4" /> Reject
                       </button>
                     </>
@@ -248,27 +248,27 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
               {/* Left Column - Personal Info & Links */}
               <div className="space-y-6">
                 {/* Contact Information */}
-                <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                  <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Contact Information</h3>
+                <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                  <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Contact Information</h3>
                   <div className="space-y-3">
                     {(selectedApp.email || selectedApp.seeker?.email) && (
                       <div className="flex items-center gap-3 text-sm">
-                        <Mail className="w-4 h-4 text-gray-400 shrink-0" />
-                        <a href={`mailto:${selectedApp.email || selectedApp.seeker?.email}`} className="text-teal-600 hover:text-teal-800">
+                        <Mail className="w-4 h-4 text-c400 shrink-0" />
+                        <a href={`mailto:${selectedApp.email || selectedApp.seeker?.email}`} className="text-green hover:text-green">
                           {selectedApp.email || selectedApp.seeker?.email}
                         </a>
                       </div>
                     )}
                     {selectedApp.phone && (
                       <div className="flex items-center gap-3 text-sm">
-                        <Phone className="w-4 h-4 text-gray-400 shrink-0" />
-                        <span className="text-gray-700">{selectedApp.phone}</span>
+                        <Phone className="w-4 h-4 text-c400 shrink-0" />
+                        <span className="text-c700">{selectedApp.phone}</span>
                       </div>
                     )}
                     {(selectedApp.location || selectedApp.seeker?.seekerProfile?.location) && (
                       <div className="flex items-center gap-3 text-sm">
-                        <MapPin className="w-4 h-4 text-gray-400 shrink-0" />
-                        <span className="text-gray-700">{selectedApp.location || selectedApp.seeker?.seekerProfile?.location}</span>
+                        <MapPin className="w-4 h-4 text-c400 shrink-0" />
+                        <span className="text-c700">{selectedApp.location || selectedApp.seeker?.seekerProfile?.location}</span>
                       </div>
                     )}
                   </div>
@@ -276,21 +276,21 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
 
                 {/* Links */}
                 {(selectedApp.linkedinUrl || selectedApp.portfolioUrl || selectedApp.githubUrl) && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Links</h3>
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Links</h3>
                     <div className="space-y-3">
                       {selectedApp.linkedinUrl && (
-                        <a href={selectedApp.linkedinUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-teal-600 hover:text-teal-800">
+                        <a href={selectedApp.linkedinUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-green hover:text-green">
                           <Link2 className="w-4 h-4 shrink-0" /> LinkedIn
                         </a>
                       )}
                       {selectedApp.portfolioUrl && (
-                        <a href={selectedApp.portfolioUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-teal-600 hover:text-teal-800">
+                        <a href={selectedApp.portfolioUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-green hover:text-green">
                           <Link2 className="w-4 h-4 shrink-0" /> Portfolio
                         </a>
                       )}
                       {selectedApp.githubUrl && (
-                        <a href={selectedApp.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-teal-600 hover:text-teal-800">
+                        <a href={selectedApp.githubUrl} target="_blank" rel="noreferrer" className="flex items-center gap-3 text-sm text-green hover:text-green">
                           <Link2 className="w-4 h-4 shrink-0" /> GitHub
                         </a>
                       )}
@@ -300,25 +300,25 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
 
                 {/* Expectations */}
                 {(selectedApp.expectedSalary || selectedApp.noticePeriod || selectedApp.availableFrom) && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Expectations</h3>
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Expectations</h3>
                     <div className="space-y-3">
                       {selectedApp.expectedSalary && (
                         <div className="flex items-center gap-3 text-sm">
-                          <DollarSign className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className="text-gray-700">Expected: {selectedApp.job?.currency || 'NGN'} {Number(selectedApp.expectedSalary).toLocaleString()}</span>
+                          <DollarSign className="w-4 h-4 text-c400 shrink-0" />
+                          <span className="text-c700">Expected: {selectedApp.job?.currency || 'NGN'} {Number(selectedApp.expectedSalary).toLocaleString()}</span>
                         </div>
                       )}
                       {selectedApp.noticePeriod && (
                         <div className="flex items-center gap-3 text-sm">
-                          <Clock className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className="text-gray-700">Notice: {selectedApp.noticePeriod}</span>
+                          <Clock className="w-4 h-4 text-c400 shrink-0" />
+                          <span className="text-c700">Notice: {selectedApp.noticePeriod}</span>
                         </div>
                       )}
                       {selectedApp.availableFrom && (
                         <div className="flex items-center gap-3 text-sm">
-                          <Calendar className="w-4 h-4 text-gray-400 shrink-0" />
-                          <span className="text-gray-700">Available from: {selectedApp.availableFrom}</span>
+                          <Calendar className="w-4 h-4 text-c400 shrink-0" />
+                          <span className="text-c700">Available from: {selectedApp.availableFrom}</span>
                         </div>
                       )}
                     </div>
@@ -327,11 +327,11 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
 
                 {/* Resume */}
                 {hasResume(selectedApp) && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Resume / CV</h3>
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Resume / CV</h3>
                     <button
                       onClick={() => viewResume(selectedApp)}
-                      className="flex items-center gap-2 bg-teal-50 text-teal-700 px-4 py-3 rounded-lg text-sm font-medium hover:bg-teal-100 transition w-full"
+                      className="flex items-center gap-2 bg-green text-green px-4 py-3 rounded-lg text-sm font-medium hover:bg-green transition w-full"
                     >
                       <FileText className="w-5 h-5" /> View / Download Resume
                     </button>
@@ -343,39 +343,39 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
               <div className="lg:col-span-2 space-y-6">
                 {/* Cover Letter */}
                 {selectedApp.coverLetter && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Cover Letter</h3>
-                    <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedApp.coverLetter}</div>
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Cover Letter</h3>
+                    <div className="text-sm text-c700 leading-relaxed whitespace-pre-wrap">{selectedApp.coverLetter}</div>
                   </div>
                 )}
 
                 {/* Experience */}
                 {selectedApp.experience && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4 flex items-center gap-2">
                       <Briefcase className="w-4 h-4" /> Work Experience
                     </h3>
-                    <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedApp.experience}</div>
+                    <div className="text-sm text-c700 leading-relaxed whitespace-pre-wrap">{selectedApp.experience}</div>
                   </div>
                 )}
 
                 {/* Education */}
                 {selectedApp.education && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4 flex items-center gap-2">
                       <GraduationCap className="w-4 h-4" /> Education
                     </h3>
-                    <div className="text-sm text-gray-700 leading-relaxed whitespace-pre-wrap">{selectedApp.education}</div>
+                    <div className="text-sm text-c700 leading-relaxed whitespace-pre-wrap">{selectedApp.education}</div>
                   </div>
                 )}
 
                 {/* Skills */}
                 {selectedApp.skills && selectedApp.skills.length > 0 && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4">Skills</h3>
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4">Skills</h3>
                     <div className="flex flex-wrap gap-2">
                       {selectedApp.skills.map((skill, i) => (
-                        <span key={i} className="inline-flex items-center rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700">
+                        <span key={i} className="inline-flex items-center rounded-full bg-c100 px-3 py-1 text-xs font-medium text-c700">
                           {skill}
                         </span>
                       ))}
@@ -385,26 +385,26 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
 
                 {/* Seeker Profile (Platform Profile) */}
                 {selectedApp.seeker?.seekerProfile && (
-                  <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6">
-                    <h3 className="text-sm font-semibold text-gray-900 uppercase tracking-wider mb-4 flex items-center gap-2">
+                  <div className="bg-white rounded-xl shadow-sm border border-c100 p-6">
+                    <h3 className="text-sm font-semibold text-c900 uppercase tracking-wider mb-4 flex items-center gap-2">
                       <User className="w-4 h-4" /> Tutaly Platform Profile
                     </h3>
                     <div className="space-y-3">
                       {selectedApp.seeker.seekerProfile.headline && (
-                        <p className="text-sm text-gray-700"><span className="font-medium">Headline:</span> {selectedApp.seeker.seekerProfile.headline}</p>
+                        <p className="text-sm text-c700"><span className="font-medium">Headline:</span> {selectedApp.seeker.seekerProfile.headline}</p>
                       )}
                       {selectedApp.seeker.seekerProfile.bio && (
                         <div>
-                          <p className="font-medium text-sm text-gray-700 mb-1">Bio:</p>
-                          <p className="text-sm text-gray-600 whitespace-pre-wrap">{selectedApp.seeker.seekerProfile.bio}</p>
+                          <p className="font-medium text-sm text-c700 mb-1">Bio:</p>
+                          <p className="text-sm text-c600 whitespace-pre-wrap">{selectedApp.seeker.seekerProfile.bio}</p>
                         </div>
                       )}
                       {selectedApp.seeker.seekerProfile.skills && selectedApp.seeker.seekerProfile.skills.length > 0 && (
                         <div>
-                          <p className="font-medium text-sm text-gray-700 mb-2">Profile Skills:</p>
+                          <p className="font-medium text-sm text-c700 mb-2">Profile Skills:</p>
                           <div className="flex flex-wrap gap-2">
                             {selectedApp.seeker.seekerProfile.skills.map((skill, i) => (
-                              <span key={i} className="inline-flex items-center rounded-full bg-teal-50 px-3 py-1 text-xs font-medium text-teal-700">
+                              <span key={i} className="inline-flex items-center rounded-full bg-green px-3 py-1 text-xs font-medium text-green">
                                 {skill}
                               </span>
                             ))}
@@ -426,49 +426,49 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
   return (
     <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
       <div className="mb-8">
-        <Link href="/employer/jobs" className="text-teal-600 hover:text-teal-900 flex items-center gap-1 mb-4 text-sm font-medium">
+        <Link href="/employer/jobs" className="text-green hover:text-green flex items-center gap-1 mb-4 text-sm font-medium">
           <ArrowLeft className="w-4 h-4" /> Back to Jobs
         </Link>
-        <h1 className="text-3xl font-bold text-gray-900">Applicants</h1>
-        <p className="text-gray-500 mt-1">Review candidates and manage their application status. Click on an applicant to see their full application.</p>
+        <h1 className="text-3xl font-bold text-c900">Applicants</h1>
+        <p className="text-c500 mt-1">Review candidates and manage their application status. Click on an applicant to see their full application.</p>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div className="bg-white rounded-xl shadow-sm border border-c100 overflow-hidden">
         {loading ? (
-          <div className="p-8 text-center text-gray-500 italic">Finding candidates...</div>
+          <div className="p-8 text-center text-c500 italic">Finding candidates...</div>
         ) : applicants.length === 0 ? (
-          <div className="p-16 text-center text-gray-500">
-            <User className="w-12 h-12 mx-auto mb-4 text-gray-300" />
-            <h3 className="text-lg font-medium text-gray-900 mb-2">No applicants yet</h3>
+          <div className="p-16 text-center text-c500">
+            <User className="w-12 h-12 mx-auto mb-4 text-c300" />
+            <h3 className="text-lg font-medium text-c900 mb-2">No applicants yet</h3>
             <p className="text-sm">When job seekers apply to this position, they will appear here.</p>
           </div>
         ) : (
-          <ul className="divide-y divide-gray-200">
+          <ul className="divide-y divide-c200">
             {applicants.map((app) => {
-              const statusInfo = STATUS_LABELS[app.status] || { label: app.status, bg: 'bg-gray-50', text: 'text-gray-700' };
+              const statusInfo = STATUS_LABELS[app.status] || { label: app.status, bg: 'bg-c100', text: 'text-c700' };
 
               return (
                 <li
                   key={app.id}
-                  className="p-6 hover:bg-gray-50 transition cursor-pointer"
+                  className="p-6 hover:bg-c100 transition cursor-pointer"
                   onClick={() => viewApplicationDetail(app)}
                 >
                   <div className="flex items-start justify-between">
                     <div className="flex gap-4">
-                      <div className="h-12 w-12 rounded-full bg-teal-100 flex items-center justify-center text-teal-800 font-bold text-xl shrink-0">
+                      <div className="h-12 w-12 rounded-full bg-green flex items-center justify-center text-green font-bold text-xl shrink-0">
                         {getApplicantName(app).charAt(0).toUpperCase()}
                       </div>
                       <div>
-                        <h3 className="text-lg font-medium text-gray-900">{getApplicantName(app)}</h3>
-                        <p className="text-sm text-gray-500">{app.email || app.seeker?.email}</p>
+                        <h3 className="text-lg font-medium text-c900">{getApplicantName(app)}</h3>
+                        <p className="text-sm text-c500">{app.email || app.seeker?.email}</p>
                         {app.seeker?.seekerProfile?.headline && (
-                          <p className="text-xs text-gray-400 mt-0.5">{app.seeker.seekerProfile.headline}</p>
+                          <p className="text-xs text-c400 mt-0.5">{app.seeker.seekerProfile.headline}</p>
                         )}
 
                         <div className="mt-3 flex gap-4 text-sm items-center">
                           {hasResume(app) && (
                             <button
-                              className="flex items-center gap-1 text-teal-600 font-medium hover:text-teal-800 cursor-pointer"
+                              className="flex items-center gap-1 text-green font-medium hover:text-green cursor-pointer"
                               onClick={(e) => {
                                 e.stopPropagation();
                                 viewResume(app);
@@ -477,8 +477,8 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                               <FileText className="w-4 h-4" /> Resume
                             </button>
                           )}
-                          <span className="text-gray-400">|</span>
-                          <span className="text-gray-500">Applied {new Date(app.createdAt).toLocaleDateString()}</span>
+                          <span className="text-c400">|</span>
+                          <span className="text-c500">Applied {new Date(app.createdAt).toLocaleDateString()}</span>
                         </div>
                       </div>
                     </div>
@@ -492,20 +492,20 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                       <div className="flex gap-2" onClick={(e) => e.stopPropagation()}>
                         {app.status === 'applied' && (
                           <>
-                            <button onClick={() => updateStatus(app.id, 'reviewing')} className="flex items-center gap-1 bg-blue-50 text-blue-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-blue-100 transition">
+                            <button onClick={() => updateStatus(app.id, 'reviewing')} className="flex items-center gap-1 bg-blueL text-blueH px-3 py-1.5 rounded-md text-xs font-medium hover:bg-blueL transition">
                               <Eye className="w-3 h-3" /> Review
                             </button>
-                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red-100 transition">
+                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red transition">
                               <X className="w-3 h-3" /> Reject
                             </button>
                           </>
                         )}
                         {app.status === 'reviewing' && (
                           <>
-                            <button onClick={() => updateStatus(app.id, 'shortlisted')} className="flex items-center gap-1 bg-green-50 text-green-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-green-100 transition">
+                            <button onClick={() => updateStatus(app.id, 'shortlisted')} className="flex items-center gap-1 bg-green text-green px-3 py-1.5 rounded-md text-xs font-medium hover:bg-green transition">
                               <Check className="w-3 h-3" /> Shortlist
                             </button>
-                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red-100 transition">
+                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red transition">
                               <X className="w-3 h-3" /> Reject
                             </button>
                           </>
@@ -515,7 +515,7 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                             <button onClick={() => updateStatus(app.id, 'offered')} className="flex items-center gap-1 bg-purple-50 text-purple-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-purple-100 transition">
                               <Clock className="w-3 h-3" /> Offer
                             </button>
-                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red-50 text-red-700 px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red-100 transition">
+                            <button onClick={() => updateStatus(app.id, 'rejected')} className="flex items-center gap-1 bg-red text-red px-3 py-1.5 rounded-md text-xs font-medium hover:bg-red transition">
                               <X className="w-3 h-3" /> Reject
                             </button>
                           </>
@@ -523,7 +523,7 @@ const msg = err?.response?.data?.message || 'Failed to load resume';
                       </div>
 
                       {/* View detail indicator */}
-                      <span className="text-xs text-gray-400 flex items-center gap-1">
+                      <span className="text-xs text-c400 flex items-center gap-1">
                         View details <ChevronRight className="w-3 h-3" />
                       </span>
                     </div>

@@ -51,7 +51,7 @@ export default function EmployerOverviewPage() {
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {/* Active Jobs Card */}
         <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-          <div style={{ background: 'rgba(29,122,58,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: '#2DB85A', flexShrink: 0 }}>
+          <div className="bg-[#1D7A3A]/20 p-3 rounded-md text-[#2DB85A] shrink-0">
             <Briefcase className="w-6 h-6" />
           </div>
           <div>
@@ -65,7 +65,7 @@ export default function EmployerOverviewPage() {
         {/* Total Applicants Card */}
         <Link href="/employer/jobs" className="block group">
           <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px', transition: 'all 0.2s' }} className="hover:border-[var(--blue)]">
-            <div style={{ background: 'rgba(27,79,158,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--blue-l)', flexShrink: 0 }}>
+            <div className="bg-blue/20 p-3 rounded-md text-blueL shrink-0">
               <Users className="w-6 h-6" />
             </div>
             <div>
@@ -80,7 +80,7 @@ export default function EmployerOverviewPage() {
 
         {/* Pending Review Card */}
         <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
-          <div style={{ background: 'rgba(201,162,39,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--gold-h)', flexShrink: 0 }}>
+          <div className="bg-gold/20 p-3 rounded-md text-goldH shrink-0">
             <Star className="w-6 h-6" />
           </div>
           <div>

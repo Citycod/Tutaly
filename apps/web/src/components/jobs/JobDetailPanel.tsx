@@ -53,8 +53,8 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
 
   if (!job) {
     return (
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-100 min-h-[400px] flex flex-col items-center justify-center text-gray-400 text-center">
-        <Briefcase className="w-12 h-12 mb-4 text-gray-300" />
+      <div className="bg-white p-8 rounded-xl shadow-sm border border-c100 min-h-[400px] flex flex-col items-center justify-center text-c400 text-center">
+        <Briefcase className="w-12 h-12 mb-4 text-c300" />
         <p className="font-medium">Select a job to view details</p>
         <p className="text-sm mt-1">Click on any listing to see the full description and apply.</p>
       </div>
@@ -122,11 +122,11 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
 
   return (
     <>
-      <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', overflow: 'hidden' }}>
+      <div className="bg-c800 rounded-xl border border-c700 overflow-hidden">
         {/* Header */}
-        <div style={{ padding: '24px', borderBottom: '1px solid var(--c-700)' }}>
-          <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '4px' }}>{job.title}</h2>
-          <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>{job.employer?.email || 'Confidential Company'}</p>
+        <div className="p-6 border-b border-c700">
+          <h2 className="text-xl font-extrabold text-c100 mb-1">{job.title}</h2>
+          <p className="text-sm text-c400">{job.employer?.email || 'Confidential Company'}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
             <span className="tag tag--blue">
@@ -135,7 +135,7 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             <span className="tag tag--green">
               {job.workMode}
             </span>
-            <span className="tag" style={{ background: 'var(--c-700)', color: 'var(--c-200)' }}>
+            <span className="tag bg-c700 text-c200">
               {job.experienceLevel}
             </span>
             {job.isFeatured && (
@@ -144,7 +144,7 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
               </span>
             )}
             {job.isUrgent && (
-              <span className="tag" style={{ background: 'rgba(204,43,43,0.12)', color: 'var(--red)' }}>
+              <span className="tag bg-red/10 text-red">
                 Urgent
               </span>
             )}
@@ -158,13 +158,13 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             </div>
             {job.minSalary && (
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-[var(--c-500)]" />
-                <span className="font-medium" style={{ color: '#2DB85A', fontFamily: 'var(--mono)' }}>
+                <DollarSign className="w-4 h-4 text-c500" />
+                <span className="font-medium text-[#2DB85A] font-mono">
                   {sym}
                   {job.minSalary.toLocaleString()}
                   {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : '+'}
                 </span>
-                <span className="text-xs text-[var(--c-500)]">/ month</span>
+                <span className="text-xs text-c500">/ month</span>
               </div>
             )}
             {job.deadline && (
@@ -181,27 +181,26 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
         </div>
 
         {/* Description */}
-        <div style={{ padding: '24px', borderBottom: '1px solid var(--c-700)' }}>
-          <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-100)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
+        <div className="p-6 border-b border-c700">
+          <h3 className="text-xs font-bold text-c100 uppercase tracking-widest mb-3">
             Description
           </h3>
-          <div style={{ fontSize: '14px', color: 'var(--c-300)', lineHeight: '1.65', whiteSpace: 'pre-wrap' }}>
+          <div className="text-sm text-c300 leading-relaxed whitespace-pre-wrap">
             {job.description}
           </div>
         </div>
 
         {/* Actions */}
-        <div style={{ padding: '24px' }}>
+        <div className="p-6">
           {applied ? (
-            <div style={{ width: '100%', background: 'rgba(29,122,58,0.2)', color: '#2DB85A', fontWeight: 700, padding: '14px', borderRadius: 'var(--r-md)', textAlign: 'center', border: '1px solid rgba(29,122,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
+            <div className="w-full bg-[#1D7A3A]/20 text-[#2DB85A] font-bold p-3.5 rounded-md text-center border border-[#1D7A3A]/30 flex items-center justify-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
               Application Submitted
             </div>
           ) : (
             <button
               onClick={handleApplyClick}
-              className="btn btn--primary btn--lg"
-              style={{ width: '100%' }}
+              className="btn btn--primary btn--lg w-full"
             >
               <Send className="w-4 h-4" />
               Apply Now
@@ -212,12 +211,7 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             <button
               onClick={handleSave}
               disabled={saved}
-              className={`btn flex-1 ${saved ? '' : 'btn--ghost'}`}
-              style={{
-                background: saved ? 'rgba(27,79,158,0.2)' : undefined,
-                color: saved ? 'var(--blue-l)' : undefined,
-                borderColor: saved ? 'var(--blue)' : undefined,
-              }}
+              className={`btn flex-1 ${saved ? 'bg-blue/20 text-blueL border-blue' : 'btn--ghost'}`}
             >
               {saved ? (
                 <>
@@ -231,8 +225,7 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             </button>
             <button
               onClick={handleReport}
-              className="btn btn--ghost"
-              style={{ flexShrink: 0, padding: '12px' }}
+              className="btn btn--ghost shrink-0 p-3"
               title="Report listing"
             >
               <Flag className="w-4 h-4" />

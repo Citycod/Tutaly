@@ -97,31 +97,31 @@ export default function CartPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-teal-600" />
+      <div className="min-h-screen bg-c100 flex items-center justify-center">
+        <Loader2 className="w-10 h-10 animate-spin text-green" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 pt-20 pb-16">
+    <div className="min-h-screen bg-c100 pt-20 pb-16">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-gray-500 hover:text-teal-600 mb-8 font-medium">
+        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-8 font-medium">
           <ArrowLeft className="w-4 h-4" /> Continue Shopping
         </Link>
 
-        <h1 className="text-3xl font-bold text-gray-900 mb-8 flex items-center gap-3">
-          <ShoppingCart className="w-8 h-8 text-teal-600" />
+        <h1 className="text-3xl font-bold text-c900 mb-8 flex items-center gap-3">
+          <ShoppingCart className="w-8 h-8 text-green" />
           Your Cart
-          <span className="text-lg font-normal text-gray-400">({cartItems.length} items)</span>
+          <span className="text-lg font-normal text-c400">({cartItems.length} items)</span>
         </h1>
 
         {cartItems.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-gray-100">
-            <ShoppingCart className="w-16 h-16 text-gray-300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-gray-900 mb-2">Your cart is empty</h3>
-            <p className="text-gray-500 mb-6">Browse the shop to find templates, tools, and services.</p>
-            <Link href="/shop" className="bg-teal-600 hover:bg-teal-500 text-white px-6 py-3 rounded-xl font-semibold transition-colors inline-block">
+          <div className="text-center py-20 bg-white rounded-2xl border border-c100">
+            <ShoppingCart className="w-16 h-16 text-c300 mx-auto mb-4" />
+            <h3 className="text-xl font-bold text-c900 mb-2">Your cart is empty</h3>
+            <p className="text-c500 mb-6">Browse the shop to find templates, tools, and services.</p>
+            <Link href="/shop" className="bg-green hover:bg-green text-white px-6 py-3 rounded-xl font-semibold transition-colors inline-block">
               Browse Shop
             </Link>
           </div>
@@ -134,30 +134,30 @@ export default function CartPage() {
                 if (!product) return null;
 
                 return (
-                  <div key={item.productId} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-center gap-6">
-                    <div className="w-20 h-20 bg-gray-100 rounded-xl flex items-center justify-center shrink-0">
+                  <div key={item.productId} className="bg-white rounded-xl shadow-sm border border-c100 p-6 flex items-center gap-6">
+                    <div className="w-20 h-20 bg-c100 rounded-xl flex items-center justify-center shrink-0">
                       {product.imageUrls?.[0] ? (
                         <img src={product.imageUrls[0]} alt={product.title} className="w-full h-full object-cover rounded-xl" />
                       ) : (
-                        <Package className="w-8 h-8 text-gray-300" />
+                        <Package className="w-8 h-8 text-c300" />
                       )}
                     </div>
 
                     <div className="flex-1 min-w-0">
-                      <Link href={`/shop/${product.id}`} className="font-bold text-gray-900 hover:text-teal-600 transition-colors line-clamp-1">
+                      <Link href={`/shop/${product.id}`} className="font-bold text-c900 hover:text-green transition-colors line-clamp-1">
                         {product.title}
                       </Link>
-                      <p className="text-sm text-gray-500 capitalize">{product.listingType}</p>
-                      <p className="text-sm text-gray-500">Qty: {item.quantity}</p>
+                      <p className="text-sm text-c500 capitalize">{product.listingType}</p>
+                      <p className="text-sm text-c500">Qty: {item.quantity}</p>
                     </div>
 
                     <div className="text-right shrink-0">
-                      <p className="font-bold text-teal-700 text-lg">
+                      <p className="font-bold text-green text-lg">
                         {formatPrice(Number(product.price) * item.quantity, product.currency)}
                       </p>
                       <button
                         onClick={() => removeItem(item.productId)}
-                        className="text-red-400 hover:text-red-600 transition-colors mt-2 flex items-center gap-1 text-sm ml-auto"
+                        className="text-red hover:text-red transition-colors mt-2 flex items-center gap-1 text-sm ml-auto"
                       >
                         <Trash2 className="w-4 h-4" /> Remove
                       </button>
@@ -169,39 +169,39 @@ export default function CartPage() {
 
             {/* Order Summary */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-sm border border-gray-200 p-6 sticky top-24">
-                <h3 className="text-lg font-bold text-gray-900 mb-6 pb-4 border-b">Order Summary</h3>
+              <div className="bg-white rounded-2xl shadow-sm border border-c200 p-6 sticky top-24">
+                <h3 className="text-lg font-bold text-c900 mb-6 pb-4 border-b">Order Summary</h3>
 
                 <div className="space-y-3 mb-6">
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Subtotal</span>
-                    <span className="font-medium text-gray-900">{formatPrice(calculateTotal(), getCartCurrency())}</span>
+                    <span className="text-c500">Subtotal</span>
+                    <span className="font-medium text-c900">{formatPrice(calculateTotal(), getCartCurrency())}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span className="text-gray-500">Platform fee</span>
-                    <span className="font-medium text-gray-500">Included</span>
+                    <span className="text-c500">Platform fee</span>
+                    <span className="font-medium text-c500">Included</span>
                   </div>
                   <div className="border-t pt-3 flex justify-between">
-                    <span className="font-bold text-gray-900">Total</span>
-                    <span className="font-black text-xl text-teal-700">{formatPrice(calculateTotal(), getCartCurrency())}</span>
+                    <span className="font-bold text-c900">Total</span>
+                    <span className="font-black text-xl text-green">{formatPrice(calculateTotal(), getCartCurrency())}</span>
                   </div>
                 </div>
 
                 <button
                   onClick={handleCheckout}
                   disabled={cartItems.length === 0}
-                  className="w-full text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 bg-teal-600 hover:bg-teal-500 disabled:opacity-50"
+                  className="w-full text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 bg-green hover:bg-green disabled:opacity-50"
                 >
                   Proceed to Checkout
                 </button>
 
                 <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <ShieldCheck className="w-4 h-4 text-teal-500 shrink-0" />
+                  <div className="flex items-center gap-2 text-xs text-c500">
+                    <ShieldCheck className="w-4 h-4 text-green shrink-0" />
                     <span>Escrow-protected. Funds released only after delivery confirmation.</span>
                   </div>
-                  <div className="flex items-center gap-2 text-xs text-gray-500">
-                    <CheckCircle2 className="w-4 h-4 text-green-500 shrink-0" />
+                  <div className="flex items-center gap-2 text-xs text-c500">
+                    <CheckCircle2 className="w-4 h-4 text-green shrink-0" />
                     <span>Supports NGN, USD & EUR payments.</span>
                   </div>
                 </div>

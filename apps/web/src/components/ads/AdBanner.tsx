@@ -51,8 +51,8 @@ export default function AdBanner({ placement }: { placement: string }) {
 
   if (isLoading) {
     return (
-      <div className="w-full h-[90px] bg-neutral-900 animate-pulse rounded-xl mb-8 flex items-center justify-center">
-        <span className="text-neutral-700 text-sm">Loading advertisement...</span>
+      <div className="w-full h-[90px] bg-c900 animate-pulse rounded-xl mb-8 flex items-center justify-center">
+        <span className="text-c700 text-sm">Loading advertisement...</span>
       </div>
     );
   }
@@ -60,12 +60,12 @@ export default function AdBanner({ placement }: { placement: string }) {
   if (!ad) return null; // Collapse if no ad exists
 
   return (
-    <div className="relative w-full max-w-6xl mx-auto mb-10 overflow-hidden rounded-xl border border-neutral-800 group shadow-lg">
+    <div className="relative w-full max-w-6xl mx-auto mb-10 overflow-hidden rounded-xl border border-c800 group shadow-lg">
       <Link href={ad.target_url} target="_blank" rel="noopener noreferrer">
-        <div className="absolute top-2 right-2 bg-neutral-900/80 backdrop-blur-sm text-gray-300 text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-sm z-10">
+        <div className="absolute top-2 right-2 bg-c900/80 backdrop-blur-sm text-c300 text-[10px] uppercase font-bold tracking-widest px-2 py-1 rounded-sm z-10">
           Sponsored
         </div>
-        <div className="w-full h-[90px] md:h-[120px] relative bg-neutral-900">
+        <div className="w-full h-[90px] md:h-[120px] relative bg-c900">
           <Image 
             src={ad.image_url}
             alt="Advertisement"

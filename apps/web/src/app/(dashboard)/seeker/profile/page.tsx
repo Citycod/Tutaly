@@ -155,8 +155,8 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
   if (loading) {
     return (
       <div className="p-8 pb-16 animate-pulse">
-        <div className="h-8 bg-gray-200 rounded w-1/4 mb-6" />
-        <div className="h-[400px] bg-gray-100 rounded-xl" />
+        <div className="h-8 bg-c200 rounded w-1/4 mb-6" />
+        <div className="h-[400px] bg-c100 rounded-xl" />
       </div>
     );
   }
@@ -164,13 +164,13 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
   return (
     <div className="p-8 pb-16 max-w-4xl">
       <div className="mb-8">
-        <h1 className="text-2xl font-bold text-gray-900">Applicant Profile</h1>
-        <p className="text-gray-500 mt-1">Manage your details and upload your PDF Resume to start applying for jobs.</p>
+        <h1 className="text-2xl font-bold text-c900">Applicant Profile</h1>
+        <p className="text-c500 mt-1">Manage your details and upload your PDF Resume to start applying for jobs.</p>
       </div>
 
       {message && (
-        <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${message.type === 'success' ? 'bg-green-50 text-green-800 border border-green-200' : 'bg-red-50 text-red-800 border border-red-200'}`}>
-          {message.type === 'success' && <CheckCircle2 className="w-5 h-5 text-green-600" />}
+        <div className={`mb-6 p-4 rounded-lg flex items-center gap-3 ${message.type === 'success' ? 'bg-green text-green border border-green' : 'bg-red text-red border border-red'}`}>
+          {message.type === 'success' && <CheckCircle2 className="w-5 h-5 text-green" />}
           {message.text}
         </div>
       )}
@@ -179,11 +179,11 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
         
         {/* Left Col: Resume Area */}
         <div className="md:col-span-1 space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm text-center">
-            <div className="bg-blue-50 w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
-              <FileText className="w-8 h-8 text-blue-600" />
+          <div className="bg-white p-6 rounded-xl border border-c100 shadow-sm text-center">
+            <div className="bg-blueL w-16 h-16 rounded-full flex items-center justify-center mx-auto mb-4">
+              <FileText className="w-8 h-8 text-blue" />
             </div>
-            <h3 className="font-bold text-gray-900">Your Resume</h3>
+            <h3 className="font-bold text-c900">Your Resume</h3>
             
             {profile.resumeSignedUrl ? (
               <div className="mt-4">
@@ -191,28 +191,28 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
                   href={profile.resumeSignedUrl} 
                   target="_blank" 
                   rel="noopener noreferrer"
-                  className="text-sm font-medium text-teal-600 hover:text-teal-700 underline"
+                  className="text-sm font-medium text-green hover:text-green underline"
                 >
                   View current resume (PDF)
                 </a>
-                <p className="text-xs text-gray-500 mt-2">Ready for applications</p>
+                <p className="text-xs text-c500 mt-2">Ready for applications</p>
               </div>
             ) : (
-              <p className="text-sm text-gray-500 mt-2">No resume uploaded</p>
+              <p className="text-sm text-c500 mt-2">No resume uploaded</p>
             )}
 
-            <div className="mt-6 border-t border-gray-100 pt-6">
+            <div className="mt-6 border-t border-c100 pt-6">
               <label 
-                className={`block w-full border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isDragging ? 'border-teal-500 bg-teal-50' : 'border-gray-300 hover:border-gray-400 bg-gray-50'}`}
+                className={`block w-full border-2 border-dashed rounded-xl p-6 text-center cursor-pointer transition-colors ${isDragging ? 'border-green bg-green' : 'border-c300 hover:border-c400 bg-c100'}`}
                 onDragOver={handleDragOver}
                 onDragLeave={handleDragLeave}
                 onDrop={handleDrop}
               >
-                 <UploadCloud className={`w-8 h-8 mx-auto mb-3 ${isDragging ? 'text-teal-500' : 'text-gray-400'}`} />
-                 <span className="block text-sm font-medium text-gray-700 mb-1">
+                 <UploadCloud className={`w-8 h-8 mx-auto mb-3 ${isDragging ? 'text-green' : 'text-c400'}`} />
+                 <span className="block text-sm font-medium text-c700 mb-1">
                    {isDragging ? 'Drop PDF here' : 'Click to upload or drag and drop'}
                  </span>
-                 <span className="block text-xs text-gray-500">
+                 <span className="block text-xs text-c500">
                    PDF (max. 5MB)
                  </span>
                  <input 
@@ -223,103 +223,103 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
                     className="hidden"
                   />
                </label>
-               {uploading && <p className="text-xs text-blue-600 font-medium mt-3 text-center">Uploading to Supabase Storage...</p>}
+               {uploading && <p className="text-xs text-blue font-medium mt-3 text-center">Uploading to Supabase Storage...</p>}
             </div>
           </div>
         </div>
 
         {/* Right Col: Details Form */}
         <div className="md:col-span-2 space-y-6">
-          <div className="bg-white p-6 rounded-xl border border-gray-100 shadow-sm">
-            <h3 className="font-bold text-gray-900 border-b border-gray-100 pb-4 mb-6 flex items-center gap-2">
-              <User className="w-5 h-5 text-gray-400" />
+          <div className="bg-white p-6 rounded-xl border border-c100 shadow-sm">
+            <h3 className="font-bold text-c900 border-b border-c100 pb-4 mb-6 flex items-center gap-2">
+              <User className="w-5 h-5 text-c400" />
               Basic Details
             </h3>
 
             <form onSubmit={handleSaveProfile} className="space-y-5">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">First Name</label>
                   <input 
                     type="text"
                     value={profile.firstName}
                     onChange={(e) => setProfile({ ...profile, firstName: e.target.value })}
-                    className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                    className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Last Name</label>
                   <input 
                     type="text"
                     value={profile.lastName}
                     onChange={(e) => setProfile({ ...profile, lastName: e.target.value })}
-                    className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                    className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                   />
                 </div>
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Professional Headline</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Professional Headline</label>
                 <input 
                   type="text"
                   value={profile.headline}
                   onChange={(e) => setProfile({ ...profile, headline: e.target.value })}
                   placeholder="e.g. Senior Software Engineer"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Location</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Location</label>
                 <input 
                   type="text"
                   value={profile.location}
                   onChange={(e) => setProfile({ ...profile, location: e.target.value })}
                   placeholder="e.g. Lagos, Nigeria"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                 />
               </div>
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Professional Bio</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Professional Bio</label>
                 <textarea 
                   rows={4}
                   value={profile.bio}
                   onChange={(e) => setProfile({ ...profile, bio: e.target.value })}
                   placeholder="Tell employers about your experience..."
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                 />
               </div>
 
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-1">Core Skills (comma separated)</label>
+                <label className="block text-sm font-medium text-c700 mb-1">Core Skills (comma separated)</label>
                 <input 
                   type="text"
                   value={skillsInput}
                   onChange={(e) => setSkillsInput(e.target.value)}
                   placeholder="React, Node.js, Project Management"
-                  className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">LinkedIn URL</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">LinkedIn URL</label>
                   <input 
                     type="url"
                     value={profile.socialLinks.linkedin}
                     onChange={(e) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, linkedin: e.target.value } })}
                     placeholder="https://linkedin.com/in/..."
-                    className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                    className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                   />
                 </div>
                 <div>
-                  <label className="block text-sm font-medium text-gray-700 mb-1">Portfolio Web URL</label>
+                  <label className="block text-sm font-medium text-c700 mb-1">Portfolio Web URL</label>
                   <input 
                     type="url"
                     value={profile.socialLinks.portfolio}
                     onChange={(e) => setProfile({ ...profile, socialLinks: { ...profile.socialLinks, portfolio: e.target.value } })}
                     placeholder="https://yourwebsite.com"
-                    className="w-full rounded-lg border border-gray-200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-teal-500 focus:border-transparent outline-none transition"
+                    className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm text-black focus:ring-2 focus:ring-green focus:border-transparent outline-none transition"
                   />
                 </div>
               </div>
@@ -328,7 +328,7 @@ setMessage({ type: 'error', text: err instanceof Error ? err.message : 'Failed t
                 <button 
                   type="submit"
                   disabled={saving}
-                  className="bg-gray-900 text-white font-bold py-2.5 px-6 rounded-xl hover:bg-black transition flex items-center gap-2 disabled:bg-gray-400"
+                  className="bg-c900 text-white font-bold py-2.5 px-6 rounded-xl hover:bg-black transition flex items-center gap-2 disabled:bg-c400"
                 >
                   <Save className="w-4 h-4" />
                   {saving ? 'Saving...' : 'Save Profile'}

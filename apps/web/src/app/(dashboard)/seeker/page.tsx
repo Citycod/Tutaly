@@ -66,7 +66,7 @@ export default function SeekerOverviewPage() {
         {/* Quick Action Cards */}
         <Link href="/seeker/applications" className="group block">
           <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', transition: 'all 0.2s' }} className="hover:border-[var(--blue)] hover:shadow-[0_4px_24px_rgba(27,79,158,0.2)]">
-            <div style={{ background: 'rgba(29,122,58,0.15)', padding: '16px', borderRadius: '50%', color: '#2DB85A', marginBottom: '16px', transition: 'transform 0.2s' }} className="group-hover:scale-110">
+            <div className="bg-[#1D7A3A]/15 p-4 rounded-full text-[#2DB85A] mb-4 transition-transform duration-200 group-hover:scale-110">
               <Briefcase className="w-8 h-8" />
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--c-100)' }}>My Applications</h3>
@@ -76,7 +76,7 @@ export default function SeekerOverviewPage() {
         
         <Link href="/seeker/saved" className="group block">
           <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', transition: 'all 0.2s' }} className="hover:border-[var(--red)] hover:shadow-[0_4px_24px_rgba(204,43,43,0.15)]">
-            <div style={{ background: 'rgba(204,43,43,0.15)', padding: '16px', borderRadius: '50%', color: 'var(--red)', marginBottom: '16px', transition: 'transform 0.2s' }} className="group-hover:scale-110">
+            <div className="bg-red/15 p-4 rounded-full text-red mb-4 transition-transform duration-200 group-hover:scale-110">
               <Heart className="w-8 h-8" />
             </div>
             <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--c-100)' }}>Saved Jobs</h3>
@@ -86,11 +86,11 @@ export default function SeekerOverviewPage() {
 
         {/* Profile Completion Card */}
         <Link href="/seeker/profile" className="group block sm:col-span-2 lg:col-span-1">
-          <div style={{ background: 'linear-gradient(135deg, rgba(27,79,158,0.1) 0%, rgba(27,79,158,0.05) 100%)', borderRadius: 'var(--r-xl)', border: '1px solid var(--blue)', padding: '24px', display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', overflow: 'hidden' }}>
+          <div className="bg-gradient-to-br from-blue/10 to-blue/5 rounded-xl border border-blue p-6 flex flex-col h-full relative overflow-hidden">
             <div style={{ position: 'absolute', top: '-16px', right: '-16px', width: '96px', height: '96px', background: 'var(--blue)', opacity: 0.1, borderRadius: '50%', filter: 'blur(24px)' }}></div>
             
             <div className="flex justify-between items-start mb-4 relative z-10">
-              <div style={{ background: 'rgba(27,79,158,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--blue-l)' }}>
+              <div className="bg-blue/20 p-3 rounded-md text-blueL">
                 <User className="w-6 h-6" />
               </div>
               <div className="text-right">
@@ -111,7 +111,7 @@ export default function SeekerOverviewPage() {
                   <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--blue-l)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>Complete Profile &rarr;</p>
                 </>
               ) : (
-                <div className="flex items-center gap-2" style={{ color: '#2DB85A' }}>
+                <div className="flex items-center gap-2 text-[#2DB85A]">
                   <CheckCircle2 className="w-5 h-5" />
                   <span style={{ fontSize: '14px', fontWeight: 600 }}>Your profile is looking great!</span>
                 </div>

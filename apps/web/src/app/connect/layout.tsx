@@ -69,9 +69,9 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
   ];
 
   return (
-    <div className="min-h-[calc(100dvh-64px)] bg-gray-50">
+    <div className="min-h-[calc(100dvh-64px)] bg-c100">
       {/* Desktop Top Bar */}
-      <div className="hidden lg:block border-b border-gray-200 bg-white sticky top-16 z-40">
+      <div className="hidden lg:block border-b border-c200 bg-white sticky top-16 z-40">
         <div className="max-w-7xl mx-auto px-4">
           <nav className="flex items-center gap-1 h-12">
             {navItems.map((item) => {
@@ -82,14 +82,14 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                   href={item.href}
                   className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
                     isActive
-                      ? 'text-teal-700 bg-teal-50'
-                      : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
+                      ? 'text-green bg-green'
+                      : 'text-c600 hover:text-c900 hover:bg-c100'
                   }`}
                 >
                   <item.icon className="w-4 h-4" />
                   {item.name}
                   {item.badge ? (
-                    <span className="absolute -top-0.5 -right-0.5 bg-red-500 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
+                    <span className="absolute -top-0.5 -right-0.5 bg-red text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full min-w-[18px] text-center leading-none">
                       {item.badge > 99 ? '99+' : item.badge}
                     </span>
                   ) : null}
@@ -105,8 +105,8 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
         
         {/* Left Sidebar */}
         <div className="hidden lg:block lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-            <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-3 px-3">Shortcuts</h3>
+          <div className="bg-white rounded-2xl shadow-sm border border-c100 p-4">
+            <h3 className="text-xs font-bold text-c400 uppercase tracking-wider mb-3 px-3">Shortcuts</h3>
             <div className="space-y-1">
               {sidebarLinks.map((link) => {
                 const isActive = pathname === link.href;
@@ -115,7 +115,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                     key={link.href}
                     href={link.href}
                     className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
-                      isActive ? 'bg-teal-50 text-teal-700' : 'text-gray-700 hover:bg-gray-50 hover:text-gray-900'
+                      isActive ? 'bg-green text-green' : 'text-c700 hover:bg-c100 hover:text-c900'
                     }`}
                   >
                     <link.icon className="w-5 h-5" />
@@ -135,13 +135,13 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
         {/* Right Sidebar */}
         <div className="hidden lg:block lg:col-span-1 space-y-4">
           {suggestedUsers.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-4">
-              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-4 px-1">People You May Know</h3>
+            <div className="bg-white rounded-2xl shadow-sm border border-c100 p-4">
+              <h3 className="text-xs font-bold text-c400 uppercase tracking-wider mb-4 px-1">People You May Know</h3>
               <div className="space-y-4">
                 {suggestedUsers.map((user) => (
                   <div key={user.id} className="flex items-center gap-3 px-1">
                     <Link href={`/connect/profile/${user.username || user.id}`} className="shrink-0">
-                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-teal-400 to-teal-600 flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
+                      <div className="w-10 h-10 rounded-full bg-gradient-to-br from-green to-green flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.firstName} className="w-full h-full object-cover" />
                         ) : (
@@ -151,19 +151,19 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                     </Link>
                     <div className="flex-1 min-w-0">
                       <Link href={`/connect/profile/${user.username || user.id}`} className="block">
-                        <p className="text-sm font-semibold text-gray-900 truncate">
+                        <p className="text-sm font-semibold text-c900 truncate">
                           {user.firstName} {user.lastName}
                         </p>
-                        <p className="text-xs text-gray-500 truncate">@{user.username || user.email.split('@')[0]}</p>
+                        <p className="text-xs text-c500 truncate">@{user.username || user.email.split('@')[0]}</p>
                       </Link>
                     </div>
-                    <button className="text-teal-600 hover:bg-teal-50 p-1.5 rounded-lg transition-colors" title="Follow">
+                    <button className="text-green hover:bg-green p-1.5 rounded-lg transition-colors" title="Follow">
                       <UserPlus className="w-4 h-4" />
                     </button>
                   </div>
                 ))}
               </div>
-              <Link href="/connect/discover" className="block mt-4 text-center text-sm font-medium text-teal-600 hover:text-teal-700 transition-colors">
+              <Link href="/connect/discover" className="block mt-4 text-center text-sm font-medium text-green hover:text-green transition-colors">
                 View more
               </Link>
             </div>
@@ -174,7 +174,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-c200 z-50 shadow-[0_-4px_6px_-1px_rgba(0,0,0,0.05)] pb-safe">
         <div className="flex items-center justify-around h-16">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -183,13 +183,13 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                 key={item.href}
                 href={item.href}
                 className={`relative flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                  isActive ? 'text-teal-700' : 'text-gray-500 hover:text-gray-900'
+                  isActive ? 'text-green' : 'text-c500 hover:text-c900'
                 }`}
               >
                 <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />
                 <span className={`text-[10px] ${isActive ? 'font-bold' : 'font-medium'}`}>{item.name}</span>
                 {item.badge ? (
-                  <span className="absolute -top-1 right-0 bg-red-500 text-white text-[9px] font-bold px-1 py-0.5 rounded-full min-w-[16px] text-center leading-none">
+                  <span className="absolute -top-1 right-0 bg-red text-white text-[9px] font-bold px-1 py-0.5 rounded-full min-w-[16px] text-center leading-none">
                     {item.badge > 99 ? '99+' : item.badge}
                   </span>
                 ) : null}
