@@ -121,7 +121,7 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
             <button
               onClick={handleNext}
               disabled={!role}
-              className="w-full flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-white bg-gradient-to-r from-[#1D9E75] to-[#147a59] focus:outline-none disabled:opacity-50 mt-8"
+              className="btn btn--primary btn--lg w-full mt-8"
             >
               Continue
             </button>
@@ -193,7 +193,7 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-1/3 flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10"
+                className="btn btn--ghost w-1/3"
               >
                 Back
               </button>
@@ -201,7 +201,7 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
                 type="button"
                 onClick={handleNext}
                 disabled={role === 'seeker' ? (!firstName || !lastName || !dateOfBirth) : (!companyName || !dateOfBirth)}
-                className="w-2/3 flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-white bg-[#1D9E75] hover:bg-[#147a59] disabled:opacity-50"
+                className="btn btn--primary w-2/3"
               >
                 Continue
               </button>
@@ -264,14 +264,14 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
               <button
                 type="button"
                 onClick={handleBack}
-                className="w-1/3 flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-gray-300 bg-white/5 hover:bg-white/10 border border-white/10"
+                className="btn btn--ghost w-1/3"
               >
                 Back
               </button>
               <button
                 onClick={handleSubmit}
                 disabled={!email || password.length < 8 || isLoading}
-                className="w-2/3 flex justify-center items-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-[#1D9E75] to-[#147a59] hover:from-[#147a59] hover:to-[#0f5c43] disabled:opacity-70"
+                className="btn btn--primary w-2/3"
               >
                 {isLoading ? <Loader2 className="animate-spin h-5 w-5" /> : 'Create Account'}
               </button>
@@ -282,19 +282,19 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
   };
 
   return (
-    <div className="min-h-screen bg-[#0D1B2A] flex flex-col justify-center py-12 sm:px-6 lg:px-8 overflow-hidden">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8 overflow-hidden">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <h2 className="mt-6 text-center text-3xl font-extrabold text-white">Join <span className="text-[#1D9E75]">Tutaly</span></h2>
+        <h2 className="mt-6 text-center" style={{ fontSize: '32px', fontWeight: 800, color: 'var(--c-100)' }}>Join <span style={{ color: 'var(--blue-l)' }}>Tutaly</span></h2>
       </div>
 
       <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <div className="bg-white/10 backdrop-blur-lg py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-white/10">
+        <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px 24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}>
           
           {!isSuccess && (
             <div className="mb-6 flex justify-between items-center px-4">
               {[1, 2, 3].map((i) => (
                 <div key={i} className="flex flex-col items-center w-full">
-                  <div className={`h-2 w-full rounded-full ${i <= step ? 'bg-[#1D9E75]' : 'bg-gray-700'} transition-all`} />
+                  <div style={{ height: '8px', width: '100%', borderRadius: '999px', background: i <= step ? 'var(--blue-l)' : 'var(--c-700)', transition: 'background 0.3s' }} />
                 </div>
               ))}
             </div>
@@ -306,9 +306,9 @@ setError(error.response?.data?.message || 'Failed to register. Please try again.
 
           {!isSuccess && (
             <div className="mt-6 text-center">
-              <p className="text-sm text-gray-400">
+              <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>
                 Already have an account?{' '}
-                <Link href="/auth/signin" className="font-medium text-white hover:text-[#1D9E75] transition-colors">
+                <Link href="/auth/signin" style={{ fontWeight: 600, color: 'var(--c-100)' }} className="hover:text-[var(--blue-l)] transition-colors">
                   Sign in
                 </Link>
               </p>

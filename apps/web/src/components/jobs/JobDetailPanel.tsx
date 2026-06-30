@@ -122,85 +122,86 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
 
   return (
     <>
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+      <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', overflow: 'hidden' }}>
         {/* Header */}
-        <div className="p-6 border-b border-gray-100">
-          <h2 className="text-xl font-bold text-gray-900 mb-1">{job.title}</h2>
-          <p className="text-sm text-gray-500">{job.employer?.email || 'Confidential Company'}</p>
+        <div style={{ padding: '24px', borderBottom: '1px solid var(--c-700)' }}>
+          <h2 style={{ fontSize: '20px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '4px' }}>{job.title}</h2>
+          <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>{job.employer?.email || 'Confidential Company'}</p>
 
           <div className="mt-4 flex flex-wrap gap-2">
-            <span className="inline-flex items-center gap-1 bg-blue-50 text-blue-700 text-xs px-2.5 py-1 rounded-full font-medium">
+            <span className="tag tag--blue">
               <Briefcase className="w-3 h-3" /> {job.jobType}
             </span>
-            <span className="inline-flex items-center gap-1 bg-purple-50 text-purple-700 text-xs px-2.5 py-1 rounded-full font-medium">
+            <span className="tag tag--green">
               {job.workMode}
             </span>
-            <span className="inline-flex items-center gap-1 bg-gray-100 text-gray-700 text-xs px-2.5 py-1 rounded-full font-medium">
+            <span className="tag" style={{ background: 'var(--c-700)', color: 'var(--c-200)' }}>
               {job.experienceLevel}
             </span>
             {job.isFeatured && (
-              <span className="inline-flex items-center gap-1 bg-teal-50 text-teal-700 text-xs px-2.5 py-1 rounded-full font-medium">
+              <span className="tag tag--gold">
                 Featured
               </span>
             )}
             {job.isUrgent && (
-              <span className="inline-flex items-center gap-1 bg-red-50 text-red-700 text-xs px-2.5 py-1 rounded-full font-medium">
+              <span className="tag" style={{ background: 'rgba(204,43,43,0.12)', color: 'var(--red)' }}>
                 Urgent
               </span>
             )}
           </div>
 
-          <div className="mt-4 space-y-2 text-sm text-gray-600">
+          <div className="mt-6 space-y-3 text-sm text-[var(--c-300)]">
             <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-gray-400" />
+              <MapPin className="w-4 h-4 text-[var(--c-500)]" />
               {job.area ? `${job.area}, ` : ''}
               {job.state}, {job.country}
             </div>
             {job.minSalary && (
               <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-gray-400" />
-                <span className="font-medium text-gray-800">
+                <DollarSign className="w-4 h-4 text-[var(--c-500)]" />
+                <span className="font-medium" style={{ color: '#2DB85A', fontFamily: 'var(--mono)' }}>
                   {sym}
                   {job.minSalary.toLocaleString()}
                   {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : '+'}
                 </span>
-                <span className="text-xs text-gray-400">/ month</span>
+                <span className="text-xs text-[var(--c-500)]">/ month</span>
               </div>
             )}
             {job.deadline && (
               <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-gray-400" />
+                <Calendar className="w-4 h-4 text-[var(--c-500)]" />
                 Deadline: {new Date(job.deadline).toLocaleDateString()}
               </div>
             )}
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-gray-400" />
+              <Clock className="w-4 h-4 text-[var(--c-500)]" />
               Posted {new Date(job.createdAt).toLocaleDateString()}
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <div className="p-6 border-b border-gray-100">
-          <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wide mb-3">
+        <div style={{ padding: '24px', borderBottom: '1px solid var(--c-700)' }}>
+          <h3 style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-100)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '12px' }}>
             Description
           </h3>
-          <div className="text-sm text-gray-600 leading-relaxed whitespace-pre-wrap">
+          <div style={{ fontSize: '14px', color: 'var(--c-300)', lineHeight: '1.65', whiteSpace: 'pre-wrap' }}>
             {job.description}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="p-6">
+        <div style={{ padding: '24px' }}>
           {applied ? (
-            <div className="w-full bg-green-50 text-green-700 font-bold py-3.5 px-4 rounded-xl text-center border border-green-200 flex items-center justify-center gap-2">
+            <div style={{ width: '100%', background: 'rgba(29,122,58,0.2)', color: '#2DB85A', fontWeight: 700, padding: '14px', borderRadius: 'var(--r-md)', textAlign: 'center', border: '1px solid rgba(29,122,58,0.3)', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '8px' }}>
               <CheckCircle2 className="w-5 h-5" />
               Application Submitted
             </div>
           ) : (
             <button
               onClick={handleApplyClick}
-              className="w-full bg-gradient-to-r from-gray-900 to-gray-800 text-white font-bold py-3.5 px-4 rounded-xl hover:from-black hover:to-gray-900 transition shadow-lg shadow-gray-900/20 flex items-center justify-center gap-2"
+              className="btn btn--primary btn--lg"
+              style={{ width: '100%' }}
             >
               <Send className="w-4 h-4" />
               Apply Now
@@ -211,11 +212,12 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             <button
               onClick={handleSave}
               disabled={saved}
-              className={`flex-1 flex items-center justify-center gap-1.5 py-2.5 text-sm font-medium rounded-xl border transition ${
-                saved
-                  ? 'bg-teal-50 text-teal-700 border-teal-200'
-                  : 'text-gray-600 bg-gray-50 hover:bg-gray-100 border-gray-200'
-              }`}
+              className={`btn flex-1 ${saved ? '' : 'btn--ghost'}`}
+              style={{
+                background: saved ? 'rgba(27,79,158,0.2)' : undefined,
+                color: saved ? 'var(--blue-l)' : undefined,
+                borderColor: saved ? 'var(--blue)' : undefined,
+              }}
             >
               {saved ? (
                 <>
@@ -229,9 +231,11 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             </button>
             <button
               onClick={handleReport}
-              className="flex items-center justify-center gap-1.5 py-2.5 px-4 text-sm font-medium text-gray-400 bg-gray-50 rounded-xl hover:bg-red-50 hover:text-red-500 border border-gray-200 transition"
+              className="btn btn--ghost"
+              style={{ flexShrink: 0, padding: '12px' }}
+              title="Report listing"
             >
-              <Flag className="w-4 h-4" /> Report
+              <Flag className="w-4 h-4" />
             </button>
           </div>
         </div>

@@ -1,17 +1,17 @@
 import type { Metadata } from "next";
-import { Plus_Jakarta_Sans, JetBrains_Mono } from "next/font/google";
+import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import { CartProvider } from "@/components/providers/CartProvider";
 
-const jakarta = Plus_Jakarta_Sans({
-  variable: "--font-jakarta",
+const inter = Inter({
+  variable: "--font",
   subsets: ["latin"],
 });
 
 const jetbrains = JetBrains_Mono({
-  variable: "--font-jetbrains",
+  variable: "--mono",
   subsets: ["latin"],
 });
 
@@ -45,8 +45,8 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${jakarta.variable} ${jetbrains.variable} antialiased h-full`}>
-      <body className="font-sans flex flex-col min-h-screen bg-brand-dark text-gray-100">
+    <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
+      <body className="flex flex-col min-h-screen">
         <CartProvider>
           <Navbar />
           <main className="flex-grow">{children}</main>

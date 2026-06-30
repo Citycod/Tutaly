@@ -48,7 +48,7 @@ setError(error.response?.data?.message || 'Invalid email or password.');
   };
 
   return (
-    <div className="min-h-screen bg-[#0D1B2A] flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div className="min-h-screen flex flex-col justify-center py-12 sm:px-6 lg:px-8">
       <div className="sm:mx-auto sm:w-full sm:max-w-md">
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -56,10 +56,10 @@ setError(error.response?.data?.message || 'Invalid email or password.');
           transition={{ duration: 0.5 }}
           className="text-center"
         >
-          <h2 className="text-3xl font-extrabold text-white">
-             Welcome back to <span className="text-[#1D9E75]">Tutaly</span>
+          <h2 style={{ fontSize: '32px', fontWeight: 800, color: 'var(--c-100)' }}>
+             Welcome back to <span style={{ color: 'var(--blue-l)' }}>Tutaly</span>
           </h2>
-          <p className="mt-2 text-sm text-gray-400">
+          <p style={{ color: 'var(--c-400)', marginTop: '8px' }}>
             Sign in to access your dashboard
           </p>
         </motion.div>
@@ -70,63 +70,63 @@ setError(error.response?.data?.message || 'Invalid email or password.');
           initial={{ opacity: 0, scale: 0.95 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 0.5, delay: 0.1 }}
-          className="bg-white/10 backdrop-blur-lg py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-white/10"
+          style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px 24px', boxShadow: '0 25px 50px -12px rgba(0,0,0,0.5)' }}
         >
           <form className="space-y-6" onSubmit={handleSubmit}>
             {error && (
-              <div className="bg-red-500/10 border border-red-500/50 text-red-400 p-3 rounded-lg text-sm text-center">
+              <div style={{ background: 'rgba(204,43,43,0.1)', border: '1px solid rgba(204,43,43,0.3)', color: 'var(--red)', padding: '12px', borderRadius: 'var(--r-md)', fontSize: '14px', textAlign: 'center' }}>
                 {error}
               </div>
             )}
 
             <div>
-              <label className="block text-sm font-medium text-gray-300">
+              <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--c-300)', marginBottom: '8px' }}>
                 Email address
               </label>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Mail className="h-5 w-5 text-gray-400" />
+                  <Mail className="h-5 w-5 text-[var(--c-500)]" />
                 </div>
                 <input
                   type="email"
                   required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1D9E75] focus:border-[#1D9E75] sm:text-sm transition-all"
+                  className="input pl-10"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <div className="flex justify-between">
-                <label className="block text-sm font-medium text-gray-300">
+              <div className="flex justify-between items-end mb-2">
+                <label style={{ display: 'block', fontSize: '12px', fontWeight: 600, color: 'var(--c-300)' }}>
                   Password
                 </label>
-                <Link href="/auth/forgot-password" className="text-sm font-medium text-[#1D9E75] hover:text-[#147a59] transition-colors">
+                <Link href="/auth/forgot-password" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--blue-l)' }} className="hover:text-[var(--blue)] transition-colors">
                   Forgot password?
                 </Link>
               </div>
-              <div className="mt-1 relative rounded-md shadow-sm">
+              <div className="relative rounded-md shadow-sm">
                 <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <Lock className="h-5 w-5 text-gray-400" />
+                  <Lock className="h-5 w-5 text-[var(--c-500)]" />
                 </div>
                 <input
                   type="password"
                   required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
-                  className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-gray-100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-[#1D9E75] focus:border-[#1D9E75] sm:text-sm transition-all"
+                  className="input pl-10"
                   placeholder="••••••••"
                 />
               </div>
             </div>
 
-            <div>
+            <div style={{ paddingTop: '8px' }}>
               <button
                 type="submit"
                 disabled={isLoading}
-                className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-gradient-to-r from-[#1D9E75] to-[#147a59] hover:from-[#147a59] hover:to-[#0f5c43] focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-[#1D9E75] focus:ring-offset-[#0D1B2A] transition-all disabled:opacity-70 disabled:cursor-not-allowed group relative overflow-hidden"
+                className="btn btn--primary btn--lg w-full flex justify-center group"
               >
                 {isLoading ? (
                   <Loader2 className="animate-spin h-5 w-5" />
@@ -140,20 +140,20 @@ setError(error.response?.data?.message || 'Invalid email or password.');
             </div>
           </form>
 
-          <div className="mt-6">
+          <div className="mt-8">
             <div className="relative">
               <div className="absolute inset-0 flex items-center">
-                <div className="w-full border-t border-white/10" />
+                <div style={{ width: '100%', borderTop: '1px solid var(--c-700)' }} />
               </div>
               <div className="relative flex justify-center text-sm">
-                <span className="px-2 bg-transparent text-gray-400 backdrop-blur-md">
+                <span style={{ padding: '0 8px', background: 'var(--c-800)', color: 'var(--c-400)' }}>
                   New to Tutaly?
                 </span>
               </div>
             </div>
 
             <div className="mt-6 text-center">
-              <Link href="/auth/signup" className="text-sm font-medium text-white hover:text-[#1D9E75] transition-colors">
+              <Link href="/auth/signup" style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-100)' }} className="hover:text-[var(--blue-l)] transition-colors">
                 Create an account
               </Link>
             </div>

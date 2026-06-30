@@ -1,88 +1,66 @@
 import Link from "next/link";
 
 export default function Footer() {
-  const legalLinks = [
-    { name: "Terms of Service", href: "/legal/terms-of-service" },
-    { name: "Privacy Policy", href: "/legal/privacy-policy" },
-    { name: "Disclaimer", href: "/legal/disclaimer" },
-    { name: "Community Guidelines", href: "/legal/community-guidelines" },
-    { name: "Review Policy", href: "/legal/review-policy" },
-    { name: "Marketplace Policy", href: "/legal/marketplace-policy" },
-    { name: "Refund Policy", href: "/legal/refund-policy" },
-    { name: "Advertiser Policy", href: "/legal/advertiser-policy" },
-    { name: "Employer Policy", href: "/legal/employer-policy" },
-    { name: "Cookie Policy", href: "/legal/cookie-policy" },
-    { name: "Safety", href: "/legal/safety" },
-  ];
-
   return (
-    <footer className="w-full border-t border-gray-200 bg-gray-50 py-12">
-      <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
-        <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
-          {/* Company Column */}
-          <div className="space-y-4">
-            <h3 className="text-lg font-bold text-primary">TUTALY</h3>
-            <p className="text-sm text-gray-600">
-              Connecting job seekers and employers seamlessly across Nigeria.
-            </p>
-          </div>
-
-          {/* Site Links */}
-          <div className="md:col-span-2 grid grid-cols-2 gap-4">
-            <div>
-              <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                Legal & Policies
-              </h4>
-              <ul className="space-y-2">
-                {legalLinks.slice(0, 6).map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-gray-600 hover:text-accent-teal">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-                More info
-              </h4>
-              <ul className="space-y-2">
-                {legalLinks.slice(6).map((link) => (
-                  <li key={link.href}>
-                    <Link href={link.href} className="text-sm text-gray-600 hover:text-accent-teal">
-                      {link.name}
-                    </Link>
-                  </li>
-                ))}
-                <li>
-                  <Link href="/legal/about-us" className="text-sm text-gray-600 hover:text-accent-teal">
-                    About Us
-                  </Link>
-                </li>
-                <li>
-                  <Link href="/legal/contact-us" className="text-sm text-gray-600 hover:text-accent-teal">
-                    Contact Us
-                  </Link>
-                </li>
-              </ul>
-            </div>
-          </div>
-
-          {/* Newsletter / Social Placeholder */}
+    <footer className="footer" aria-label="Site footer">
+      <div className="container">
+        <div className="footer__grid">
           <div>
-            <h4 className="mb-4 text-xs font-semibold uppercase tracking-wider text-gray-500">
-              Community
-            </h4>
-            <p className="text-sm text-gray-600">
-              Join our professional network to stay ahead.
-            </p>
+            <div className="footer__brand-name">
+              <span style={{ fontFamily: 'var(--font)', fontWeight: 800, fontSize: '20px', letterSpacing: '-0.5px', color: 'var(--c-100)' }}>
+                tuta<em style={{ fontStyle: 'normal', color: 'var(--blue-l)' }}>ly</em>
+              </span>
+            </div>
+            <p className="footer__brand-desc">The professional ecosystem for the world's workforce. Find jobs, understand your market value, and build the career you deserve — wherever you are.</p>
+            <div style={{ display: 'flex', gap: '10px' }}>
+              <a href="#" className="btn btn--ghost btn--sm" aria-label="Follow Tutaly on Twitter" style={{ padding: '6px' }}>
+                𝕏
+              </a>
+              <a href="#" className="btn btn--ghost btn--sm" aria-label="Follow Tutaly on LinkedIn" style={{ padding: '6px' }}>
+                in
+              </a>
+              <a href="#" className="btn btn--ghost btn--sm" aria-label="Follow Tutaly on Instagram" style={{ padding: '6px' }}>
+                ig
+              </a>
+            </div>
           </div>
+          <nav aria-label="For professionals">
+            <div className="footer__col-title">For professionals</div>
+            <ul className="footer__links">
+              <li><Link href="/jobs">Find jobs</Link></li>
+              <li><Link href="/salaries">Salary check</Link></li>
+              <li><Link href="/reviews">Company reviews</Link></li>
+              <li><Link href="/connect">Network</Link></li>
+              <li><Link href="/shop">Marketplace</Link></li>
+            </ul>
+          </nav>
+          <nav aria-label="For employers">
+            <div className="footer__col-title">For employers</div>
+            <ul className="footer__links">
+              <li><Link href="/employers">Post a job</Link></li>
+              <li><Link href="/pricing">Pricing</Link></li>
+              <li><Link href="/advertise">Advertise</Link></li>
+              <li><Link href="/employer/dashboard">Dashboard</Link></li>
+            </ul>
+          </nav>
+          <nav aria-label="Company links">
+            <div className="footer__col-title">Company</div>
+            <ul className="footer__links">
+              <li><Link href="/about">About Tutaly</Link></li>
+              <li><Link href="/blog">Blog</Link></li>
+              <li><Link href="/careers">We're hiring</Link></li>
+              <li><Link href="/contact">Contact</Link></li>
+              <li><Link href="/press">Press</Link></li>
+            </ul>
+          </nav>
         </div>
-        <div className="mt-12 border-t border-gray-200 pt-8 text-center">
-          <p className="text-xs text-gray-500">
-            &copy; {new Date().getFullYear()} Tutaly. All rights reserved.
-          </p>
+        <div className="footer__bottom">
+          <p className="footer__copy">© {new Date().getFullYear()} Tutaly. All rights reserved. Started in Lagos, building for everywhere.</p>
+          <div className="footer__legal">
+            <Link href="/legal/privacy-policy">Privacy</Link>
+            <Link href="/legal/terms-of-service">Terms</Link>
+            <Link href="/legal/cookies">Cookies</Link>
+          </div>
         </div>
       </div>
     </footer>

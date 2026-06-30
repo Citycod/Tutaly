@@ -36,12 +36,13 @@ export default function EmployerOverviewPage() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Employer Dashboard</h1>
-          <p className="text-gray-500 mt-1">Manage your active job postings and candidate pipeline.</p>
+          <h1 style={{ fontSize: '32px', fontWeight: 800, color: 'var(--c-100)' }}>Employer Dashboard</h1>
+          <p style={{ color: 'var(--c-400)', marginTop: '8px' }}>Manage your active job postings and candidate pipeline.</p>
         </div>
         <Link
           href="/employer/jobs/create"
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 transition-all shrink-0"
+          className="btn btn--primary"
+          style={{ flexShrink: 0 }}
         >
           <Plus className="w-5 h-5" /> Post a New Job
         </Link>
@@ -49,51 +50,51 @@ export default function EmployerOverviewPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {/* Active Jobs Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-start gap-4">
-          <div className="bg-teal-50 p-3 rounded-lg text-teal-600 shrink-0">
+        <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+          <div style={{ background: 'rgba(29,122,58,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: '#2DB85A', flexShrink: 0 }}>
             <Briefcase className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Active Jobs</p>
-            <h3 className="text-2xl font-bold text-gray-900 mt-1">
+            <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-400)' }}>Active Jobs</p>
+            <h3 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--c-100)', marginTop: '4px' }}>
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.activeJobs}
             </h3>
           </div>
         </div>
 
         {/* Total Applicants Card */}
-        <Link href="/employer/jobs" className="block">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-start gap-4 hover:border-blue-200 hover:shadow-md transition-all cursor-pointer">
-            <div className="bg-blue-50 p-3 rounded-lg text-blue-600 shrink-0">
+        <Link href="/employer/jobs" className="block group">
+          <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px', transition: 'all 0.2s' }} className="hover:border-[var(--blue)]">
+            <div style={{ background: 'rgba(27,79,158,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--blue-l)', flexShrink: 0 }}>
               <Users className="w-6 h-6" />
             </div>
             <div>
-              <p className="text-sm font-medium text-gray-500">Total Applicants</p>
-              <h3 className="text-2xl font-bold text-gray-900 mt-1">
+              <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-400)' }}>Total Applicants</p>
+              <h3 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--c-100)', marginTop: '4px' }}>
                 {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.totalApplicants}
               </h3>
-              <p className="text-xs text-blue-600 mt-1">View all →</p>
+              <p style={{ fontSize: '12px', color: 'var(--blue-l)', marginTop: '4px' }}>View all &rarr;</p>
             </div>
           </div>
         </Link>
 
         {/* Pending Review Card */}
-        <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex items-start gap-4">
-          <div className="bg-yellow-50 p-3 rounded-lg text-yellow-600 shrink-0">
+        <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', alignItems: 'flex-start', gap: '16px' }}>
+          <div style={{ background: 'rgba(201,162,39,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--gold-h)', flexShrink: 0 }}>
             <Star className="w-6 h-6" />
           </div>
           <div>
-            <p className="text-sm font-medium text-gray-500">Pending Review</p>
-            <h3 className="text-2xl font-bold text-gray-900 mt-1">
+            <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--c-400)' }}>Pending Review</p>
+            <h3 style={{ fontSize: '28px', fontWeight: 800, color: 'var(--c-100)', marginTop: '4px' }}>
               {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.pendingJobs}
             </h3>
           </div>
         </div>
       </div>
 
-      <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-8 text-center text-gray-500 min-h-[300px] flex items-center justify-center flex-col">
-        <h3 className="text-lg font-medium text-gray-800 mb-2">Welcome to Tutaly Employer Workspace</h3>
-        <p className="max-w-md mx-auto">Click &quot;My Jobs&quot; on the left to review your current listings and evaluate candidates.</p>
+      <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '48px', textAlign: 'center', color: 'var(--c-400)', minHeight: '300px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center' }}>
+        <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--c-100)', marginBottom: '8px' }}>Welcome to Tutaly Employer Workspace</h3>
+        <p style={{ maxWidth: '400px', margin: '0 auto' }}>Click "My Jobs" on the left to review your current listings and evaluate candidates.</p>
       </div>
     </div>
   );
