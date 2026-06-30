@@ -145,12 +145,11 @@ export default function JobResultsWithDetail({
       )}
 
       {/* ─── Job List ─── */}
-      <div className="flex-1 min-w-0 space-y-3">
+      <div className="flex-1 min-w-0 flex flex-col gap-3">
         {jobs.length === 0 ? (
-          <div className="bg-white p-12 rounded-xl border border-gray-100 text-center">
-            <Briefcase className="w-10 h-10 mx-auto mb-3 text-gray-300" />
-            <h3 className="font-medium text-gray-900 mb-1">No jobs found</h3>
-            <p className="text-sm text-gray-500">
+          <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-600)', borderRadius: 'var(--r-lg)', padding: '48px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--c-100)', marginBottom: '8px' }}>No jobs found</h3>
+            <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>
               Try loosening your filters or searching with different keywords.
             </p>
           </div>
@@ -164,7 +163,6 @@ export default function JobResultsWithDetail({
                 key={job.id}
                 scroll={false}
                 onClick={(e) => {
-                  // On mobile, prevent navigation and handle inline
                   if (window.innerWidth < 1024) {
                     e.preventDefault();
                     handleJobClick(job);
@@ -173,56 +171,35 @@ export default function JobResultsWithDetail({
                 }}
               >
                 <div
-                  className={`bg-white p-4 sm:p-5 rounded-xl border transition cursor-pointer hover:shadow-md mb-3 ${
-                    isSelected
-                      ? 'border-teal-500 shadow-md ring-1 ring-teal-500'
-                      : 'border-gray-100'
-                  }`}
+                  className="floatcard"
+                  style={{
+                    borderColor: isSelected ? 'var(--blue-l)' : 'var(--c-600)',
+                    transform: isSelected ? 'translateX(-4px)' : 'none',
+                    animation: 'none'
+                  }}
                 >
-                  <div className="flex justify-between items-start">
-                    <div className="min-w-0">
-                      <h3 className="font-bold text-base sm:text-lg text-gray-900 truncate">
-                        {job.title}
-                      </h3>
-                      <p className="text-gray-500 text-sm mt-0.5">
-                        {job.employer?.email || 'Confidential Company'}
-                      </p>
-                    </div>
-                    <div className="flex gap-1.5 shrink-0 ml-2">
-                      {job.isFeatured && (
-                        <span className="bg-teal-50 text-teal-700 text-[10px] font-bold px-2 py-0.5 rounded">
-                          Featured
-                        </span>
-                      )}
-                      {job.isUrgent && (
-                        <span className="bg-red-50 text-red-700 text-[10px] font-bold px-2 py-0.5 rounded">
-                          Urgent
-                        </span>
-                      )}
-                    </div>
+                  <div className="floatcard__logo" style={{ background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' }}>
+                    {job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C'}
                   </div>
-                  <div className="mt-3 flex flex-wrap gap-2 sm:gap-3 text-sm text-gray-600">
-                    <div className="flex items-center gap-1">
-                      <MapPin className="w-3.5 h-3.5" />
-                      {job.area ? `${job.area}, ` : ''}
-                      {job.state || job.country}
+                  <div style={{ flex: 1, minWidth: 0 }}>
+                    <div className="floatcard__title truncate">{job.title}</div>
+                    <div className="floatcard__company truncate">
+                      {job.employer?.email || 'Confidential Company'}
                     </div>
-                    <div className="flex items-center gap-1">
-                      <Briefcase className="w-3.5 h-3.5" />
-                      {job.jobType}
-                    </div>
-                    {job.minSalary && (
-                      <div className="font-medium text-gray-800">
-                        {sym}
-                        {job.minSalary.toLocaleString()}
-                        {job.maxSalary
-                          ? ` - ${sym}${job.maxSalary.toLocaleString()}`
-                          : '+'}
-                      </div>
-                    )}
-                    <div className="flex items-center gap-1 text-gray-400 ml-auto">
-                      <Clock className="w-3 h-3" />
-                      {formatTimeAgo(job.createdAt)}
+                    <div className="floatcard__meta">
+                      {job.minSalary && (
+                        <span className="floatcard__salary">
+                          {sym}{job.minSalary.toLocaleString()}
+                          {job.maxSalary ? `–${sym}${job.maxSalary.toLocaleString()}` : '+'}
+                        </span>
+                      )}
+                      <span className="floatcard__tag">{job.workMode}</span>
+                      <span className="floatcard__tag">{job.jobType}</span>
+                      {job.isFeatured && <span className="floatcard__new" style={{ background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }}>Featured</span>}
+                      {job.isUrgent && <span className="floatcard__new" style={{ background: 'rgba(204,43,43,0.12)', color: 'var(--red)' }}>Urgent</span>}
+                      <span style={{ fontSize: '11px', color: 'var(--c-500)', marginLeft: 'auto' }}>
+                        {formatTimeAgo(job.createdAt)}
+                      </span>
                     </div>
                   </div>
                 </div>
@@ -235,20 +212,25 @@ export default function JobResultsWithDetail({
         {meta && meta.totalPages > 1 && (
           <div className="flex justify-center gap-2 pt-4">
             {Array.from({ length: Math.min(meta.totalPages, 5) }, (_, i) => i + 1).map(
-              (page) => (
-                <Link
-                  key={page}
-                  href={buildPageUrl(page)}
-                  className={`px-3 py-1.5 rounded-md text-sm font-medium transition ${
-                    String(meta.page) === String(page) ||
-                    (!initialSearchParams.page && page === 1)
-                      ? 'bg-teal-600 text-white'
-                      : 'bg-white text-gray-700 border border-gray-200 hover:bg-gray-50'
-                  }`}
-                >
-                  {page}
-                </Link>
-              )
+              (page) => {
+                const isActive = String(meta.page) === String(page) || (!initialSearchParams.page && page === 1);
+                return (
+                  <Link
+                    key={page}
+                    href={buildPageUrl(page)}
+                    className="btn"
+                    style={{
+                      padding: '8px 14px',
+                      background: isActive ? 'var(--blue)' : 'var(--c-800)',
+                      color: isActive ? '#fff' : 'var(--c-200)',
+                      border: isActive ? '1px solid var(--blue)' : '1px solid var(--c-600)',
+                      borderRadius: 'var(--r-md)'
+                    }}
+                  >
+                    {page}
+                  </Link>
+                );
+              }
             )}
           </div>
         )}

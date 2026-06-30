@@ -96,32 +96,33 @@ export default function JobFilterSidebar() {
     router.push('/jobs');
   };
 
-  const selectClass = "mt-1 block w-full rounded-lg border border-gray-200 bg-white px-3 py-2 text-sm text-gray-900 shadow-sm focus:border-teal-500 focus:ring-1 focus:ring-teal-500 outline-none transition";
-  const inputClass = selectClass;
-  const labelClass = "block text-xs font-semibold uppercase tracking-wide text-gray-500 mb-1";
+  const selectClass = "input";
+  const inputClass = "input";
+  const labelClass = "block text-[11px] font-bold uppercase tracking-widest text-[var(--c-400)] mb-1";
 
   return (
-    <aside className="w-full lg:w-72 xl:w-80 shrink-0">
-      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 sticky top-6">
+    <aside className="w-full lg:w-[280px] shrink-0">
+      <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px' }} className="sticky top-[100px]">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
-          <h2 className="text-base font-bold text-gray-900 flex items-center gap-2">
-            <SlidersHorizontal className="w-4 h-4 text-teal-600" /> Filters
+          <h2 style={{ fontSize: '15px', fontWeight: 700, color: 'var(--c-100)', display: 'flex', alignItems: 'center', gap: '8px' }}>
+            <SlidersHorizontal className="w-4 h-4 text-[var(--blue-l)]" /> Filters
           </h2>
           <button
             onClick={handleClear}
-            className="text-xs text-gray-400 hover:text-red-500 flex items-center gap-1 transition"
+            style={{ fontSize: '12px', color: 'var(--c-400)', display: 'flex', alignItems: 'center', gap: '4px' }}
+            className="hover:text-[var(--red)] transition"
           >
-            <X className="w-3 h-3" /> Clear All
+            <X className="w-3 h-3" /> Clear
           </button>
         </div>
 
-        <div className="space-y-5">
+        <div className="space-y-4">
           {/* 1. Keyword / Title */}
           <div>
             <label className={labelClass}>Keyword / Title</label>
             <div className="relative">
-              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[var(--c-400)]" />
               <input
                 type="text"
                 value={keyword}
@@ -132,9 +133,11 @@ export default function JobFilterSidebar() {
             </div>
           </div>
 
-          {/* Divider: Location */}
+          <hr style={{ borderColor: 'var(--c-700)', margin: '20px 0' }} />
+
+          {/* Location */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-teal-600 mb-3">Location</p>
+            <p className={labelClass} style={{ color: 'var(--blue-l)', marginBottom: '12px' }}>Location</p>
 
             {/* 2. Country */}
             <div className="mb-3">
@@ -180,7 +183,7 @@ export default function JobFilterSidebar() {
             </div>
           </div>
 
-          <hr className="border-gray-100" />
+          <hr style={{ borderColor: 'var(--c-700)', margin: '20px 0' }} />
 
           {/* 5. Work Mode */}
           <div>
@@ -229,11 +232,11 @@ export default function JobFilterSidebar() {
             </select>
           </div>
 
-          <hr className="border-gray-100" />
+          <hr style={{ borderColor: 'var(--c-700)', margin: '20px 0' }} />
 
           {/* 9. Salary Range */}
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-teal-600 mb-3">
+            <p className={labelClass} style={{ color: 'var(--blue-l)', marginBottom: '12px' }}>
               Salary Range ({country === 'Nigeria' ? '₦' : country === 'United States' ? '$' : country === 'United Kingdom' ? '£' : '€'})
             </p>
             <div className="grid grid-cols-2 gap-3">
@@ -275,18 +278,20 @@ export default function JobFilterSidebar() {
         </div>
 
         {/* Action Buttons */}
-        <div className="mt-6 flex gap-3">
+        <div className="mt-6 flex flex-col gap-3">
           <button
             onClick={handleApply}
-            className="flex-1 bg-teal-600 text-white text-sm font-bold py-2.5 px-4 rounded-lg hover:bg-teal-700 transition shadow-sm"
+            className="btn btn--primary"
+            style={{ width: '100%' }}
           >
             Apply Filters
           </button>
           <button
             onClick={handleClear}
-            className="px-4 py-2.5 text-sm font-medium text-gray-500 bg-gray-50 rounded-lg hover:bg-gray-100 border border-gray-200 transition"
+            className="btn btn--ghost"
+            style={{ width: '100%' }}
           >
-            Clear
+            Clear All
           </button>
         </div>
       </div>

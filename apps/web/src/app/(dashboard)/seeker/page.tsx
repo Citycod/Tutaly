@@ -50,12 +50,13 @@ export default function SeekerOverviewPage() {
     <div>
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-8 gap-4">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Your Dashboard</h1>
-          <p className="text-gray-500 mt-1">Welcome back, {loading ? '...' : (profile?.firstName ? `${profile.firstName} ${profile.lastName}` : userEmail)}</p>
+          <h1 style={{ fontSize: '32px', fontWeight: 800, color: 'var(--c-100)' }}>Your Dashboard</h1>
+          <p style={{ color: 'var(--c-400)', marginTop: '8px' }}>Welcome back, {loading ? '...' : (profile?.firstName ? `${profile.firstName} ${profile.lastName}` : userEmail)}</p>
         </div>
         <Link 
           href="/jobs" 
-          className="inline-flex items-center justify-center gap-2 rounded-xl bg-teal-600 px-6 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-teal-500 transition-all shrink-0"
+          className="btn btn--primary"
+          style={{ flexShrink: 0 }}
         >
           <Search className="w-5 h-5" /> Find Jobs
         </Link>
@@ -63,56 +64,56 @@ export default function SeekerOverviewPage() {
 
       <div className="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 mb-8">
         {/* Quick Action Cards */}
-        <Link href="/seeker/applications" className="group">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-full hover:border-teal-300 hover:shadow-md transition-all">
-            <div className="bg-teal-50 p-4 rounded-full text-teal-600 mb-4 group-hover:scale-110 transition-transform">
+        <Link href="/seeker/applications" className="group block">
+          <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', transition: 'all 0.2s' }} className="hover:border-[var(--blue)] hover:shadow-[0_4px_24px_rgba(27,79,158,0.2)]">
+            <div style={{ background: 'rgba(29,122,58,0.15)', padding: '16px', borderRadius: '50%', color: '#2DB85A', marginBottom: '16px', transition: 'transform 0.2s' }} className="group-hover:scale-110">
               <Briefcase className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900">My Applications</h3>
-            <p className="text-sm text-gray-500 mt-2">Track the status of roles you have applied for.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--c-100)' }}>My Applications</h3>
+            <p style={{ fontSize: '14px', color: 'var(--c-400)', marginTop: '8px' }}>Track the status of roles you have applied for.</p>
           </div>
         </Link>
         
-        <Link href="/seeker/saved" className="group">
-          <div className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 flex flex-col items-center justify-center text-center h-full hover:border-red-200 hover:shadow-md transition-all">
-            <div className="bg-red-50 p-4 rounded-full text-red-600 mb-4 group-hover:scale-110 transition-transform">
+        <Link href="/seeker/saved" className="group block">
+          <div style={{ background: 'var(--c-800)', borderRadius: 'var(--r-xl)', border: '1px solid var(--c-700)', padding: '24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', textAlign: 'center', height: '100%', transition: 'all 0.2s' }} className="hover:border-[var(--red)] hover:shadow-[0_4px_24px_rgba(204,43,43,0.15)]">
+            <div style={{ background: 'rgba(204,43,43,0.15)', padding: '16px', borderRadius: '50%', color: 'var(--red)', marginBottom: '16px', transition: 'transform 0.2s' }} className="group-hover:scale-110">
               <Heart className="w-8 h-8" />
             </div>
-            <h3 className="text-lg font-bold text-gray-900">Saved Jobs</h3>
-            <p className="text-sm text-gray-500 mt-2">View the opportunities you bookmarked for later.</p>
+            <h3 style={{ fontSize: '18px', fontWeight: 800, color: 'var(--c-100)' }}>Saved Jobs</h3>
+            <p style={{ fontSize: '14px', color: 'var(--c-400)', marginTop: '8px' }}>View the opportunities you bookmarked for later.</p>
           </div>
         </Link>
 
         {/* Profile Completion Card */}
-        <Link href="/seeker/profile" className="group sm:col-span-2 lg:col-span-1">
-          <div className="bg-gradient-to-br from-navy to-blue-900 rounded-xl shadow-lg border border-gray-800 p-6 flex flex-col h-full hover:shadow-xl transition-all relative overflow-hidden">
-            <div className="absolute top-0 right-0 -mt-4 -mr-4 w-24 h-24 bg-white opacity-5 rounded-full blur-xl"></div>
+        <Link href="/seeker/profile" className="group block sm:col-span-2 lg:col-span-1">
+          <div style={{ background: 'linear-gradient(135deg, rgba(27,79,158,0.1) 0%, rgba(27,79,158,0.05) 100%)', borderRadius: 'var(--r-xl)', border: '1px solid var(--blue)', padding: '24px', display: 'flex', flexDirection: 'column', height: '100%', position: 'relative', overflow: 'hidden' }}>
+            <div style={{ position: 'absolute', top: '-16px', right: '-16px', width: '96px', height: '96px', background: 'var(--blue)', opacity: 0.1, borderRadius: '50%', filter: 'blur(24px)' }}></div>
             
             <div className="flex justify-between items-start mb-4 relative z-10">
-              <div className="bg-white/10 p-3 rounded-xl text-white">
+              <div style={{ background: 'rgba(27,79,158,0.2)', padding: '12px', borderRadius: 'var(--r-md)', color: 'var(--blue-l)' }}>
                 <User className="w-6 h-6" />
               </div>
               <div className="text-right">
-                <span className="text-2xl font-bold text-white">{completionScore}%</span>
-                <p className="text-xs text-blue-200">Profile complete</p>
+                <span style={{ fontSize: '24px', fontWeight: 800, color: 'var(--c-100)' }}>{completionScore}%</span>
+                <p style={{ fontSize: '12px', color: 'var(--blue-l)' }}>Profile complete</p>
               </div>
             </div>
             
-            <div className="w-full bg-gray-700 rounded-full h-2 mb-4">
-              <div className="bg-teal-400 h-2 rounded-full transition-all duration-1000" style={{ width: `${completionScore}%` }}></div>
+            <div style={{ width: '100%', background: 'var(--c-800)', borderRadius: '999px', height: '8px', marginBottom: '16px' }}>
+              <div style={{ background: 'var(--blue)', height: '8px', borderRadius: '999px', width: `${completionScore}%`, transition: 'width 1s ease-in-out' }}></div>
             </div>
 
             <div className="mt-auto space-y-2 relative z-10">
               {completionScore < 100 ? (
                 <>
-                  {!profile?.headline && <p className="text-sm text-blue-200 flex items-center gap-2"><AlertCircle className="w-4 h-4 text-yellow-400" /> Add a headline</p>}
-                  {!profile?.resumeUrl && <p className="text-sm text-blue-200 flex items-center gap-2"><AlertCircle className="w-4 h-4 text-yellow-400" /> Upload your CV</p>}
-                  <p className="text-sm font-semibold text-white mt-2 flex items-center gap-1 group-hover:text-teal-300 transition-colors">Complete Profile →</p>
+                  {!profile?.headline && <p style={{ fontSize: '14px', color: 'var(--c-300)', display: 'flex', alignItems: 'center', gap: '8px' }}><AlertCircle className="w-4 h-4 text-[var(--gold-h)]" /> Add a headline</p>}
+                  {!profile?.resumeUrl && <p style={{ fontSize: '14px', color: 'var(--c-300)', display: 'flex', alignItems: 'center', gap: '8px' }}><AlertCircle className="w-4 h-4 text-[var(--gold-h)]" /> Upload your CV</p>}
+                  <p style={{ fontSize: '14px', fontWeight: 600, color: 'var(--blue-l)', marginTop: '8px', display: 'flex', alignItems: 'center', gap: '4px' }}>Complete Profile &rarr;</p>
                 </>
               ) : (
-                <div className="flex items-center gap-2 text-teal-300">
+                <div className="flex items-center gap-2" style={{ color: '#2DB85A' }}>
                   <CheckCircle2 className="w-5 h-5" />
-                  <span className="text-sm font-medium">Your profile is looking great!</span>
+                  <span style={{ fontSize: '14px', fontWeight: 600 }}>Your profile is looking great!</span>
                 </div>
               )}
             </div>

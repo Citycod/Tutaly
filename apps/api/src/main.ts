@@ -29,9 +29,15 @@ async function bootstrap() {
   app.use(cookieParser());
   app.use(helmet());
 
+  const defaultOrigins = [
+    'https://tutaly.com',
+    'https://www.tutaly.com',
+    process.env.WEB_URL || 'http://localhost:3001',
+  ];
+
   const rawOrigins = process.env.ALLOWED_ORIGINS
     ? process.env.ALLOWED_ORIGINS.split(',')
-    : [process.env.WEB_URL || 'http://localhost:3001'];
+    : defaultOrigins;
 
   const allowedOrigins = rawOrigins.map((o) => o.trim().replace(/\/$/, ''));
 

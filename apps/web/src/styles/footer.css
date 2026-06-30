@@ -1,0 +1,41 @@
+/* ═══════════════════════════════════════════════════════════════
+   FOOTER
+   Extracted from tutaly-landing (1).html
+   ═══════════════════════════════════════════════════════════════ */
+
+.footer {
+  padding: 64px 0 40px;
+  border-top: 1px solid var(--c-800);
+}
+.footer__grid {
+  display: grid;
+  grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: 48px;
+  margin-bottom: 48px;
+}
+@media (max-width: 768px) {
+  .footer__grid { grid-template-columns: 1fr 1fr; gap: 32px; }
+}
+.footer__brand-name {
+  margin-bottom: 14px;
+  display: flex; align-items: center;
+}
+.footer__brand-name img {
+  height: 26px;
+  width: auto;
+}
+.footer__brand-desc { font-size: 13px; color: var(--c-400); line-height: 1.65; max-width: 260px; margin-bottom: 20px; }
+.footer__col-title { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.1em; color: var(--c-400); margin-bottom: 16px; }
+.footer__links { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+.footer__links li a { font-size: 14px; color: var(--c-400); transition: color 150ms; }
+.footer__links li a:hover { color: var(--c-100); }
+.footer__bottom {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-top: 24px;
+  border-top: 1px solid var(--c-800);
+  flex-wrap: wrap; gap: 12px;
+}
+.footer__copy { font-size: 13px; color: var(--c-500); }
+.footer__legal { display: flex; gap: 20px; }
+.footer__legal a { font-size: 13px; color: var(--c-500); transition: color 150ms; }
+.footer__legal a:hover { color: var(--c-300); }

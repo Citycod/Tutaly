@@ -1,0 +1,133 @@
+/* ═══════════════════════════════════════════════════════════════
+   COMPONENTS
+   Extracted from tutaly-landing (1).html + 04-components.md
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ─── TAGS & BADGES ──────────────────────────────────────── */
+.tag {
+  display: inline-flex; align-items: center; gap: 6px;
+  padding: 4px 12px;
+  border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.07em; text-transform: uppercase;
+}
+.tag--blue  { background: rgba(27,79,158,0.18);  color: var(--blue-l); }
+.tag--green { background: rgba(29,122,58,0.18);  color: #2DB85A; }
+.tag--gold  { background: rgba(201,162,39,0.18); color: var(--gold-h); }
+
+.badge {
+  display: inline-flex; align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--r-pill);
+  font-size: 11px; font-weight: 600;
+  letter-spacing: 0.05em; text-transform: uppercase;
+}
+.badge--new { background: rgba(27,79,158,0.2); color: var(--blue-l); border: 1px solid rgba(27,79,158,0.35); }
+
+/* ─── BUTTONS ────────────────────────────────────────────── */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  padding: 12px 24px;
+  border-radius: var(--r-md);
+  font-size: 14px; font-weight: 600;
+  letter-spacing: 0.01em;
+  transition: background 150ms, box-shadow 150ms, transform 100ms;
+}
+.btn:active { transform: scale(0.98); }
+.btn:focus-visible { outline: 2px solid var(--blue-l); outline-offset: 3px; }
+.btn:disabled, .btn.disabled { opacity: 0.5; cursor: not-allowed; transform: none; box-shadow: none; }
+
+.btn--primary {
+  background: var(--blue);
+  color: #fff;
+}
+.btn--primary:hover:not(:disabled) { background: var(--blue-h); box-shadow: var(--glow-blue); }
+
+.btn--ghost {
+  background: transparent;
+  color: var(--c-200);
+  border: 1px solid var(--c-600);
+}
+.btn--ghost:hover:not(:disabled) { border-color: var(--c-400); background: rgba(255,255,255,0.04); }
+
+.btn--gold {
+  background: var(--gold);
+  color: var(--c-900);
+  font-weight: 700;
+}
+.btn--gold:hover:not(:disabled) { background: var(--gold-h); box-shadow: var(--glow-gold); }
+
+.btn--lg { padding: 14px 32px; font-size: 16px; }
+.btn--sm { padding: 8px 16px; font-size: 13px; }
+
+/* ─── SECTIONS ───────────────────────────────────────────── */
+.section {
+  padding: 120px 0;
+  position: relative;
+}
+.section--alt {
+  background: var(--c-800);
+  border-top: 1px solid var(--c-700);
+  border-bottom: 1px solid var(--c-700);
+}
+.section__label {
+  display: flex; align-items: center; gap: 10px;
+  font-size: 12px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em;
+  color: var(--blue-l);
+  margin-bottom: 20px;
+}
+.section__label::before {
+  content: ''; width: 24px; height: 2px; background: var(--blue-l);
+}
+.section__title {
+  font-size: clamp(32px, 4vw, 48px);
+  font-weight: 800; line-height: 1.1; letter-spacing: -0.02em;
+  color: var(--c-100);
+  margin-bottom: 20px;
+}
+.section__subtitle {
+  font-size: 18px; color: var(--c-300); line-height: 1.6;
+  max-width: 600px; margin-bottom: 48px;
+}
+
+/* ─── NAV ACTIVE STATE ───────────────────────────────────── */
+.nav__links a.active {
+  color: var(--c-100);
+  background: rgba(255,255,255,0.05);
+  position: relative;
+}
+.nav__links a.active::after {
+  content: '';
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 16px;
+  height: 2px;
+  background: var(--blue-l);
+  border-radius: var(--r-pill);
+}
+
+/* ─── FORMS ──────────────────────────────────────────────── */
+.input {
+  width: 100%;
+  background: var(--c-800);
+  border: 1px solid var(--c-600);
+  border-radius: var(--r-md);
+  padding: 12px 16px;
+  font-size: 14px; color: var(--c-100);
+  font-family: var(--font);
+  transition: border-color 150ms, box-shadow 150ms;
+}
+.input:focus {
+  outline: none;
+  border-color: var(--blue-l);
+  box-shadow: 0 0 0 3px rgba(58, 125, 224, 0.2);
+}
+.input:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+.input::placeholder {
+  color: var(--c-500);
+}
