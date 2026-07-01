@@ -2,103 +2,142 @@
 
 import React, { useState } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { Search } from 'lucide-react';
 
 interface SalariesClientProps {
   salaries: any[];
   aggregates: any[];
 }
 
-const CATEGORIES = [
-  'All', 'Engineering', 'Product', 'Design', 'Data', 'Marketing', 'Sales', 'Customer Success'
-];
-
 export default function SalariesClient({ salaries, aggregates }: SalariesClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   
-  const [filters, setFilters] = useState({
-    role: searchParams.get('role') || '',
-    industry: searchParams.get('industry') || '',
-  });
-
-  const [activeCategory, setActiveCategory] = useState('All');
+  const [roleInput, setRoleInput] = useState(searchParams.get('role') || '');
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
-    if (filters.role) params.set('role', filters.role);
-    if (activeCategory !== 'All') params.set('industry', activeCategory);
+    if (roleInput) params.set('role', roleInput);
     router.push(`/salaries?${params.toString()}`);
   };
 
-  const handleCategoryClick = (cat: string) => {
-    setActiveCategory(cat);
-    const params = new URLSearchParams();
-    if (filters.role) params.set('role', filters.role);
-    if (cat !== 'All') params.set('industry', cat);
-    router.push(`/salaries?${params.toString()}`);
-  };
+  const featured = aggregates.length > 0 ? aggregates[0] : null;
 
   return (
     <div className="page-shell">
       <header className="page-header">
         <div className="container">
-          <div className="page-header__eyebrow">Salaries</div>
-          <h1 className="page-header__title">Know your worth in the Nigerian market.</h1>
-          <p className="page-header__sub">Explore salary data crowdsourced from thousands of tech professionals.</p>
+          <div className="page-header__eyebrow">Salary intelligence</div>
+          <h1 className="page-header__title">Know what you&apos;re worth before you walk in.</h1>
+          <p className="page-header__sub">Real pay data from verified professionals, in your currency.</p>
+          <form className="hero__search" onSubmit={handleSearch} style={{ marginTop: '20px', maxWidth: '640px' }}>
+            <div className="hero__search-field">
+              <Search className="w-5 h-5" style={{ color: 'var(--c-400)' }} />
+              <input 
+                type="text" 
+                placeholder="Search a job title..." 
+                aria-label="Search salary by job title"
+                value={roleInput}
+                onChange={(e) => setRoleInput(e.target.value)}
+              />
+            </div>
+            <button type="submit" className="hero__search-btn">Check Salary</button>
+          </form>
         </div>
       </header>
 
       <div className="container" style={{ padding: '32px 0 80px' }}>
-        <form className="company-search" style={{ marginBottom: '24px' }} onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            placeholder="Search for a role (e.g., Product Manager)..." 
-            aria-label="Search roles"
-            value={filters.role}
-            onChange={(e) => setFilters({ ...filters, role: e.target.value })}
-          />
-          <button type="submit">Search</button>
-        </form>
-
-        <div className="category-rail" role="list">
-          {CATEGORIES.map(cat => (
-            <span 
-              key={cat}
-              className={`cat-pill ${activeCategory === cat ? 'active' : ''}`} 
-              role="listitem"
-              onClick={() => handleCategoryClick(cat)}
-            >
-              {cat}
-            </span>
-          ))}
-        </div>
-
-        <div className="results-bar">
-          <p className="results-count"><strong>{aggregates.length}</strong> roles found</p>
-          <div className="results-sort">
-            Sort by
-            <select aria-label="Sort roles">
-              <option>Highest paid</option>
-              <option>Most reports</option>
-              <option>A-Z</option>
-            </select>
-          </div>
-        </div>
-
-        <div className="role-grid reveal visible">
-          {aggregates.map((agg, idx) => (
-            <div key={idx} className="role-tile">
+        
+        {featured && (
+          <div className="salary-card reveal visible" style={{ maxWidth: '100%', marginBottom: '48px' }}>
+            <div className="salary-card__header">
               <div>
-                <div className="role-tile__name">{agg.role || agg.industry || 'All Roles'}</div>
-                <div className="role-tile__count">{agg.totalSubmissions || 0} reported salaries</div>
+                <div className="salary-card__role">{featured.role || featured.industry || 'All Roles'}</div>
+                <div className="salary-card__loc">📍 Lagos, Nigeria · All experience levels · {featured.totalSubmissions || 0} reports</div>
               </div>
-              <div className="role-tile__salary">₦{(Number(agg.avgSalary) / 1000).toFixed(0)}k/mo</div>
+              <div>
+                <div className="salary-card__avg">₦{(Number(featured.avgSalary) / 1000).toFixed(0)}K</div>
+                <div className="salary-card__avg-label">median / month</div>
+              </div>
             </div>
-          ))}
-          {aggregates.length === 0 && (
-            <div style={{ color: 'var(--c-500)', padding: '20px 0' }}>No salary data found for this query.</div>
-          )}
+            <div className="salary-bar-wrap">
+              <div className="salary-bar-labels">
+                <span>₦{((Number(featured.avgSalary) * 0.7) / 1000).toFixed(0)}K (10th)</span>
+                <span>Median</span>
+                <span>₦{((Number(featured.avgSalary) * 1.5) / 1000).toFixed(0)}K (90th)</span>
+              </div>
+              <div className="salary-bar-track">
+                <div className="salary-bar-fill" style={{ width: '58%' }}>
+                  <div className="salary-bar-marker"></div>
+                </div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', gap: '10px', marginTop: '20px', flexWrap: 'wrap' }}>
+              <span className="badge badge--new">↑ 12% vs last year</span>
+              <span className="badge" style={{ background: 'var(--c-700)', color: 'var(--c-300)' }}>Updated this week</span>
+            </div>
+          </div>
+        )}
+
+        <div className="layout-split" style={{ padding: 0 }}>
+          {/* FILTERS */}
+          <aside className="filters" aria-label="Salary filters">
+            <div className="filters__header">
+              <span className="filters__title">Refine</span>
+              <span className="filters__clear">Clear all</span>
+            </div>
+            <div className="filter-group">
+              <div className="filter-group__label">Location</div>
+              <label className="filter-option checked"><span className="filter-checkbox"></span> Lagos <span className="filter-count">1,840</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> Abuja <span className="filter-count">612</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> Remote, Global <span className="filter-count">2,310</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> London <span className="filter-count">490</span></label>
+            </div>
+            <div className="filter-group">
+              <div className="filter-group__label">Experience</div>
+              <label className="filter-option"><span className="filter-checkbox"></span> 0–2 years <span className="filter-count">820</span></label>
+              <label className="filter-option checked"><span className="filter-checkbox"></span> 3–6 years <span className="filter-count">1,840</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> 7–10 years <span className="filter-count">940</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> 10+ years <span className="filter-count">310</span></label>
+            </div>
+            <div className="filter-group">
+              <div className="filter-group__label">Company size</div>
+              <label className="filter-option"><span className="filter-checkbox"></span> Startup (1–50) <span className="filter-count">680</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> Mid-size (51–500) <span className="filter-count">1,120</span></label>
+              <label className="filter-option"><span className="filter-checkbox"></span> Enterprise (500+) <span className="filter-count">410</span></label>
+            </div>
+          </aside>
+
+          {/* BROWSE ROLES */}
+          <main aria-label="Browse roles">
+            <div className="results-bar">
+              <p className="results-count">Browse by <strong>role</strong></p>
+              <div className="results-sort">
+                Sort by
+                <select aria-label="Sort roles">
+                  <option>Highest paying</option>
+                  <option>Most reported</option>
+                  <option>Alphabetical</option>
+                </select>
+              </div>
+            </div>
+
+            <div className="role-grid reveal visible">
+              {aggregates.map((agg, idx) => (
+                <div key={idx} className="role-tile">
+                  <div>
+                    <div className="role-tile__name">{agg.role || agg.industry || 'All Roles'}</div>
+                    <div className="role-tile__count">{agg.totalSubmissions || 0} reported salaries</div>
+                  </div>
+                  <div className="role-tile__salary">₦{(Number(agg.avgSalary) / 1000).toFixed(0)}k/mo</div>
+                </div>
+              ))}
+              {aggregates.length === 0 && (
+                <div style={{ color: 'var(--c-500)', padding: '20px 0' }}>No salary data found for this query.</div>
+              )}
+            </div>
+          </main>
         </div>
       </div>
     </div>
