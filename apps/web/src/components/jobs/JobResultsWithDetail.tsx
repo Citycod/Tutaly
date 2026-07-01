@@ -3,7 +3,7 @@
 import React, { useState, useEffect, useMemo, useCallback } from 'react';
 import Link from 'next/link';
 import { useSearchParams } from 'next/navigation';
-import { Briefcase, MapPin, Clock, ArrowLeft } from 'lucide-react';
+import { ArrowLeft } from 'lucide-react';
 import JobDetailPanel from '@/components/jobs/JobDetailPanel';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
@@ -145,7 +145,20 @@ export default function JobResultsWithDetail({
       )}
 
       {/* ─── Job List ─── */}
-      <div className="flex-1 min-w-0 flex flex-col gap-3">
+      <main aria-label="Job results">
+        <div className="results-bar">
+          <p className="results-count"><strong>{meta?.total || 0}</strong> jobs found</p>
+          <div className="results-sort">
+            Sort by
+            <select aria-label="Sort jobs by" defaultValue="Most relevant">
+              <option>Most relevant</option>
+              <option>Newest first</option>
+              <option>Highest salary</option>
+            </select>
+          </div>
+        </div>
+
+        <div className="joblist">
         {jobs.length === 0 ? (
           <div className="bg-c800 border border-c600 rounded-lg p-12 text-center">
             <h3 className="text-lg font-semibold text-c100 mb-2">No jobs found</h3>
@@ -170,66 +183,99 @@ export default function JobResultsWithDetail({
                   }
                 }}
               >
-                <div
-                  className={`floatcard ${isSelected ? 'border-blueL -translate-x-1' : 'border-c600'} transition-transform duration-200`}
-                >
-                  <div className="floatcard__logo bg-blue/20 text-blueL">
+                <article className={`jobcard ${isSelected ? 'border-blueL -translate-x-1' : ''}`}>
+                  <div className="jobcard__logo bg-blue/20 text-blueL">
                     {job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C'}
                   </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="floatcard__title truncate">{job.title}</div>
-                    <div className="floatcard__company truncate">
-                      {job.employer?.email || 'Confidential Company'}
+                  <div className="jobcard__body">
+                    <div className="jobcard__top">
+                      <div>
+                        <div className="jobcard__title">{job.title}</div>
+                        <div className="jobcard__company">
+                          {job.employer?.email || 'Confidential Company'}
+                        </div>
+                      </div>
+                      <button className="jobcard__save" aria-label="Save job" onClick={(e) => e.preventDefault()}>
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
+                      </button>
                     </div>
-                    <div className="floatcard__meta">
-                      {job.minSalary && (
-                        <span className="floatcard__salary">
-                          {sym}{job.minSalary.toLocaleString()}
-                          {job.maxSalary ? `–${sym}${job.maxSalary.toLocaleString()}` : '+'}
-                        </span>
-                      )}
-                      <span className="floatcard__tag">{job.workMode}</span>
-                      <span className="floatcard__tag">{job.jobType}</span>
-                      {job.isFeatured && <span className="floatcard__new bg-gold/20 text-goldH">Featured</span>}
-                      {job.isUrgent && <span className="floatcard__new bg-red/10 text-red">Urgent</span>}
-                      <span className="text-xs text-c500 ml-auto">
-                        {formatTimeAgo(job.createdAt)}
-                      </span>
+                    
+                    <div className="jobcard__meta">
+                      <span>📍 {job.area ? `${job.area}, ` : ''}{job.state}, {job.country}</span>
+                      <span>🏢 {job.workMode}</span>
+                      <span>👤 {job.experienceLevel}</span>
+                    </div>
+
+                    {job.minSalary && (
+                      <div className="jobcard__salary">
+                        {sym}{job.minSalary.toLocaleString()}
+                        {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : '+'} / month
+                      </div>
+                    )}
+
+                    <div className="jobcard__tags">
+                      <span className="badge badge--new">{job.industry || 'Tech'}</span>
+                      <span className="badge badge--new">{job.jobType}</span>
+                      {job.isFeatured && <span className="tag tag--gold">Featured</span>}
+                      {job.isUrgent && <span className="tag tag--red">Urgent</span>}
+                    </div>
+                    
+                    <div className="jobcard__footer">
+                      <span className="jobcard__posted">Posted {formatTimeAgo(job.createdAt)}</span>
+                      <button className="btn btn--primary btn--sm" onClick={(e) => e.preventDefault()}>Apply Now</button>
                     </div>
                   </div>
-                </div>
+                </article>
               </Link>
             );
           })
         )}
+        </div>
 
         {/* Pagination */}
         {meta && meta.totalPages > 1 && (
-          <div className="flex justify-center gap-2 pt-4">
-            {Array.from({ length: Math.min(meta.totalPages, 5) }, (_, i) => i + 1).map(
-              (page) => {
-                const isActive = String(meta.page) === String(page) || (!initialSearchParams.page && page === 1);
-                return (
-                  <Link
-                    key={page}
-                    href={buildPageUrl(page)}
-                    className={`btn px-3.5 py-2 rounded-md ${isActive ? 'bg-blue text-white border-blue' : 'bg-c800 text-c200 border-c600'}`}
-                  >
-                    {page}
-                  </Link>
-                );
-              }
+          <nav className="pagination" aria-label="Job results pages">
+            <Link 
+              href={buildPageUrl(meta.page - 1)} 
+              className={`page-btn ${meta.page <= 1 ? 'pointer-events-none opacity-40' : ''}`} 
+              aria-label="Previous page"
+              aria-disabled={meta.page <= 1}
+            >
+              ‹
+            </Link>
+            {Array.from({ length: Math.min(meta.totalPages, 5) }, (_, i) => {
+              const pageNum = Math.max(1, meta.page - 2) + i;
+              if (pageNum > meta.totalPages) return null;
+              
+              const isActive = String(meta.page) === String(pageNum) || (!initialSearchParams.page && pageNum === 1);
+              return (
+                <Link
+                  key={pageNum}
+                  href={buildPageUrl(pageNum)}
+                  className={`page-btn ${isActive ? 'active' : ''}`}
+                  aria-current={isActive ? 'page' : undefined}
+                >
+                  {pageNum}
+                </Link>
+              );
+            })}
+            {meta.totalPages > 5 && meta.page < meta.totalPages - 2 && (
+              <>
+                <span style={{ color: 'var(--c-500)', padding: '0 4px' }}>…</span>
+                <Link href={buildPageUrl(meta.totalPages)} className="page-btn">{meta.totalPages}</Link>
+              </>
             )}
-          </div>
+            <Link 
+              href={buildPageUrl(meta.page + 1)} 
+              className={`page-btn ${meta.page >= meta.totalPages ? 'pointer-events-none opacity-40' : ''}`} 
+              aria-label="Next page"
+              aria-disabled={meta.page >= meta.totalPages}
+            >
+              ›
+            </Link>
+          </nav>
         )}
-      </div>
-
-      {/* ─── Desktop: Detail Panel (side) ─── */}
-      <div className="hidden lg:block lg:w-96 xl:w-layout-md shrink-0">
-        <div className="sticky top-8">
-          <JobDetailPanel job={selectedJob} />
-        </div>
-      </div>
+      </main>
     </>
   );
 }
