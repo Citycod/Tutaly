@@ -87,13 +87,14 @@ export default async function JobsPage(props: {
   });
 
   return (
-    <div className="section pt-32 pb-16">
+    <div className="page-shell">
       <div className="container">
 
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="section__title text-3xl mb-2">Find Your Next Role</h1>
-          <p className="section__subtitle m-0 text-base">
+        <div className="page-header mb-8">
+          <div className="page-header__eyebrow">Job Search</div>
+          <h1 className="page-header__title">Find Your Next Role</h1>
+          <p className="page-header__sub m-0">
             Showing {meta?.total || 0} active job{meta?.total !== 1 ? 's' : ''}
             {searchParams.keyword ? ` for "${searchParams.keyword}"` : ''}
           </p>
@@ -101,7 +102,7 @@ export default async function JobsPage(props: {
 
         <FeaturedJobsCarousel />
 
-        <div className="flex flex-col gap-8 lg:flex-row">
+        <div className="layout-split">
           <Suspense fallback={<div className="w-72 h-32 bg-c800 rounded-lg animate-pulse hidden lg:block" />}>
             <JobFilterSidebar />
           </Suspense>

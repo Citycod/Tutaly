@@ -101,16 +101,15 @@ export default function JobFilterSidebar() {
   const labelClass = "label mb-1";
 
   return (
-    <aside className="w-full lg:w-72 shrink-0">
-      <div className="sidebar sticky top-24">
+    <aside className="filters">
         {/* Header */}
-        <div className="sidebar__header flex items-center justify-between">
-          <h2 className="flex items-center gap-2">
+        <div className="filters__header">
+          <h2 className="filters__title flex items-center gap-2">
             <SlidersHorizontal className="w-4 h-4 text-blueL" /> Filters
           </h2>
           <button
             onClick={handleClear}
-            className="text-xs text-c400 flex items-center gap-1 hover:text-red transition"
+            className="filters__clear flex items-center gap-1 hover:text-red transition"
           >
             <X className="w-3 h-3" /> Clear
           </button>
@@ -291,7 +290,6 @@ export default function JobFilterSidebar() {
             Clear All
           </button>
         </div>
-      </div>
-    </aside>
+      </aside>
   );
 }
