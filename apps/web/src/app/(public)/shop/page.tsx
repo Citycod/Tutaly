@@ -3,15 +3,11 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import {
-  Search, ShoppingBag, Filter, Package, Cpu, Wrench,
-  Star, ArrowRight, Loader2, ChevronDown,
-} from 'lucide-react';
 
-const LISTING_TYPE_MAP: Record<string, { label: string; icon: any; color: string }> = {
-  digital: { label: 'Digital', icon: Cpu, color: 'bg-purple-100 text-purple-700' },
-  physical: { label: 'Physical', icon: Package, color: 'bg-blueL text-blueH' },
-  service: { label: 'Service', icon: Wrench, color: 'bg-gold text-goldH' },
+const LISTING_TYPE_MAP: Record<string, { label: string; icon: string; color: string; tagClass: string }> = {
+  digital: { label: 'Digital', icon: '📄', color: 'rgba(27,79,158,0.15)', tagClass: 'tag--blue' },
+  physical: { label: 'Physical', icon: '📦', color: 'rgba(29,122,58,0.15)', tagClass: 'tag--green' },
+  service: { label: 'Service', icon: '💼', color: 'rgba(201,162,39,0.12)', tagClass: 'tag--gold' },
 };
 
 export default function ShopPage() {
@@ -21,7 +17,6 @@ export default function ShopPage() {
   const [total, setTotal] = useState(0);
   const [search, setSearch] = useState('');
   const [listingType, setListingType] = useState('');
-  const [searchInput, setSearchInput] = useState('');
 
   useEffect(() => {
     fetchProducts();
@@ -46,12 +41,6 @@ export default function ShopPage() {
     }
   };
 
-  const handleSearch = (e: React.FormEvent) => {
-    e.preventDefault();
-    setPage(1);
-    setSearch(searchInput);
-  };
-
   const formatPrice = (price: number, currency?: string) => {
     const cur = currency || 'NGN';
     const locales: Record<string, string> = { NGN: 'en-NG', USD: 'en-US', EUR: 'de-DE' };
@@ -59,149 +48,108 @@ export default function ShopPage() {
   };
 
   return (
-    <div className="min-h-screen bg-c100 pt-20 pb-16">
-      {/* Hero */}
-      <section className="bg-blue shadow-glow-blue py-16 px-4 relative overflow-hidden">
-        <div className="absolute inset-0 opacity-10">
-          <div className="absolute top-10 left-10 w-72 h-72 bg-green rounded-full blur-3xl"></div>
-          <div className="absolute bottom-10 right-20 w-96 h-96 bg-purple-400 rounded-full blur-3xl"></div>
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="container">
+          <div className="page-header__eyebrow">Marketplace</div>
+          <h1 className="page-header__title">Career resources built for you.</h1>
+          <p className="page-header__sub">Resume templates, courses, salary reports, and guides — from people who've done it.</p>
         </div>
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <div className="inline-flex items-center gap-2 bg-white/10 text-green px-4 py-1.5 rounded-full text-sm font-medium mb-6 backdrop-blur-sm">
-            <ShoppingBag className="w-4 h-4" /> Work-Focused Marketplace
-          </div>
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4 tracking-tight">
-            Tutaly Shop
-          </h1>
-          <p className="text-xl text-c300 mb-10 max-w-2xl mx-auto">
-            Templates, tools, digital products, and professional services built by Nigerian professionals, for Nigerian professionals.
-          </p>
+      </header>
 
-          <form onSubmit={handleSearch} className="max-w-2xl mx-auto flex gap-2">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-c400 w-5 h-5" />
-              <input
-                type="text"
-                value={searchInput}
-                onChange={(e) => setSearchInput(e.target.value)}
-                placeholder="Search templates, tools, services..."
-                className="w-full pl-12 pr-4 py-4 rounded-xl border-0 focus:ring-2 focus:ring-green shadow-lg text-c900 text-lg"
-              />
-            </div>
-            <button type="submit" className="bg-green hover:bg-green text-white px-8 py-4 rounded-xl font-semibold shadow-lg transition-colors shrink-0">
-              Search
-            </button>
-          </form>
-        </div>
-      </section>
-
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
-        {/* Filters */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
-          <div className="flex gap-2">
-            <button
-              onClick={() => { setListingType(''); setPage(1); }}
-              className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${!listingType ? 'bg-c900 text-white' : 'bg-white border border-c200 text-c600 hover:bg-c100'}`}
+      <div className="container" style={{ padding: '28px 0 80px' }}>
+        <div className="category-rail" role="list" aria-label="Marketplace categories">
+          <span 
+            className={`cat-pill ${!listingType ? 'active' : ''}`} 
+            role="listitem"
+            onClick={() => { setListingType(''); setPage(1); }}
+          >
+            All
+          </span>
+          {Object.entries(LISTING_TYPE_MAP).map(([key, { label }]) => (
+            <span 
+              key={key}
+              className={`cat-pill ${listingType === key ? 'active' : ''}`} 
+              role="listitem"
+              onClick={() => { setListingType(key); setPage(1); }}
             >
-              All Types
-            </button>
-            {Object.entries(LISTING_TYPE_MAP).map(([key, { label, icon: Icon, color }]) => (
-              <button
-                key={key}
-                onClick={() => { setListingType(key); setPage(1); }}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors flex items-center gap-2 ${listingType === key ? 'bg-c900 text-white' : 'bg-white border border-c200 text-c600 hover:bg-c100'}`}
-              >
-                <Icon className="w-4 h-4" /> {label}
-              </button>
-            ))}
-          </div>
-          <p className="text-sm text-c500">{total} products found</p>
+              {label}
+            </span>
+          ))}
         </div>
 
-        {/* Product Grid */}
+        <div className="results-bar">
+          <p className="results-count"><strong>{total}</strong> resources</p>
+          <div className="results-sort">
+            Sort by
+            <select aria-label="Sort marketplace items">
+              <option>Bestselling</option>
+              <option>Highest rated</option>
+              <option>Newest</option>
+              <option>Price: low to high</option>
+            </select>
+          </div>
+        </div>
+
         {loading ? (
-          <div className="flex justify-center py-20">
-            <Loader2 className="w-10 h-10 animate-spin text-green" />
-          </div>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--c-400)' }}>Loading resources...</div>
         ) : products.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-c100">
-            <ShoppingBag className="w-12 h-12 text-c300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-c900 mb-2">No products found</h3>
-            <p className="text-c500">Try adjusting your filters or search query.</p>
-          </div>
+          <div style={{ textAlign: 'center', padding: '40px 0', color: 'var(--c-400)' }}>No resources found.</div>
         ) : (
-          <>
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-              {products.map((product: any) => {
-                const typeInfo = LISTING_TYPE_MAP[product.listingType] || LISTING_TYPE_MAP.digital;
-                const TypeIcon = typeInfo.icon;
-                return (
-                  <Link key={product.id} href={`/shop/${product.id}`} className="group block">
-                    <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden hover:shadow-xl hover:border-green transition-all duration-300 transform group-hover:-translate-y-1">
-                      {/* Image placeholder */}
-                      <div className="aspect-video bg-c800 border border-c700 flex items-center justify-center relative overflow-hidden">
-                        {product.imageUrls && product.imageUrls[0] ? (
-                          <img src={product.imageUrls[0]} alt={product.title} className="w-full h-full object-cover" />
+          <div className="market-grid reveal visible">
+            {products.map((product: any) => {
+              const typeInfo = LISTING_TYPE_MAP[product.listingType] || LISTING_TYPE_MAP.digital;
+              return (
+                <Link key={product.id} href={`/shop/${product.id}`} className="market-card" style={{ display: 'block' }}>
+                  <article>
+                    <div className="market-card__thumb" style={{ background: typeInfo.color }}>
+                      {typeInfo.icon}
+                      {product.isBestseller && (
+                        <span className={`market-card__badge ${typeInfo.tagClass}`}>Bestseller</span>
+                      )}
+                    </div>
+                    <div className="market-card__body">
+                      <div className="market-card__title">{product.title}</div>
+                      <div className="market-card__seller">by {product.seller?.name || 'Tutaly Creator'}</div>
+                      <div className="market-card__footer">
+                        {product.pricingType === 'per_unit' ? (
+                          <span className="market-card__price">{formatPrice(product.price, product.currency)}</span>
                         ) : (
-                          <TypeIcon className="w-12 h-12 text-c300 group-hover:scale-110 transition-transform" />
+                          <span className="market-card__price" style={{ fontSize: '13px', color: 'var(--gold)' }}>Custom Quote</span>
                         )}
-                        <span className={`absolute top-3 left-3 ${typeInfo.color} px-2.5 py-1 rounded-lg text-xs font-bold flex items-center gap-1`}>
-                          <TypeIcon className="w-3 h-3" /> {typeInfo.label}
-                        </span>
-                      </div>
-
-                      <div className="p-5">
-                        <h3 className="font-bold text-c900 mb-1 line-clamp-2 group-hover:text-green transition-colors">
-                          {product.title}
-                        </h3>
-                        <p className="text-sm text-c500 line-clamp-2 mb-4">{product.description}</p>
-
-                        <div className="flex items-center justify-between pt-3 border-t border-c100">
-                          {product.pricingType === 'per_unit' ? (
-                            <span className="text-lg font-black text-green">
-                              {formatPrice(product.price, product.currency)}
-                            </span>
-                          ) : (
-                            <span className="text-sm font-semibold text-gold bg-gold px-2 py-1 rounded-md">
-                              Request Quote
-                            </span>
-                          )}
-                          <span className="text-green text-sm font-medium flex items-center gap-1 group-hover:translate-x-1 transition-transform">
-                            View <ArrowRight className="w-4 h-4" />
-                          </span>
-                        </div>
+                        <span className="market-card__rating">★ {product.rating || '4.9'} ({product.reviewCount || '0'})</span>
                       </div>
                     </div>
-                  </Link>
-                );
-              })}
-            </div>
-
-            {/* Pagination */}
-            {total > 12 && (
-              <div className="flex justify-center gap-2 mt-10">
-                <button
-                  disabled={page === 1}
-                  onClick={() => setPage(p => p - 1)}
-                  className="px-4 py-2 rounded-lg border border-c200 text-sm font-medium disabled:opacity-40 hover:bg-c100"
-                >
-                  Previous
-                </button>
-                <span className="px-4 py-2 text-sm text-c500">
-                  Page {page} of {Math.ceil(total / 12)}
-                </span>
-                <button
-                  disabled={page >= Math.ceil(total / 12)}
-                  onClick={() => setPage(p => p + 1)}
-                  className="px-4 py-2 rounded-lg border border-c200 text-sm font-medium disabled:opacity-40 hover:bg-c100"
-                >
-                  Next
-                </button>
-              </div>
-            )}
-          </>
+                  </article>
+                </Link>
+              );
+            })}
+          </div>
         )}
-      </section>
+
+        {total > 12 && (
+          <nav className="pagination" aria-label="Marketplace results pages">
+            <button 
+              className="page-btn" 
+              disabled={page === 1}
+              onClick={() => setPage(p => p - 1)}
+              aria-label="Previous page"
+            >
+              ‹
+            </button>
+            <button className="page-btn active" aria-current="page">{page}</button>
+            <span style={{ color: 'var(--c-500)', padding: '0 4px' }}>of {Math.ceil(total / 12)}</span>
+            <button 
+              className="page-btn" 
+              disabled={page >= Math.ceil(total / 12)}
+              onClick={() => setPage(p => p + 1)}
+              aria-label="Next page"
+            >
+              ›
+            </button>
+          </nav>
+        )}
+      </div>
     </div>
   );
 }
