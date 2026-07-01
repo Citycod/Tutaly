@@ -778,3 +778,22 @@
   }
   .suggest-follow:hover { background: rgba(27,79,158,0.12); }
 
+  /* ─── ROLE BROWSE GRID (Salaries) ────────────────────────── */
+  .role-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+    gap: 12px;
+  }
+  .role-tile {
+    background: var(--c-800);
+    border: 1px solid var(--c-700);
+    border-radius: var(--r-lg);
+    padding: 18px 20px;
+    display: flex; align-items: center; justify-content: space-between;
+    transition: border-color 200ms;
+    cursor: pointer;
+  }
+  .role-tile:hover { border-color: var(--blue); }
+  .role-tile__name { font-size: 14px; font-weight: 600; color: var(--c-100); margin-bottom: 3px; }
+  .role-tile__count { font-size: 11px; color: var(--c-500); }
+  .role-tile__salary { font-family: var(--mono); font-size: 14px; font-weight: 600; color: #2DB85A; text-align: right; }
