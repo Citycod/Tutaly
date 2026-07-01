@@ -45,8 +45,6 @@ export default async function SalariesPage(props: {
   }
 
   return (
-    <div className="min-h-screen bg-c100 pt-20 pb-16">
-      <SalariesClient salaries={salaries} aggregates={aggregates} />
-    </div>
+    <SalariesClient salaries={salaries} aggregates={aggregates} />
   );
 }
