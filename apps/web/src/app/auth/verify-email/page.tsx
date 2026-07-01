@@ -3,7 +3,6 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
 import { CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { api } from '@/lib/api';
 
@@ -23,13 +22,9 @@ function VerifyEmailContent() {
         setStatus('success');
         setMessage(res.data.message || 'Your email has been successfully verified!');
       } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = e as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const err = e as any;
-setStatus('error');
-        
-        setMessage(error.response?.data?.message || 'Verification link is invalid or has expired.');
+        const err = e as any;
+        setStatus('error');
+        setMessage(err.response?.data?.message || 'Verification link is invalid or has expired.');
       }
     };
 
@@ -37,63 +32,57 @@ setStatus('error');
   }, [token]);
 
   return (
-    <div className="bg-white/10 backdrop-blur-lg py-12 px-8 shadow-2xl sm:rounded-2xl border border-white/10 text-center max-w-md w-full mx-auto">
-      {status === 'loading' && (
-        <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} className="flex flex-col items-center">
-          <Loader2 className="h-12 w-12 text-green animate-spin mb-4" />
-          <h2 className="text-xl font-bold text-white mb-2">Verifying your email</h2>
-          <p className="text-c400">Please wait while we confirm your account...</p>
-        </motion.div>
-      )}
-
-      {status === 'success' && (
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green/20 mb-6">
-            <CheckCircle2 className="h-10 w-10 text-green" />
+    <div className="auth-centered-shell">
+      <Link href="/" className="auth-centered-logo">
+        <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
+      </Link>
+      
+      <div className="auth-centered-wrap text-center">
+        {status === 'loading' && (
+          <div>
+            <Loader2 className="w-10 h-10 animate-spin mx-auto text-green" style={{ marginBottom: '24px' }} />
+            <h1 className="auth-heading">Verifying your email</h1>
+            <p className="auth-subheading">Please wait while we confirm your account...</p>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Email Verified!</h2>
-          <p className="text-c400 mb-2">{message}</p>
-          <p className="text-sm text-green/80 mb-8 font-medium">
-            Next: Sign in to receive your secure login code.
-          </p>
-          <Link
-            href="/auth/signin"
-            className="w-full inline-flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-white bg-green hover:from-green  transition-all shadow-lg shadow-sm"
-          >
-            Go to Sign In
-          </Link>
-        </motion.div>
-      )}
+        )}
 
-      {status === 'error' && (
-        <motion.div initial={{ scale: 0.9, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}>
-          <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-red/20 mb-6">
-            <XCircle className="h-10 w-10 text-red" />
+        {status === 'success' && (
+          <div>
+            <div className="auth-success-icon mx-auto">
+              <CheckCircle2 style={{ width: '28px', height: '28px', color: 'var(--green)' }} />
+            </div>
+            <h1 className="auth-heading">Email Verified!</h1>
+            <p className="auth-subheading" style={{ marginBottom: '8px' }}>{message}</p>
+            <p style={{ fontSize: '13px', color: 'var(--green)', fontWeight: 600, marginBottom: '24px' }}>
+              Next: Sign in to receive your secure login code.
+            </p>
+            <Link href="/auth/signin" className="btn btn--primary btn--full">Go to Sign in</Link>
           </div>
-          <h2 className="text-2xl font-bold text-white mb-2">Verification Failed</h2>
-          <p className="text-c400 mb-8">{message}</p>
-          <Link
-            href="/auth/signup"
-            className="w-full inline-flex justify-center py-3 px-4 rounded-xl text-sm font-bold text-white bg-green focus:outline-none"
-          >
-            Create New Account
-          </Link>
-        </motion.div>
-      )}
+        )}
+
+        {status === 'error' && (
+          <div>
+            <div className="auth-success-icon mx-auto bg-red/10 border border-red/20">
+              <XCircle style={{ width: '28px', height: '28px', color: 'var(--red)' }} />
+            </div>
+            <h1 className="auth-heading">Verification Failed</h1>
+            <p className="auth-subheading" style={{ marginBottom: '24px' }}>{message}</p>
+            <Link href="/auth/signup" className="btn btn--primary btn--full">Create New Account</Link>
+          </div>
+        )}
+      </div>
     </div>
   );
 }
 
 export default function VerifyEmail() {
   return (
-    <div className="min-h-screen bg-c900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <Suspense fallback={
-        <div className="flex justify-center items-center">
-           <Loader2 className="h-12 w-12 text-green animate-spin" />
-        </div>
-      }>
-        <VerifyEmailContent />
-      </Suspense>
-    </div>
+    <Suspense fallback={
+      <div className="auth-centered-shell">
+        <Loader2 className="w-10 h-10 animate-spin mx-auto text-green" />
+      </div>
+    }>
+      <VerifyEmailContent />
+    </Suspense>
   );
 }

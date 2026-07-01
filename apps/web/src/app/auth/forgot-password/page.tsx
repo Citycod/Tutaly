@@ -2,8 +2,7 @@
 
 import { useState } from 'react';
 import Link from 'next/link';
-import { motion } from 'framer-motion';
-import { Mail, ArrowLeft, Loader2, CheckCircle2 } from 'lucide-react';
+import { Mail, Loader2, CheckCircle2 } from 'lucide-react';
 import { api } from '@/lib/api';
 
 export default function ForgotPassword() {
@@ -19,106 +18,85 @@ export default function ForgotPassword() {
 
     try {
       await api.post('/auth/forgot-password', { email });
-      // Always show success regardless of whether email exists to prevent enumeration
       setIsSuccess(true);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = e as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = e as any;
-setError(error.response?.data?.message || 'Something went wrong.');
+      setError(err.response?.data?.message || 'Something went wrong.');
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div className="min-h-screen bg-c900 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
-      <div className="sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="text-center"
-        >
-          <h2 className="text-3xl font-extrabold text-white">Reset Password</h2>
-          <p className="mt-2 text-sm text-c400">
-            Enter your email to receive a password reset link.
-          </p>
-        </motion.div>
-      </div>
+    <div className="auth-centered-shell">
+      <Link href="/" className="auth-centered-logo">
+        <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
+      </Link>
 
-      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          animate={{ opacity: 1, scale: 1 }}
-          className="bg-white/10 backdrop-blur-lg py-8 px-4 shadow-2xl sm:rounded-2xl sm:px-10 border border-white/10"
-        >
-          {isSuccess ? (
-            <div className="text-center py-4">
-              <div className="mx-auto flex items-center justify-center h-16 w-16 rounded-full bg-green/20 mb-6">
-                <CheckCircle2 className="h-10 w-10 text-green" />
-              </div>
-              <h3 className="text-xl font-bold text-white mb-2">Check your inbox</h3>
-              <p className="text-c400 mb-8">
-                If an account exists for {email}, you will receive a password reset link shortly.
-              </p>
-              <Link
-                href="/auth/signin"
-                className="text-sm font-medium text-green hover:text-green transition-colors"
-              >
-                Return to Sign In
-              </Link>
+      <div className="auth-centered-wrap">
+        {!isSuccess && (
+          <Link href="/auth/signin" className="auth-back">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            Back to sign in
+          </Link>
+        )}
+
+        {isSuccess ? (
+          <div className="text-center">
+            <div className="auth-success-icon mx-auto">
+              <CheckCircle2 style={{ width: '28px', height: '28px', color: 'var(--green)' }} />
             </div>
-          ) : (
-            <form className="space-y-6" onSubmit={handleSubmit}>
+            <h1 className="auth-heading">Check your inbox</h1>
+            <p className="auth-subheading" style={{ marginBottom: '24px' }}>
+              If an account exists for {email}, you will receive a password reset link shortly.
+            </p>
+            <Link href="/auth/signin" className="btn btn--primary btn--full">
+              Return to Sign In
+            </Link>
+          </div>
+        ) : (
+          <>
+            <h1 className="auth-heading">Reset your password</h1>
+            <p className="auth-subheading">Enter the email address linked to your account and we'll send you a link to reset your password.</p>
+
+            <form onSubmit={handleSubmit}>
               {error && (
-                <div className="bg-red/10 border border-red/50 text-red p-3 rounded-lg text-sm text-center">
+                <div className="field-error" style={{ marginBottom: '16px' }}>
                   {error}
                 </div>
               )}
 
-              <div>
-                <label className="block text-sm font-medium text-c300">
-                  Email address
-                </label>
-                <div className="mt-1 relative rounded-md shadow-sm">
-                  <div className="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                    <Mail className="h-5 w-5 text-c400" />
-                  </div>
-                  <input
-                    type="email"
-                    required
+              <div className="form-field">
+                <label className="form-label" htmlFor="reset-email">Email address <span className="required">*</span></label>
+                <div className="input-wrap input-wrap--icon">
+                  <span className="input-icon">
+                    <Mail style={{ width: '16px', height: '16px' }} />
+                  </span>
+                  <input 
+                    className="input" 
+                    type="email" 
+                    id="reset-email" 
+                    placeholder="you@example.com" 
+                    required 
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
-                    className="block w-full pl-10 pr-3 py-3 border border-white/10 rounded-xl leading-5 bg-white/5 text-c100 placeholder-gray-500 focus:outline-none focus:ring-2 focus:ring-green focus:border-green sm:text-sm transition-all"
-                    placeholder="you@example.com"
                   />
                 </div>
               </div>
 
-              <div>
-                <button
-                  type="submit"
-                  disabled={isLoading || !email}
-                  className="w-full flex justify-center py-3 px-4 border border-transparent rounded-xl shadow-lg text-sm font-bold text-white bg-green hover:from-green  focus:outline-none transition-all disabled:opacity-70"
-                >
-                  {isLoading ? (
-                    <Loader2 className="animate-spin h-5 w-5" />
-                  ) : (
-                    'Send Reset Link'
-                  )}
-                </button>
-              </div>
-
-              <div className="mt-6 text-center">
-                <Link href="/auth/signin" className="inline-flex items-center text-sm font-medium text-c400 hover:text-white transition-colors">
-                  <ArrowLeft className="mr-2 h-4 w-4" />
-                  Back to sign in
-                </Link>
-              </div>
+              <button 
+                type="submit" 
+                disabled={isLoading || !email}
+                className="btn btn--primary btn--lg btn--full flex justify-center items-center gap-2"
+              >
+                {isLoading && <Loader2 className="w-4 h-4 animate-spin" />}
+                {isLoading ? 'Sending...' : 'Send reset link'}
+              </button>
             </form>
-          )}
-        </motion.div>
+
+            <p className="auth-footer-note">Remembered your password? <Link href="/auth/signin" style={{ fontWeight: 600 }}>Sign in</Link></p>
+          </>
+        )}
       </div>
     </div>
   );

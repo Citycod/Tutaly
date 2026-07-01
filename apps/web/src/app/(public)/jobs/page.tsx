@@ -87,21 +87,37 @@ export default async function JobsPage(props: {
   });
 
   return (
-    <div className="section pt-32 pb-16">
-      <div className="container">
-
-        {/* Header */}
-        <div className="mb-8">
-          <h1 className="section__title text-3xl mb-2">Find Your Next Role</h1>
-          <p className="section__subtitle m-0 text-base">
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="container">
+          <div className="page-header__eyebrow">Job board</div>
+          <h1 className="page-header__title">Find Your Next Role</h1>
+          <p className="page-header__sub">
             Showing {meta?.total || 0} active job{meta?.total !== 1 ? 's' : ''}
             {searchParams.keyword ? ` for "${searchParams.keyword}"` : ''}
           </p>
+          
+          <div className="hero__search" role="search" aria-label="Job search" style={{ marginTop: '20px', maxWidth: '100%' }}>
+            <div className="hero__search-field">
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+              <input type="text" placeholder="Job title, skills, or company..." aria-label="Search jobs" defaultValue={searchParams.keyword as string || ''} />
+            </div>
+            <div className="hero__search-loc" aria-label={`Location: ${searchParams.location || 'All locations'}`}>
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+              {searchParams.location || 'All locations'}
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
+            </div>
+            <button className="hero__search-btn">Search</button>
+          </div>
+        </div>
+      </header>
+
+      <div className="container">
+        <div style={{ marginTop: '32px' }}>
+          <FeaturedJobsCarousel />
         </div>
 
-        <FeaturedJobsCarousel />
-
-        <div className="flex flex-col gap-8 lg:flex-row">
+        <div className="layout-split">
           <Suspense fallback={<div className="w-72 h-32 bg-c800 rounded-lg animate-pulse hidden lg:block" />}>
             <JobFilterSidebar />
           </Suspense>

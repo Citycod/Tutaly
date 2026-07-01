@@ -1,24 +1,16 @@
 'use client';
 
 import React, { useState } from 'react';
-import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { Search, DollarSign, TrendingUp, ShieldCheck, MapPin, Briefcase } from 'lucide-react';
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  Tooltip,
-  ResponsiveContainer,
-  Legend,
-} from 'recharts';
 
 interface SalariesClientProps {
   salaries: any[];
   aggregates: any[];
 }
+
+const CATEGORIES = [
+  'All', 'Engineering', 'Product', 'Design', 'Data', 'Marketing', 'Sales', 'Customer Success'
+];
 
 export default function SalariesClient({ salaries, aggregates }: SalariesClientProps) {
   const router = useRouter();
@@ -29,196 +21,86 @@ export default function SalariesClient({ salaries, aggregates }: SalariesClientP
     industry: searchParams.get('industry') || '',
   });
 
-  const handleFilterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilters({ ...filters, [e.target.name]: e.target.value });
-  };
+  const [activeCategory, setActiveCategory] = useState('All');
 
-  const applyFilters = () => {
+  const handleSearch = (e: React.FormEvent) => {
+    e.preventDefault();
     const params = new URLSearchParams();
     if (filters.role) params.set('role', filters.role);
-    if (filters.industry) params.set('industry', filters.industry);
+    if (activeCategory !== 'All') params.set('industry', activeCategory);
     router.push(`/salaries?${params.toString()}`);
   };
 
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'Enter') applyFilters();
+  const handleCategoryClick = (cat: string) => {
+    setActiveCategory(cat);
+    const params = new URLSearchParams();
+    if (filters.role) params.set('role', filters.role);
+    if (cat !== 'All') params.set('industry', cat);
+    router.push(`/salaries?${params.toString()}`);
   };
 
-  // Prepare chart data from aggregates
-  const chartData = aggregates.map(agg => ({
-    name: agg.role || agg.industry || 'Average',
-    Avg: Number(agg.avgSalary),
-    Min: Number(agg.minSalary),
-    Max: Number(agg.maxSalary),
-  }));
-
   return (
-    <>
-      <section className="bg-navy py-16 px-4 sm:px-6 lg:px-8 relative overflow-hidden">
-        <div className="max-w-5xl mx-auto text-center relative z-10">
-          <h1 className="text-4xl font-bold text-white mb-4">Salary Intelligence</h1>
-          <p className="text-xl text-c300 mb-8 max-w-2xl mx-auto">
-            Discover real, anonymous compensation data across Nigerian industries. Know your worth.
-          </p>
-          
-          <div className="flex flex-col sm:flex-row justify-center items-center gap-4 max-w-3xl mx-auto">
-            <div className="flex w-full gap-2 bg-white rounded-xl p-2 shadow-lg">
-              <div className="relative flex-1">
-                <Briefcase className="absolute left-3 top-1/2 -translate-y-1/2 text-c400 w-5 h-5" />
-                <input 
-                  type="text" 
-                  name="role"
-                  value={filters.role}
-                  onChange={handleFilterChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Role (e.g. Frontend Engineer)" 
-                  className="w-full pl-10 pr-3 py-2 border-0 focus:ring-0 text-c900 bg-transparent outline-none"
-                />
-              </div>
-              <div className="w-px bg-c200 my-2"></div>
-              <div className="relative flex-1">
-                <MapPin className="absolute left-3 top-1/2 -translate-y-1/2 text-c400 w-5 h-5" />
-                <input 
-                  type="text" 
-                  name="industry"
-                  value={filters.industry}
-                  onChange={handleFilterChange}
-                  onKeyDown={handleKeyDown}
-                  placeholder="Industry (e.g. Fintech)" 
-                  className="w-full pl-10 pr-3 py-2 border-0 focus:ring-0 text-c900 bg-transparent outline-none"
-                />
-              </div>
-              <button 
-                onClick={applyFilters}
-                className="bg-navy text-white px-4 rounded-lg hover:bg-opacity-90"
-              >
-                <Search className="w-5 h-5" />
-              </button>
-            </div>
-            <button 
-              onClick={() => alert('Submit modal coming soon!')}
-              className="w-full sm:w-auto shrink-0 bg-green hover:bg-green text-white px-6 py-3.5 rounded-xl font-semibold shadow-lg transition-colors flex items-center justify-center gap-2"
+    <div className="page-shell">
+      <header className="page-header">
+        <div className="container">
+          <div className="page-header__eyebrow">Salaries</div>
+          <h1 className="page-header__title">Know your worth in the Nigerian market.</h1>
+          <p className="page-header__sub">Explore salary data crowdsourced from thousands of tech professionals.</p>
+        </div>
+      </header>
+
+      <div className="container" style={{ padding: '32px 0 80px' }}>
+        <form className="company-search" style={{ marginBottom: '24px' }} onSubmit={handleSearch}>
+          <input 
+            type="text" 
+            placeholder="Search for a role (e.g., Product Manager)..." 
+            aria-label="Search roles"
+            value={filters.role}
+            onChange={(e) => setFilters({ ...filters, role: e.target.value })}
+          />
+          <button type="submit">Search</button>
+        </form>
+
+        <div className="category-rail" role="list">
+          {CATEGORIES.map(cat => (
+            <span 
+              key={cat}
+              className={`cat-pill ${activeCategory === cat ? 'active' : ''}`} 
+              role="listitem"
+              onClick={() => handleCategoryClick(cat)}
             >
-              <DollarSign className="w-5 h-5" /> Share Salary
-            </button>
+              {cat}
+            </span>
+          ))}
+        </div>
+
+        <div className="results-bar">
+          <p className="results-count"><strong>{aggregates.length}</strong> roles found</p>
+          <div className="results-sort">
+            Sort by
+            <select aria-label="Sort roles">
+              <option>Highest paid</option>
+              <option>Most reports</option>
+              <option>A-Z</option>
+            </select>
           </div>
         </div>
-      </section>
 
-      <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
-        <div className="space-y-10">
-          
-          {/* Summary Cards */}
-          {aggregates.length > 0 && (
-            <div>
-              <h2 className="text-2xl font-bold text-c900 mb-6">Market Overview</h2>
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
-                {aggregates.slice(0, 3).map((agg, idx) => (
-                  <div key={idx} className="bg-white rounded-2xl shadow-sm border border-c100 p-6">
-                    <div className="flex items-center gap-3 mb-4">
-                      <div className="bg-green p-3 rounded-lg text-green">
-                        <TrendingUp className="w-6 h-6" />
-                      </div>
-                      <div>
-                        <p className="text-sm font-medium text-c500 uppercase tracking-wider">{agg.salaryPeriod} Avg</p>
-                        <h3 className="text-2xl font-bold text-c900">{agg.currency || 'NGN'} {Number(agg.avgSalary).toLocaleString()}</h3>
-                      </div>
-                    </div>
-                    <div className="flex justify-between text-sm text-c500 border-t pt-4">
-                      <span>Min: {Number(agg.minSalary).toLocaleString()}</span>
-                      <span>Max: {Number(agg.maxSalary).toLocaleString()}</span>
-                    </div>
-                    <p className="text-xs text-center text-c400 mt-3 pt-3 border-t">Based on {agg.totalSubmissions} submissions</p>
-                  </div>
-                ))}
+        <div className="role-grid reveal visible">
+          {aggregates.map((agg, idx) => (
+            <div key={idx} className="role-tile">
+              <div>
+                <div className="role-tile__name">{agg.role || agg.industry || 'All Roles'}</div>
+                <div className="role-tile__count">{agg.totalSubmissions || 0} reported salaries</div>
               </div>
-
-              {/* Chart */}
-              <div className="bg-white p-6 rounded-2xl shadow-sm border border-c100 h-96">
-                <ResponsiveContainer width="100%" height="100%">
-                  <BarChart data={chartData}>
-                    <CartesianGrid strokeDasharray="3 3" vertical={false} />
-                    <XAxis dataKey="name" />
-                    <YAxis tickFormatter={(val) => `₦${(val/1000)}k`} />
-                    <Tooltip cursor={{fill: 'transparent'}} formatter={(val: any) => `₦${Number(val).toLocaleString()}`} />
-                    <Legend />
-                    <Bar dataKey="Avg" fill="#0d9488" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Min" fill="#94a3b8" radius={[4, 4, 0, 0]} />
-                    <Bar dataKey="Max" fill="#0f172a" radius={[4, 4, 0, 0]} />
-                  </BarChart>
-                </ResponsiveContainer>
-              </div>
+              <div className="role-tile__salary">₦{(Number(agg.avgSalary) / 1000).toFixed(0)}k/mo</div>
             </div>
+          ))}
+          {aggregates.length === 0 && (
+            <div style={{ color: 'var(--c-500)', padding: '20px 0' }}>No salary data found for this query.</div>
           )}
-
-          {/* Data Table */}
-          <div>
-            <div className="flex items-center justify-between mb-6 mt-10">
-              <h2 className="text-2xl font-bold text-c900">Recent Submissions</h2>
-              <div className="flex items-center gap-2 text-sm text-c500 bg-c100 px-3 py-1.5 rounded-full">
-                <ShieldCheck className="w-4 h-4 text-green" /> 100% Anonymous
-              </div>
-            </div>
-            
-            <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
-              <div className="overflow-x-auto">
-                <table className="w-full text-left border-collapse">
-                  <thead>
-                    <tr className="bg-c100 text-c600 text-sm font-semibold uppercase tracking-wider">
-                      <th className="p-4 border-b">Role & Industry</th>
-                      <th className="p-4 border-b">Company</th>
-                      <th className="p-4 border-b">Salary</th>
-                      <th className="p-4 border-b hidden sm:table-cell">Location</th>
-                      <th className="p-4 border-b text-right">Year</th>
-                    </tr>
-                  </thead>
-                  <tbody className="divide-y divide-c100">
-                    {salaries.length === 0 ? (
-                      <tr>
-                        <td colSpan={5} className="p-10 text-center text-c500">
-                          <p className="mb-4 text-lg">No salary data matches your search.</p>
-                          <button 
-                            onClick={() => alert('Submit modal coming soon!')}
-                            className="bg-green hover:bg-green text-white px-4 py-2 rounded-lg"
-                          >
-                            Be the first to share
-                          </button>
-                        </td>
-                      </tr>
-                    ) : (
-                      salaries.map((salary) => (
-                        <tr key={salary.id} className="hover:bg-c100 transition-colors">
-                          <td className="p-4">
-                            <p className="font-semibold text-c900">{salary.role}</p>
-                            <p className="text-xs text-c500">{salary.industry}</p>
-                          </td>
-                          <td className="p-4">
-                            <span className="inline-flex items-center rounded-md bg-c100 px-2 py-1 text-xs font-medium text-c600">
-                              {salary.company || 'Hidden'}
-                            </span>
-                          </td>
-                          <td className="p-4">
-                            <p className="font-bold text-green">
-                              {salary.currency} {Number(salary.salaryAmount).toLocaleString()}
-                            </p>
-                            <p className="text-xs text-c500 capitalize">per {salary.salaryPeriod}</p>
-                          </td>
-                          <td className="p-4 hidden sm:table-cell text-sm text-c600">
-                            {salary.location || '-'}
-                          </td>
-                          <td className="p-4 text-right text-sm text-c500">
-                            {salary.submissionYear}
-                          </td>
-                        </tr>
-                      ))
-                    )}
-                  </tbody>
-                </table>
-              </div>
-            </div>
-          </div>
         </div>
-      </section>
-    </>
+      </div>
+    </div>
   );
 }
