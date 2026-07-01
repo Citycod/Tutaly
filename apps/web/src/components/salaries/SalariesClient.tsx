@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
+import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
 
@@ -136,6 +137,12 @@ export default function SalariesClient({ salaries, aggregates }: SalariesClientP
               {aggregates.length === 0 && (
                 <div style={{ color: 'var(--c-500)', padding: '20px 0' }}>No salary data found for this query.</div>
               )}
+            </div>
+
+            <div style={{ marginTop: '40px', padding: '28px', background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', textAlign: 'center' }}>
+              <p style={{ fontSize: '15px', fontWeight: 600, color: 'var(--c-100)', marginBottom: '6px' }}>Don&apos;t see your role?</p>
+              <p style={{ fontSize: '13px', color: 'var(--c-400)', marginBottom: '18px' }}>Add your salary anonymously and help the next person negotiate better.</p>
+              <Link href="/salaries/submit" className="btn btn--primary">Add Your Salary</Link>
             </div>
           </main>
         </div>
