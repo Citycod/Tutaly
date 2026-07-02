@@ -460,6 +460,9 @@
   display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px;
   margin-bottom: 18px;
 }
+@media (max-width: 640px) {
+  .dashboard-stats { grid-template-columns: 1fr; }
+}
 .db-stat {
   background: var(--c-700);
   border-radius: var(--r-md);

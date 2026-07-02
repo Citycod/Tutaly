@@ -18,6 +18,8 @@ import {
   MessageSquare,
   Bell,
   HelpCircle,
+  Menu,
+  X,
 } from 'lucide-react';
 import Image from 'next/image';
 
@@ -28,6 +30,7 @@ export default function DashboardLayout({
 }) {
   const pathname = usePathname();
   const router = useRouter();
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = React.useState(false);
   
   if (pathname === '/dashboard') {
     return <main>{children}</main>;
@@ -113,6 +116,7 @@ export default function DashboardLayout({
         <Link
           key={item.href}
           href={item.href}
+          onClick={() => setIsMobileMenuOpen(false)}
           className={`dash-nav-item ${isActive ? 'active' : ''}`}
         >
           <item.icon className="w-4 h-4" />
@@ -190,7 +194,14 @@ export default function DashboardLayout({
             <div className="dash-topbar__title">{title}</div>
             <div className="dash-topbar__crumb">Dashboard / {title}</div>
           </div>
-          <div className="dash-topbar__actions">
+          <div className="dash-topbar__actions flex items-center gap-2">
+            <button 
+              className="dash-icon-btn md:hidden" 
+              onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)} 
+              aria-label="Menu"
+            >
+              {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
+            </button>
             <button className="dash-icon-btn" aria-label="Notifications">
               <Bell className="w-4 h-4" />
               <span className="dash-icon-btn__dot"></span>
@@ -200,6 +211,29 @@ export default function DashboardLayout({
             </button>
           </div>
         </div>
+        
+        {isMobileMenuOpen && (
+          <div className="md:hidden bg-c800 border-b border-c700 p-4 flex flex-col gap-2 absolute w-full z-50 shadow-lg left-0 overflow-y-auto" style={{ top: '60px', maxHeight: '80vh' }}>
+            {isSeeker ? (
+              seekerLinks.map((group, idx) => (
+                <div key={idx} className="mb-4">
+                  {group.label && <div className="text-xs font-bold text-c500 uppercase tracking-wider mb-2 px-3">{group.label}</div>}
+                  {renderNavItems(group.items)}
+                </div>
+              ))
+            ) : (
+              <div className="mb-4">
+                {renderNavItems(isEmployer ? employerLinks : isSeller ? sellerLinks : isAdmin ? adminLinks : [])}
+              </div>
+            )}
+            <div className="mt-4 pt-4 border-t border-c700">
+              <button onClick={handleLogout} className="dash-nav-item w-full flex items-center text-red">
+                <LogOut className="w-4 h-4" />
+                Sign out
+              </button>
+            </div>
+          </div>
+        )}
 
         <div className="dash-content">
           {children}
