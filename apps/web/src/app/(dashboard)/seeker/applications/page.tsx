@@ -92,7 +92,7 @@ export default function SeekerApplicationsPage() {
       </div>
 
       {error && (
-        <div style={{ padding: '16px', background: 'rgba(204,43,43,0.12)', color: '#F05050', borderRadius: 'var(--r-lg)', marginBottom: '24px' }}>
+        <div style={{ padding: '16px', background: 'var(--red-l)', color: 'var(--red)', borderRadius: 'var(--r-lg)', marginBottom: '24px' }}>
           {error}
         </div>
       )}

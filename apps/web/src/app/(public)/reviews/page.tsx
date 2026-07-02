@@ -36,9 +36,9 @@ export default async function ReviewsPage(props: {
   }
 
   const COLORS = [
-    { background: 'rgba(29,122,58,0.2)', color: '#2DB85A' },
-    { background: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' },
-    { background: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }
+    { background: 'var(--green-l, rgba(29,122,58,0.2))', color: 'var(--green, #2DB85A)' },
+    { background: 'var(--blue-l, rgba(27,79,158,0.2))', color: 'var(--blue-h, #1B4F9E)' },
+    { background: 'var(--gold-l, rgba(201,162,39,0.2))', color: 'var(--gold-h, #C9A227)' }
   ];
 
   const totalPages = Math.ceil(meta.total / meta.limit);

@@ -161,9 +161,9 @@ export default function SeekerProfilePage() {
           display: 'flex', 
           alignItems: 'center', 
           gap: '12px',
-          background: message.type === 'success' ? 'rgba(29,122,58,0.12)' : 'rgba(204,43,43,0.12)',
-          color: message.type === 'success' ? '#2DB85A' : '#F05050',
-          border: `1px solid ${message.type === 'success' ? 'rgba(29,122,58,0.35)' : 'rgba(204,43,43,0.35)'}`
+          background: message.type === 'success' ? 'var(--green-l)' : 'var(--red-l)',
+          color: message.type === 'success' ? 'var(--green)' : 'var(--red)',
+          border: `1px solid ${message.type === 'success' ? 'var(--green-l)' : 'var(--red-l)'}`
         }}>
           {message.type === 'success' && <CheckCircle2 className="w-5 h-5" />}
           {message.text}
@@ -185,7 +185,7 @@ export default function SeekerProfilePage() {
               onDragOver={handleDragOver}
               onDragLeave={handleDragLeave}
               onDrop={handleDrop}
-              style={{ display: 'block', borderColor: isDragging ? 'var(--blue)' : 'var(--c-600)', background: isDragging ? 'rgba(27,79,158,0.04)' : 'transparent' }}
+              style={{ display: 'block', borderColor: isDragging ? 'var(--blue)' : 'var(--c-600)', background: isDragging ? 'var(--blue-l)' : 'transparent' }}
             >
               <div className="dropzone__icon"><UploadCloud className="w-8 h-8 mx-auto" /></div>
               <div className="dropzone__title">{isDragging ? 'Drop PDF here' : 'Click to upload or drag and drop'}</div>

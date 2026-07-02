@@ -26,8 +26,8 @@ export default function JobFilterSidebar({ filterMeta }: { filterMeta?: FilterMe
   const [datePosted, setDatePosted] = useState(searchParams.get('datePosted') || '');
 
   // Cascading location data
-  const locations = filterMeta?.locations || {};
-  const industriesList = filterMeta?.industries || [];
+  const locations = useMemo(() => filterMeta?.locations || {}, [filterMeta?.locations]);
+  const industriesList = useMemo(() => filterMeta?.industries || [], [filterMeta?.industries]);
   const countries = useMemo(() => Object.keys(locations), [locations]);
   const states = useMemo(() => {
     if (country && locations[country]) return Object.keys(locations[country]);

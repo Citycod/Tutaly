@@ -122,14 +122,14 @@ export default function BuyerOrdersPage() {
                 margin: 0,
                 padding: '24px'
               }}>
-                <div className="order-row__thumb" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>
+                <div className="order-row__thumb" style={{ background: 'var(--green-l)', color: 'var(--green)' }}>
                   📦
                 </div>
                 <div className="order-row__body">
                   <div className="order-row__title">{order.product?.title || 'Product'}</div>
                   <div className="order-row__meta">
                     {order.paymentRef} · {new Date(order.createdAt).toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' })}
-                    <span style={{ marginLeft: '8px', padding: '2px 6px', borderRadius: 'var(--r-sm)', fontSize: '10px', fontWeight: 600, background: 'rgba(255,255,255,0.05)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
+                    <span style={{ marginLeft: '8px', padding: '2px 6px', borderRadius: 'var(--r-sm)', fontSize: '10px', fontWeight: 600, background: 'var(--c-700)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}>
                       <statusInfo.icon className="w-3 h-3" /> {statusInfo.label}
                     </span>
                   </div>
@@ -140,7 +140,7 @@ export default function BuyerOrdersPage() {
                     <button
                       onClick={() => handleDownload(order.id)}
                       disabled={downloading === order.id}
-                      className="btn btn--sm" style={{ background: 'rgba(27,79,158,0.18)', color: 'var(--blue-l)', border: 'none' }}
+                      className="btn btn--sm" style={{ background: 'var(--blue-l)', color: 'var(--blue-h)', border: 'none' }}
                     >
                       {downloading === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : <Download className="w-4 h-4" />} Download
                     </button>

@@ -99,7 +99,7 @@ export default function SellerShopPage() {
   if (sellerStatus === 'pending') {
     return (
       <div className="dash-empty" style={{ marginTop: '40px' }}>
-        <div className="dash-empty__icon" style={{ background: 'rgba(201,162,39,0.15)', color: 'var(--gold)' }}><Clock size={28} /></div>
+        <div className="dash-empty__icon" style={{ background: 'var(--gold-l)', color: 'var(--gold)' }}><Clock size={28} /></div>
         <div className="dash-empty__title">Application Under Review</div>
         <div className="dash-empty__desc">
           Your seller application is being reviewed by the Tutaly team. You'll be notified once a decision is made.
@@ -136,7 +136,7 @@ export default function SellerShopPage() {
         </div>
         <div className="stat-card">
           <div className="stat-card__label">Total Earnings</div>
-          <div className="stat-card__value" style={{ color: '#2DB85A' }}>{formatPrice(totalRevenue)}</div>
+          <div className="stat-card__value" style={{ color: 'var(--green)' }}>{formatPrice(totalRevenue)}</div>
         </div>
       </div>
 
@@ -162,7 +162,7 @@ export default function SellerShopPage() {
                 const statusInfo = STATUS_MAP[order.status] || STATUS_MAP.pending_payment;
                 return (
                   <div key={order.id} className="order-row">
-                    <div className="order-row__thumb" style={{ background: 'rgba(27,79,158,0.15)' }}>📄</div>
+                    <div className="order-row__thumb" style={{ background: 'var(--blue-l)' }}>📄</div>
                     <div className="order-row__body">
                       <div className="order-row__title">{order.product?.title || 'Unknown Product'}</div>
                       <div className="order-row__meta">
@@ -181,7 +181,7 @@ export default function SellerShopPage() {
                         onClick={() => handleMarkDelivered(order.id)}
                         disabled={deliveringId === order.id}
                         className="btn btn--sm"
-                        style={{ marginLeft: '12px', background: 'rgba(29,122,58,0.15)', color: '#2DB85A', borderColor: 'transparent' }}
+                        style={{ marginLeft: '12px', background: 'var(--green-l)', color: 'var(--green)', borderColor: 'transparent' }}
                       >
                         {deliveringId === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Mark Delivered'}
                       </button>
@@ -210,7 +210,7 @@ export default function SellerShopPage() {
             <div>
               {products.map((product: any) => (
                 <div key={product.id} className="listing-row">
-                  <div className="listing-row__thumb" style={{ background: 'rgba(201,162,39,0.12)' }}>🎓</div>
+                  <div className="listing-row__thumb" style={{ background: 'var(--gold-l)' }}>🎓</div>
                   <div className="listing-row__body">
                     <div className="listing-row__title">{product.title}</div>
                     <div className="listing-row__meta">

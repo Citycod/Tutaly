@@ -16,7 +16,7 @@ export default function SeekerOverviewPage() {
       <Link href="/advertise" className="ad-banner" aria-label="Run an ad — promote your profile or listings to employers and buyers">
         <div className="ad-banner__left">
           <div className="ad-banner__icon">
-            <Megaphone className="w-[18px] h-[18px]" />
+            <Megaphone className="w-4.5 h-4.5" />
           </div>
           <div>
             <div className="ad-banner__title">Get seen by more employers</div>
@@ -29,7 +29,7 @@ export default function SeekerOverviewPage() {
         </div>
       </Link>
 
-      <div className="dcard" style={{ background: 'linear-gradient(135deg, rgba(27,79,158,0.14), rgba(201,162,39,0.06))', borderColor: 'var(--c-700)', marginBottom: '16px' }}>
+      <div className="dcard" style={{ background: 'linear-gradient(135deg, var(--blue-l), var(--gold-l))', borderColor: 'var(--c-700)', marginBottom: '16px' }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '4px' }}>Welcome back 👋</div>
@@ -73,7 +73,7 @@ export default function SeekerOverviewPage() {
             </div>
 
             <div className="app-row">
-              <div className="app-row__logo" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>P</div>
+              <div className="app-row__logo" style={{ background: 'var(--green-l)', color: 'var(--green)' }}>P</div>
               <div className="app-row__body">
                 <div className="app-row__title">Senior Product Manager</div>
                 <div className="app-row__meta">Paystack · Lagos, Nigeria</div>
@@ -81,7 +81,7 @@ export default function SeekerOverviewPage() {
               <div className="app-row__status"><span className="status--offer" style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>Offer</span></div>
             </div>
             <div className="app-row">
-              <div className="app-row__logo" style={{ background: 'rgba(27,79,158,0.18)', color: 'var(--blue-l)' }}>F</div>
+              <div className="app-row__logo" style={{ background: 'var(--blue-l)', color: 'var(--blue-h)' }}>F</div>
               <div className="app-row__body">
                 <div className="app-row__title">Backend Engineer (Node.js)</div>
                 <div className="app-row__meta">Flutterwave · Lagos, Nigeria</div>
@@ -89,7 +89,7 @@ export default function SeekerOverviewPage() {
               <div className="app-row__status"><span className="status--interview" style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>Interview</span></div>
             </div>
             <div className="app-row" style={{ marginBottom: 0 }}>
-              <div className="app-row__logo" style={{ background: 'rgba(201,162,39,0.18)', color: 'var(--gold-h)' }}>A</div>
+              <div className="app-row__logo" style={{ background: 'var(--gold-l)', color: 'var(--gold-h)' }}>A</div>
               <div className="app-row__body">
                 <div className="app-row__title">Data Scientist</div>
                 <div className="app-row__meta">Andela · Remote, Global</div>
@@ -108,7 +108,7 @@ export default function SeekerOverviewPage() {
             </div>
             <div className="joblist">
               <article className="jobcard" style={{ padding: '16px' }}>
-                <div className="jobcard__logo" style={{ width: '40px', height: '40px', fontSize: '15px', background: 'rgba(204,43,43,0.14)', color: '#F05050' }}>N</div>
+                <div className="jobcard__logo" style={{ width: '40px', height: '40px', fontSize: '15px', background: 'var(--red-l)', color: 'var(--red)' }}>N</div>
                 <div className="jobcard__body">
                   <div className="jobcard__top">
                     <div>
@@ -134,15 +134,15 @@ export default function SeekerOverviewPage() {
           <div className="dcard">
             <div className="dcard__title" style={{ marginBottom: '14px' }}>Profile strength</div>
             <div className="salary-bar-track" style={{ marginBottom: '8px' }}>
-              <div className="salary-bar-fill" style={{ width: '82%', background: 'linear-gradient(90deg, rgba(201,162,39,0.5), var(--gold))' }}></div>
+              <div className="salary-bar-fill" style={{ width: '82%', background: 'linear-gradient(90deg, var(--gold-l), var(--gold))' }}></div>
             </div>
             <p style={{ fontSize: '12px', color: 'var(--c-500)', marginBottom: '16px' }}>Add your work experience to reach 100%.</p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderTop: '1px solid var(--c-700)' }}>
-              <Check className="w-3.5 h-3.5" stroke="#2DB85A" strokeWidth={3} />
+              <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} />
               <span style={{ fontSize: '12.5px', color: 'var(--c-300)' }}>Resume uploaded</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0' }}>
-              <Check className="w-3.5 h-3.5" stroke="#2DB85A" strokeWidth={3} />
+              <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} />
               <span style={{ fontSize: '12.5px', color: 'var(--c-300)' }}>Skills added</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0' }}>
@@ -154,7 +154,7 @@ export default function SeekerOverviewPage() {
 
           <div className="dcard">
             <div className="dcard__title" style={{ marginBottom: '14px' }}>Your salary insight</div>
-            <div style={{ fontFamily: 'var(--mono)', fontSize: '26px', fontWeight: 600, color: '#2DB85A', marginBottom: '2px' }}>₦820K</div>
+            <div style={{ fontFamily: 'var(--mono)', fontSize: '26px', fontWeight: 600, color: 'var(--green)', marginBottom: '2px' }}>₦820K</div>
             <div style={{ fontSize: '11.5px', color: 'var(--c-500)', marginBottom: '14px' }}>Median for Product Manager, Lagos</div>
             <Link href="/salaries" className="btn btn--ghost btn--sm btn--full">Explore salary data</Link>
           </div>

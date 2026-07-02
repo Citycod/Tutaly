@@ -115,7 +115,7 @@ export default function DashboardLayout({
           href={item.href}
           className={`dash-nav-item ${isActive ? 'active' : ''}`}
         >
-          <item.icon className="w-[17px] h-[17px]" />
+          <item.icon className="w-4 h-4" />
           {item.name}
         </Link>
       );

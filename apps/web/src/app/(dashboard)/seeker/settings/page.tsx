@@ -66,21 +66,21 @@ export default function SeekerSettingsPage() {
           <button 
             onClick={() => setActiveTab('account')}
             className={`dash-nav-item ${activeTab === 'account' ? 'active' : ''}`}
-            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'account' ? 'rgba(27,79,158,0.16)' : 'transparent', cursor: 'pointer' }}
+            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'account' ? 'var(--blue-l)' : 'transparent', cursor: 'pointer' }}
           >
             <Key className="w-5 h-5" /> Account Security
           </button>
           <button 
             onClick={() => setActiveTab('notifications')}
             className={`dash-nav-item ${activeTab === 'notifications' ? 'active' : ''}`}
-            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'notifications' ? 'rgba(27,79,158,0.16)' : 'transparent', cursor: 'pointer' }}
+            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'notifications' ? 'var(--blue-l)' : 'transparent', cursor: 'pointer' }}
           >
             <Bell className="w-5 h-5" /> Notifications
           </button>
           <button 
             onClick={() => setActiveTab('privacy')}
             className={`dash-nav-item ${activeTab === 'privacy' ? 'active' : ''}`}
-            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'privacy' ? 'rgba(27,79,158,0.16)' : 'transparent', cursor: 'pointer' }}
+            style={{ width: '100%', justifyContent: 'flex-start', border: 'none', background: activeTab === 'privacy' ? 'var(--blue-l)' : 'transparent', cursor: 'pointer' }}
           >
             <Shield className="w-5 h-5" /> Privacy
           </button>
@@ -112,9 +112,9 @@ export default function SeekerSettingsPage() {
             display: 'flex', 
             alignItems: 'center', 
             gap: '12px',
-            background: 'rgba(29,122,58,0.12)',
-            color: '#2DB85A',
-            border: '1px solid rgba(29,122,58,0.35)'
+            background: 'var(--green-l)',
+            color: 'var(--green)',
+            border: '1px solid var(--green-l)'
           }}>
             <CheckCircle2 className="w-5 h-5" /> {successMsg}
           </div>

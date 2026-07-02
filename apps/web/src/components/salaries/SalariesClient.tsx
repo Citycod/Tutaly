@@ -7,13 +7,22 @@ import { Search } from 'lucide-react';
 
 
 
-interface SalariesClientProps {
-  salaries: any[];
-  aggregates: any[];
-  popularRoles?: any[];
+interface SalaryAggregate {
+  role: string;
+  industry?: string;
+  avgSalary: string | number;
+  minSalary?: string | number;
+  maxSalary?: string | number;
+  totalSubmissions: number;
 }
 
-export default function SalariesClient({ salaries, aggregates, popularRoles = [] }: SalariesClientProps) {
+interface SalariesClientProps {
+  salaries?: unknown[];
+  aggregates: SalaryAggregate[];
+  popularRoles?: SalaryAggregate[];
+}
+
+export default function SalariesClient({ aggregates, popularRoles = [] }: SalariesClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   
