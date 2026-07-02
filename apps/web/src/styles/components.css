@@ -1509,8 +1509,11 @@
     gap: 16px;
     align-items: start;
   }
+  .overview-grid--profile { grid-template-columns: 1fr 1.5fr; }
+  .overview-grid--settings { grid-template-columns: 260px 1fr; }
+  
   @media (max-width: 860px) {
-    .overview-grid { grid-template-columns: 1fr; }
+    .overview-grid, .overview-grid--profile, .overview-grid--settings { grid-template-columns: 1fr; }
   }
 
   /* ─── AD PROMO BANNER (dashboard) ────────────────────────── */

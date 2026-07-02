@@ -58,7 +58,7 @@ export default function SeekerSettingsPage() {
   };
 
   return (
-    <div className="overview-grid" style={{ gridTemplateColumns: '260px 1fr' }}>
+    <div className="overview-grid overview-grid--settings">
       
       {/* Settings Navigation Sidebar */}
       <div className="dcard" style={{ padding: '16px' }}>

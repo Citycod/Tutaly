@@ -173,7 +173,7 @@ export default function SeekerProfilePage() {
       {loading ? (
         <div style={{ textAlign: 'center', padding: '60px 24px', color: 'var(--c-500)' }}>Loading profile...</div>
       ) : (
-        <div className="overview-grid" style={{ gridTemplateColumns: '1fr 1.5fr' }}>
+        <div className="overview-grid overview-grid--profile">
           
           {/* Resume Upload Col */}
           <div className="dcard">
