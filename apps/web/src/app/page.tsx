@@ -1,4 +1,5 @@
 import Link from 'next/link';
+import Image from 'next/image';
 import { Search } from 'lucide-react';
 import { serverFetch } from '@/lib/server-fetch';
 
@@ -59,139 +60,74 @@ export default async function Home() {
       <section className="hero" aria-label="Hero section">
         <div className="container relative">
 
-          <div className="hero__eyebrow">
-            <div className="hero__eyebrow-line" aria-hidden="true"></div>
-            <span className="hero__eyebrow-text">Built from Lagos. Built for the world.</span>
-          </div>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 items-center">
+            <div>
+              <div className="hero__eyebrow">
+                <div className="hero__eyebrow-line" aria-hidden="true"></div>
+                <span className="hero__eyebrow-text">Built from Lagos. Built for the world.</span>
+              </div>
 
-          <h1 className="hero__headline">
-            Your career.<br />
-            Your worth.<br />
-            <em>Your platform.</em>
-          </h1>
+              <h1 className="hero__headline">
+                Your career.<br />
+                Your worth.<br />
+                <em>Your platform.</em>
+              </h1>
 
-          <p className="hero__sub">
-            Find top jobs, see what companies actually pay, and build the career you deserve — wherever you are. One platform for professionals everywhere.
-          </p>
+              <p className="hero__sub">
+                Find top jobs, see what companies actually pay, and build the career you deserve — wherever you are. One platform for professionals everywhere.
+              </p>
 
-          {/* Search */}
-          <form action="/jobs" className="hero__search" role="search" aria-label="Job search">
-            <div className="hero__search-field">
-              <Search className="w-4 h-4" aria-hidden="true" />
-              <input type="text" name="keyword" placeholder="Job title, skills, or company..." aria-label="Search jobs by title, skills, or company" />
-            </div>
-            <div className="hero__search-loc" aria-label="Location: Lagos, Nigeria">
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              Lagos, NG
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-            </div>
-            <button type="submit" className="hero__search-btn">Search Jobs</button>
-          </form>
-
-          <div className="hero__trending" aria-label="Trending job searches">
-            <strong>Trending:</strong>
-            <Link href="/jobs?keyword=Product" className="hero__trending-tag">Product Manager</Link>
-            <Link href="/jobs?keyword=Software" className="hero__trending-tag">Software Engineer</Link>
-            <Link href="/jobs?keyword=Data" className="hero__trending-tag">Data Analyst</Link>
-            <Link href="/jobs?keyword=Remote" className="hero__trending-tag">Remote</Link>
-          </div>
-
-          {/* Stats */}
-          <div className="hero__proof" role="list" aria-label="Platform statistics">
-            <div className="hero__proof-item" role="listitem">
-              <span className="hero__proof-num">{stats.total.toLocaleString()}+</span>
-              <span className="hero__proof-label">Active jobs</span>
-            </div>
-            <div className="hero__proof-divider" aria-hidden="true"></div>
-            <div className="hero__proof-item" role="listitem">
-              <span className="hero__proof-num">12,000+</span>
-              <span className="hero__proof-label">Companies reviewed</span>
-            </div>
-            <div className="hero__proof-divider" aria-hidden="true"></div>
-            <div className="hero__proof-item" role="listitem">
-              <span className="hero__proof-num">35+</span>
-              <span className="hero__proof-label">Countries represented</span>
-            </div>
-            <div className="hero__proof-divider" aria-hidden="true"></div>
-            <div className="hero__proof-item" role="listitem">
-              <span className="hero__proof-num">190,000+</span>
-              <span className="hero__proof-label">Professionals</span>
-            </div>
-          </div>
-
-          {/* Floating job cards */}
-          <div className="hero__cards" aria-hidden="true">
-            {featuredJobs.length > 0 ? featuredJobs.slice(0, 3).map((job, index) => {
-              const companyName = job.employer?.email ? job.employer.email.split('@')[0] : 'Confidential';
-              const logoInitial = companyName.substring(0, 1).toUpperCase();
-              
-              // Give them consistent backgrounds based on index
-              const backgrounds = [
-                { bg: 'rgba(27,79,158,0.2)', color: 'var(--blue-l)' },
-                { bg: 'rgba(29,122,58,0.2)', color: '#2DB85A' },
-                { bg: 'rgba(201,162,39,0.2)', color: 'var(--gold-h)' }
-              ];
-              const style = backgrounds[index % 3];
-
-              return (
-                <div key={job.id} className="floatcard">
-                  <div className="floatcard__logo" style={{ background: style.bg, color: style.color }}>{logoInitial}</div>
-                  <div>
-                    <div className="floatcard__title truncate w-48">{job.title}</div>
-                    <div className="floatcard__company truncate w-48">{companyName} &middot; {job.state}</div>
-                    <div className="floatcard__meta">
-                      {job.minSalary && (
-                        <span className="floatcard__salary">
-                          {CURRENCY_SYMBOLS[job.currency] || job.currency}{job.minSalary.toLocaleString()}
-                          {job.maxSalary ? `–${CURRENCY_SYMBOLS[job.currency] || job.currency}${job.maxSalary.toLocaleString()}` : '+'}
-                        </span>
-                      )}
-                      <span className="floatcard__tag">{job.workMode}</span>
-                      {index === 0 && <span className="floatcard__new">New</span>}
-                    </div>
-                  </div>
+              {/* Search */}
+              <form action="/jobs" className="hero__search" role="search" aria-label="Job search">
+                <div className="hero__search-field">
+                  <Search className="w-4 h-4" aria-hidden="true" />
+                  <input type="text" name="keyword" placeholder="Job title, skills, or company..." aria-label="Search jobs by title, skills, or company" />
                 </div>
-              );
-            }) : (
-              // Fallback to static cards if no data
-              <>
-                <div className="floatcard">
-                  <div className="floatcard__logo bg-blue/20 text-blueL">A</div>
-                  <div>
-                    <div className="floatcard__title">Senior Product Manager</div>
-                    <div className="floatcard__company">Andela &middot; Remote, Global</div>
-                    <div className="floatcard__meta">
-                      <span className="floatcard__salary">$85K–$120K</span>
-                      <span className="floatcard__tag">Remote</span>
-                      <span className="floatcard__new">New</span>
-                    </div>
-                  </div>
+                <div className="hero__search-loc" aria-label="Location: Lagos, Nigeria">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                  Lagos, NG
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
                 </div>
-                <div className="floatcard">
-                  <div className="floatcard__logo bg-green/20 text-green">F</div>
-                  <div>
-                    <div className="floatcard__title">Backend Engineer</div>
-                    <div className="floatcard__company">Flutterwave &middot; Lagos</div>
-                    <div className="floatcard__meta">
-                      <span className="floatcard__salary">₦700K–₦1.0M</span>
-                      <span className="floatcard__tag">Hybrid</span>
-                    </div>
-                  </div>
+                <button type="submit" className="hero__search-btn">Search Jobs</button>
+              </form>
+
+              <div className="hero__trending" aria-label="Trending job searches">
+                <strong>Trending:</strong>
+                <Link href="/jobs?keyword=Product" className="hero__trending-tag">Product Manager</Link>
+                <Link href="/jobs?keyword=Software" className="hero__trending-tag">Software Engineer</Link>
+                <Link href="/jobs?keyword=Data" className="hero__trending-tag">Data Analyst</Link>
+                <Link href="/jobs?keyword=Remote" className="hero__trending-tag">Remote</Link>
+              </div>
+
+              {/* Stats */}
+              <div className="hero__proof" role="list" aria-label="Platform statistics">
+                <div className="hero__proof-item" role="listitem">
+                  <span className="hero__proof-num">{stats.total.toLocaleString()}+</span>
+                  <span className="hero__proof-label">Active jobs</span>
                 </div>
-                <div className="floatcard">
-                  <div className="floatcard__logo bg-gold/20 text-goldH">N</div>
-                  <div>
-                    <div className="floatcard__title">Data Scientist</div>
-                    <div className="floatcard__company">Novalink &middot; London</div>
-                    <div className="floatcard__meta">
-                      <span className="floatcard__salary">£55K–£75K</span>
-                      <span className="floatcard__tag">On-site</span>
-                      <span className="floatcard__new">New</span>
-                    </div>
-                  </div>
+                <div className="hero__proof-divider" aria-hidden="true"></div>
+                <div className="hero__proof-item" role="listitem">
+                  <span className="hero__proof-num">12,000+</span>
+                  <span className="hero__proof-label">Companies reviewed</span>
                 </div>
-              </>
-            )}
+                <div className="hero__proof-divider" aria-hidden="true"></div>
+                <div className="hero__proof-item" role="listitem">
+                  <span className="hero__proof-num">35+</span>
+                  <span className="hero__proof-label">Countries represented</span>
+                </div>
+                <div className="hero__proof-divider" aria-hidden="true"></div>
+                <div className="hero__proof-item" role="listitem">
+                  <span className="hero__proof-num">190,000+</span>
+                  <span className="hero__proof-label">Professionals</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Hero Image */}
+            <div className="hidden lg:block relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 border border-white/20">
+              <div className="absolute inset-0 bg-gradient-to-tr from-blue/20 to-transparent z-10 mix-blend-overlay"></div>
+              <Image src="/images/hero.png" alt="Professionals collaborating" width={800} height={800} className="w-full h-auto object-cover transform hover:scale-105 transition-transform duration-700" priority />
+            </div>
           </div>
 
         </div>
@@ -221,42 +157,31 @@ export default async function Home() {
             <h2 className="section__title" id="features-title">Everything your career needs.<br />One platform.</h2>
             <p className="section__subtitle">Stop switching between five different apps. Tutaly is the job board, salary database, review site, and professional network in one.</p>
           </div>
-          <div className="features-grid reveal visible">
-            <div className="feat">
-              <div className="feat__icon feat__icon--blue" aria-hidden="true">💼</div>
-              <h3 className="feat__title">Find the right job</h3>
-              <p className="feat__body">Thousands of roles across major hubs and remote-first companies worldwide. Filter by salary, company size, industry, and experience level.</p>
-              <Link href="/jobs" className="feat__link">Browse jobs &rarr;</Link>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 items-center reveal visible mt-12">
+            <div className="space-y-6">
+              <div className="feat bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-c100 hover:shadow-md transition-shadow">
+                <div className="feat__icon feat__icon--blue" aria-hidden="true">💼</div>
+                <h3 className="feat__title">Find the right job</h3>
+                <p className="feat__body">Thousands of roles across major hubs and remote-first companies worldwide. Filter by salary, company size, industry, and experience level.</p>
+                <Link href="/jobs" className="feat__link">Browse jobs &rarr;</Link>
+              </div>
+              <div className="feat bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-c100 hover:shadow-md transition-shadow">
+                <div className="feat__icon feat__icon--green" aria-hidden="true">₦</div>
+                <h3 className="feat__title">Know what you're worth</h3>
+                <p className="feat__body">Real salary data from verified professionals. See what your role pays at every company before you walk into a negotiation.</p>
+                <Link href="/salaries" className="feat__link">Check your salary &rarr;</Link>
+              </div>
+              <div className="feat bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-c100 hover:shadow-md transition-shadow">
+                <div className="feat__icon feat__icon--gold" aria-hidden="true">⭐</div>
+                <h3 className="feat__title">Read honest reviews</h3>
+                <p className="feat__body">Anonymous reviews from people who've worked there. Culture, management, growth — the real picture, not the PR one.</p>
+                <Link href="/reviews" className="feat__link">Read reviews &rarr;</Link>
+              </div>
             </div>
-            <div className="feat">
-              <div className="feat__icon feat__icon--green" aria-hidden="true">₦</div>
-              <h3 className="feat__title">Know what you're worth</h3>
-              <p className="feat__body">Real salary data from verified professionals. See what your role pays at every company before you walk into a negotiation.</p>
-              <Link href="/salaries" className="feat__link">Check your salary &rarr;</Link>
-            </div>
-            <div className="feat">
-              <div className="feat__icon feat__icon--gold" aria-hidden="true">⭐</div>
-              <h3 className="feat__title">Read honest reviews</h3>
-              <p className="feat__body">Anonymous reviews from people who've worked there. Culture, management, growth — the real picture, not the PR one.</p>
-              <Link href="/reviews" className="feat__link">Read reviews &rarr;</Link>
-            </div>
-            <div className="feat">
-              <div className="feat__icon feat__icon--blue" aria-hidden="true">🤝</div>
-              <h3 className="feat__title">Build your network</h3>
-              <p className="feat__body">Connect with professionals across your industry. Follow leaders, join communities, and be seen by the people who matter.</p>
-              <Link href="/connect" className="feat__link">Start connecting &rarr;</Link>
-            </div>
-            <div className="feat">
-              <div className="feat__icon feat__icon--gold" aria-hidden="true">🛍️</div>
-              <h3 className="feat__title">Shop career resources</h3>
-              <p className="feat__body">Resume templates, industry reports, courses, and guides — built by professionals who've actually done the work, for markets around the world.</p>
-              <Link href="/shop" className="feat__link">Browse resources &rarr;</Link>
-            </div>
-            <div className="feat">
-              <div className="feat__icon feat__icon--green" aria-hidden="true">📊</div>
-              <h3 className="feat__title">Track your market value</h3>
-              <p className="feat__body">Your career dashboard shows how your salary compares to your peers, when to negotiate, and which companies are hiring at your level.</p>
-              <Link href="/dashboard" className="feat__link">See your dashboard &rarr;</Link>
+            
+            <div className="hidden lg:block relative rounded-3xl overflow-hidden shadow-2xl shadow-blue-900/10 border border-white/20 h-full" style={{ minHeight: '500px' }}>
+              <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent z-10 mix-blend-overlay"></div>
+              <Image src="/images/feature.png" alt="Professional working" layout="fill" objectFit="cover" className="transform hover:scale-105 transition-transform duration-700" />
             </div>
           </div>
         </div>
@@ -560,7 +485,9 @@ export default async function Home() {
             <blockquote className="testi">
               <p className="testi__quote">I used Tutaly's salary data to negotiate my offer at Paystack. I went in knowing the market range. Walked out ₦200K above their opening offer.</p>
               <div className="testi__author">
-                <div className="testi__avatar bg-blue/20 text-blueL">KA</div>
+                <div className="testi__avatar overflow-hidden">
+                  <Image src="/images/avatar_1.png" alt="Kemi Adeyemi" width={48} height={48} className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <div className="testi__name">Kemi Adeyemi</div>
                   <div className="testi__title">Product Manager, Lagos</div>
@@ -571,7 +498,9 @@ export default async function Home() {
             <blockquote className="testi">
               <p className="testi__quote">The company reviews saved me from accepting an offer at a place that looked good on paper. Three ex-employees said the same thing about the culture. I passed.</p>
               <div className="testi__author">
-                <div className="testi__avatar bg-green/20 text-green">IO</div>
+                <div className="testi__avatar overflow-hidden">
+                  <Image src="/images/avatar_2.png" alt="Ifeanyi Okafor" width={48} height={48} className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <div className="testi__name">Ifeanyi Okafor</div>
                   <div className="testi__title">Software Engineer, Abuja</div>
@@ -582,7 +511,9 @@ export default async function Home() {
             <blockquote className="testi">
               <p className="testi__quote">Found my current role, bought a salary report, and connected with my mentor all on Tutaly. It's actually one platform, not five duct-taped together.</p>
               <div className="testi__author">
-                <div className="testi__avatar bg-gold/20 text-goldH">SM</div>
+                <div className="testi__avatar overflow-hidden">
+                  <Image src="/images/avatar_3.png" alt="Sofia Martins" width={48} height={48} className="w-full h-full object-cover" />
+                </div>
                 <div>
                   <div className="testi__name">Sofia Martins</div>
                   <div className="testi__title">Data Analyst, São Paulo</div>
