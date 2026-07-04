@@ -69,11 +69,11 @@ function AdminOrdersContent() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       if (error.response?.status === 401 || error.response?.status === 403) {
         router.push('/auth/signin');
@@ -106,11 +106,11 @@ function AdminOrdersContent() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       alert(error.response?.data?.message || error.message || 'Verification failed');
     } finally {
@@ -130,11 +130,11 @@ function AdminOrdersContent() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       alert(error.response?.data?.message || error.message || 'Cancel failed');
     } finally {
@@ -154,11 +154,11 @@ function AdminOrdersContent() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       alert(error.response?.data?.message || error.message || 'Flag failed');
     } finally {
@@ -178,11 +178,11 @@ function AdminOrdersContent() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       alert(error.response?.data?.message || error.message || 'Resolve failed');
     } finally {

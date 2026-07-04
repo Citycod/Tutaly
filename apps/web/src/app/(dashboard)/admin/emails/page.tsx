@@ -36,11 +36,11 @@ export default function AdminEmailsPage() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
@@ -79,11 +79,11 @@ if (err.response?.status === 401 || err.response?.status === 403) {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 setSendError(err.response?.data?.message || err.message || 'Failed to send broadcast');
     } finally {

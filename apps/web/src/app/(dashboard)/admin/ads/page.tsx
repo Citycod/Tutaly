@@ -80,11 +80,11 @@ export default function AdminAdsModerationPage() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 
       if (error.response?.status === 401 || error.response?.status === 403) {
@@ -110,11 +110,11 @@ export default function AdminAdsModerationPage() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 alert(err.response?.data?.message || err.message);
     }
@@ -149,11 +149,11 @@ alert(err.response?.data?.message || err.message);
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 alert(err.response?.data?.message || err.message);
     }

@@ -22,11 +22,11 @@ export default function ProfilePage() {
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 setError(err?.response?.data?.message || 'Failed to load profile');
     } finally {
@@ -52,11 +52,11 @@ setError(err?.response?.data?.message || 'Failed to load profile');
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const error = e as { response?: { data?: { message?: string } } };
+      const error = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       /* eslint-disable @typescript-eslint/no-unused-vars */
-      const err = e as { response?: { data?: { message?: string } } };
+      const err = e as { response?: { data?: { message?: string } }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
 alert(err?.response?.data?.message || 'Failed to follow user');
     }
