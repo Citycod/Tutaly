@@ -8,9 +8,9 @@ import { CheckCircle2, ChevronRight, Briefcase, MapPin, Settings, AlertCircle, P
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
 import dynamic from 'next/dynamic';
-import 'react-quill/dist/quill.snow.css';
+import 'react-quill-new/dist/quill.snow.css';
 
-const ReactQuill = dynamic(() => import('react-quill'), { ssr: false });
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
 
 function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
