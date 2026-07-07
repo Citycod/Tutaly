@@ -67,18 +67,18 @@ alert(err.response?.data?.message || 'Failed to update status');
   });
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-c900 flex items-center gap-3">
-            <ShoppingBag className="w-8 h-8 text-green" />
+    <>
+      <div className="page-header">
+        <div className="page-header__title">
+          <h1 className="text-2xl font-bold text-c900 mb-1 flex items-center gap-3">
+            <ShoppingBag className="w-6 h-6 text-green" />
             Manage Orders
           </h1>
-          <p className="text-c500 mt-1">Track incoming purchases and update delivery statuses.</p>
+          <p className="text-c500 text-sm">Track incoming purchases and update delivery statuses.</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
+      <div className="dcard !p-0 overflow-hidden">
         {/* Filters */}
         <div className="p-4 border-b border-c100 flex items-center gap-2 overflow-x-auto">
           {[
@@ -93,7 +93,7 @@ alert(err.response?.data?.message || 'Failed to update status');
               onClick={() => setFilter(tab.id)}
               className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
                 filter === tab.id
-                  ? 'bg-green text-green border border-green'
+                  ? 'bg-green text-white border border-green'
                   : 'text-c500 hover:bg-c100 border border-transparent'
               }`}
             >
@@ -180,6 +180,6 @@ alert(err.response?.data?.message || 'Failed to update status');
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

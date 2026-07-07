@@ -17,7 +17,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/connect/profiles/${username}`);
+      const res = await apiAuth.withToken(token).get(`/community/profiles/${username}`);
       setProfile(res.data);
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,7 +47,7 @@ setError(err?.response?.data?.message || 'Failed to load profile');
   const handleFollow = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token!).post(`/connect/follow/${profile.id}`);
+      await apiAuth.withToken(token!).post(`/community/follow/${profile.id}`);
       alert('Follow request sent');
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -71,7 +71,7 @@ alert(err?.response?.data?.message || 'Failed to follow user');
       <div className="max-w-3xl mx-auto py-20 text-center">
         <h2 className="text-2xl font-bold text-c900 mb-2">Profile not found</h2>
         <p className="text-c500 mb-6">{error || "The user you are looking for doesn't exist or is private."}</p>
-        <Link href="/connect" className="text-green font-semibold hover:underline">Return to Feed</Link>
+        <Link href="/community" className="text-green font-semibold hover:underline">Return to Feed</Link>
       </div>
     );
   }
@@ -108,7 +108,7 @@ alert(err?.response?.data?.message || 'Failed to follow user');
                   <button onClick={handleFollow} className="bg-green text-white px-5 py-2 rounded-xl text-sm font-semibold hover:bg-green transition-colors flex items-center gap-2">
                     <UserPlus className="w-4 h-4" /> Follow
                   </button>
-                  <Link href={`/connect/messages`} className="bg-white border border-c200 text-c700 px-5 py-2 rounded-xl text-sm font-semibold hover:bg-c100 transition-colors flex items-center gap-2">
+                  <Link href={`/community/messages`} className="bg-white border border-c200 text-c700 px-5 py-2 rounded-xl text-sm font-semibold hover:bg-c100 transition-colors flex items-center gap-2">
                     <MessageCircle className="w-4 h-4" /> Message
                   </Link>
                 </>

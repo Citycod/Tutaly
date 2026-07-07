@@ -122,7 +122,7 @@ alert(err.response?.data?.message || 'Failed to mark as delivered');
           <div className="dcard__header">
             <div>
               <h1 className="dcard__title">Become a Seller</h1>
-              <p className="dcard__sub">Apply to sell templates, tools, and services on the Tutaly marketplace.</p>
+              <p className="dcard__sub">Apply to sell templates, tools, and services on the Tutaly shop.</p>
             </div>
           </div>
         </div>

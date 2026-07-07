@@ -76,7 +76,7 @@ export default function DashboardLayout({
       ]
     },
     {
-      label: 'Marketplace',
+      label: 'Shop',
       items: [
         { name: 'My Orders', href: '/seeker/orders', icon: ShoppingBag },
         { name: 'Seller Dashboard', href: '/seller', icon: Store },
@@ -100,7 +100,7 @@ export default function DashboardLayout({
     { name: 'Overview', href: '/admin', icon: Building2 },
     { name: 'Approve Jobs', href: '/admin/jobs', icon: Briefcase },
     { name: 'Approve Sellers', href: '/admin/sellers', icon: Store },
-    { name: 'Marketplace Catalog', href: '/admin/products', icon: Package },
+    { name: 'Shop Catalog', href: '/admin/products', icon: Package },
     { name: 'Shop Orders', href: '/admin/orders', icon: ShoppingBag },
     { name: 'Disputes', href: '/admin/disputes', icon: AlertTriangle },
     { name: 'Reviews', href: '/admin/reviews', icon: MessageSquare },

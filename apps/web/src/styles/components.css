@@ -673,7 +673,7 @@
   .status--interview { background: rgba(27,79,158,0.2); color: var(--blue-l); }
   .status--offer { background: rgba(29,122,58,0.2); color: #2DB85A; }
 
-  /* ─── MARKETPLACE ────────────────────────────────────────── */
+  /* ─── SHOP ────────────────────────────────────────── */
   .market-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -1097,7 +1097,7 @@
     font-size: 12px; color: var(--c-500);
   }
 
-  /* ─── CATEGORY PILLS (Marketplace) ───────────────────────── */
+  /* ─── CATEGORY PILLS (Shop) ───────────────────────── */
   .category-rail {
     display: flex; gap: 8px; overflow-x: auto;
     padding-bottom: 4px; margin-bottom: 28px;
@@ -2541,7 +2541,7 @@
   }
   .page-header__sub { font-size: 14px; color: var(--c-400); }
 
-  /* ─── CATEGORY PILLS (Marketplace) ───────────────────────── */
+  /* ─── CATEGORY PILLS (Shop) ───────────────────────── */
   .category-rail {
     display: flex; gap: 8px; overflow-x: auto;
     padding-bottom: 4px; margin-bottom: 28px;
@@ -2583,7 +2583,7 @@
     font-family: var(--font);
   }
 
-  /* ─── MARKETPLACE ────────────────────────────────────────── */
+  /* ─── SHOP ────────────────────────────────────────── */
   .market-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));

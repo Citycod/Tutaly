@@ -27,7 +27,7 @@ export default function DiscoverPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/connect/discover?page=${page}&limit=20`);
+      const res = await apiAuth.withToken(token).get(`/community/discover?page=${page}&limit=20`);
       setPeople(res.data?.data || []);
       setTotal(res.data?.meta?.total || 0);
     } catch (err) {
@@ -43,7 +43,7 @@ export default function DiscoverPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).post(`/connect/follow/${userId}`);
+      await apiAuth.withToken(token).post(`/community/follow/${userId}`);
       setFollowing(prev => new Set(prev).add(userId));
     } catch (err) {
       console.error('Failed to follow', err);
@@ -98,7 +98,7 @@ export default function DiscoverPage() {
         <>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             {people.map((person, idx) => {
-              const profileLink = `/connect/profile/${person.username || person.id}`;
+              const profileLink = `/community/profile/${person.username || person.id}`;
               return (
                 <div
                   key={person.id}

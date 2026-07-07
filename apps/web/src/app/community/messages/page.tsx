@@ -33,7 +33,7 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get('/connect/conversations');
+      const res = await apiAuth.withToken(token).get('/community/conversations');
       setConversations(res.data?.data || []);
     } catch (err) {
       console.error('Failed to load conversations', err);
@@ -58,11 +58,11 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/connect/messages/${partner.id}?limit=50`);
+      const res = await apiAuth.withToken(token).get(`/community/messages/${partner.id}?limit=50`);
       setMessages((res.data?.data || []).reverse());
       
       // Mark as read silently
-      apiAuth.withToken(token).patch(`/connect/messages/${partner.id}/read`).catch(() => {});
+      apiAuth.withToken(token).patch(`/community/messages/${partner.id}/read`).catch(() => {});
     } catch (err) {
       console.error('Failed to load messages', err);
     } finally {
@@ -93,7 +93,7 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).post(`/connect/messages/${selectedPartner.id}`, { body: messageToSend });
+      const res = await apiAuth.withToken(token).post(`/community/messages/${selectedPartner.id}`, { body: messageToSend });
       
       // Update temp message with real one
       setMessages(prev => prev.map(m => m.id === optimisticMsg.id ? res.data?.data || m : m));
@@ -156,7 +156,7 @@ export default function MessagesPage() {
               <MessageCircle className="w-10 h-10 text-c300 mb-3" />
               <p className="text-sm font-semibold text-c900">No messages yet</p>
               <p className="text-xs text-c500 mt-1 mb-4">Start a conversation from someone's profile.</p>
-              <Link href="/connect/discover" className="text-xs font-semibold text-green bg-green hover:bg-green px-4 py-2 rounded-xl transition-colors">
+              <Link href="/community/discover" className="text-xs font-semibold text-green bg-green hover:bg-green px-4 py-2 rounded-xl transition-colors">
                 Discover People
               </Link>
             </div>
@@ -203,13 +203,13 @@ export default function MessagesPage() {
               <button onClick={() => setSelectedPartner(null)} className="lg:hidden text-c400 hover:text-c600 p-1.5 -ml-2 rounded-lg hover:bg-c100 transition-colors">
                 <ArrowLeft className="w-5 h-5" />
               </button>
-              <Link href={`/connect/profile/${selectedPartner.username || selectedPartner.id}`} className="shrink-0">
+              <Link href={`/community/profile/${selectedPartner.username || selectedPartner.id}`} className="shrink-0">
                 <div className="w-10 h-10 rounded-full bg-green flex items-center justify-center text-white font-bold text-sm overflow-hidden">
                   {renderAvatar(selectedPartner)}
                 </div>
               </Link>
               <div>
-                <Link href={`/connect/profile/${selectedPartner.username || selectedPartner.id}`} className="hover:underline">
+                <Link href={`/community/profile/${selectedPartner.username || selectedPartner.id}`} className="hover:underline">
                   <p className="text-sm font-semibold text-c900">{getName(selectedPartner)}</p>
                 </Link>
               </div>

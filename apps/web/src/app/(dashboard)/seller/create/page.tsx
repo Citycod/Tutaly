@@ -176,16 +176,17 @@ alert(err.response?.data?.message || 'Failed to create product');
 
   return (
     <div className="px-4 py-6 sm:p-8 pb-16 max-w-3xl mx-auto">
-      <Link href="/seller" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-8 font-medium">
-        <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-      </Link>
-
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-c900">Create New Listing</h1>
-        <p className="text-c500 mt-1">Add a new template, tool, or professional service.</p>
+      <div className="page-header">
+        <div className="page-header__title">
+          <Link href="/seller" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-4 font-medium">
+            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
+          </Link>
+          <h1 className="text-2xl font-bold text-c900 mb-1">Create New Listing</h1>
+          <p className="text-c500 text-sm">Add a new template, tool, or professional service.</p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-c100 p-4 sm:p-8 space-y-6 sm:space-y-8">
+      <form onSubmit={handleSubmit} className="dcard p-4 sm:p-8 space-y-6 sm:space-y-8">
         {/* Type Selection */}
         <div>
           <label className="block text-sm font-bold text-c900 mb-3">Listing Type</label>
@@ -227,7 +228,7 @@ alert(err.response?.data?.message || 'Failed to create product');
               type="text"
               value={form.title}
               onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
+              className="input text-black"
               required
               maxLength={100}
             />
@@ -239,7 +240,7 @@ alert(err.response?.data?.message || 'Failed to create product');
               value={form.description}
               onChange={(e) => setForm({ ...form, description: e.target.value })}
               rows={5}
-              className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
+              className="input text-black resize-y"
               required
               minLength={20}
             />
@@ -251,7 +252,7 @@ alert(err.response?.data?.message || 'Failed to create product');
               <select
                 value={form.categoryId}
                 onChange={handleCategoryChange}
-                className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white text-black"
+                className="input text-black"
                 required
               >
                 <option value="">Select...</option>
@@ -263,7 +264,7 @@ alert(err.response?.data?.message || 'Failed to create product');
               <select
                 value={form.subcategoryId}
                 onChange={(e) => setForm({ ...form, subcategoryId: e.target.value })}
-                className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white text-black"
+                className="input text-black"
                 required
                 disabled={!form.categoryId}
               >
@@ -305,7 +306,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                   <select
                     value={form.currency}
                     onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                    className="w-24 rounded-lg border border-c200 px-3 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green bg-white font-bold text-black"
+                    className="input font-bold text-black w-24"
                   >
                     <option value="NGN">NGN</option>
                     <option value="USD">USD</option>
@@ -315,7 +316,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                     type="number"
                     value={form.price}
                     onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    className="flex-1 rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
+                    className="input text-black flex-1"
                     required
                     min={1}
                     placeholder="0.00"
@@ -329,7 +330,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                   value={form.priceUnit}
                   onChange={(e) => setForm({ ...form, priceUnit: e.target.value })}
                   placeholder="e.g. Hour, Page, Item"
-                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
+                  className="input text-black"
                 />
               </div>
               <div>
@@ -338,7 +339,7 @@ alert(err.response?.data?.message || 'Failed to create product');
                   type="number"
                   value={form.minQuantity}
                   onChange={(e) => setForm({ ...form, minQuantity: Number(e.target.value) })}
-                  className="w-full rounded-lg border border-c200 px-4 py-2.5 text-sm outline-none focus:ring-2 focus:ring-green text-black"
+                  className="input text-black"
                   required
                   min={1}
                 />
@@ -453,13 +454,13 @@ alert(err.response?.data?.message || 'Failed to create product');
           </label>
         </div>
 
-        <div className="flex justify-end pt-4">
+        <div className="flex justify-end pt-4 border-t border-c100">
           <button
             type="submit"
             disabled={loading}
-            className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold transition-colors flex items-center gap-2 disabled:opacity-50"
+            className="btn btn--primary"
           >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : <Save className="w-5 h-5" />}
+            {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
             Publish Listing
           </button>
         </div>

@@ -16,7 +16,7 @@ export const dataSourceOptions: DataSourceOptions = {
   },
   extra: {
     // Supabase transaction pooler compatibility
-    options: '-c search_path=public',
+    options: '-c search_path=public,extensions',
   },
 };
 

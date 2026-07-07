@@ -67,17 +67,15 @@ export default function ApplySellerPage() {
 
   if (status === 'pending') {
     return (
-      <div className="max-w-2xl mx-auto mt-12 bg-white rounded-2xl shadow-sm border border-c100 p-8 text-center">
-        <div className="w-16 h-16 bg-blueL text-blue rounded-full flex items-center justify-center mx-auto mb-6">
-          <Loader2 className="w-8 h-8 animate-spin" />
-        </div>
-        <h2 className="text-2xl font-bold text-c900 mb-4">Application Under Review</h2>
-        <p className="text-c600 mb-8">
+      <div className="dash-empty mt-12 max-w-2xl mx-auto border border-c100 rounded-2xl shadow-sm bg-white p-8">
+        <div className="dash-empty__icon !bg-blueL text-blue mb-6"><Loader2 className="w-8 h-8 animate-spin" /></div>
+        <div className="dash-empty__title text-2xl font-bold text-c900 mb-4">Application Under Review</div>
+        <div className="dash-empty__desc text-c600 mb-8">
           Your application to become a seller on Tutaly is currently being reviewed by our admin team. We will notify you once a decision has been made.
-        </p>
+        </div>
         <button
           onClick={() => router.back()}
-          className="bg-c100 text-c700 px-6 py-2 rounded-lg font-medium hover:bg-c200 transition-colors"
+          className="btn btn--secondary"
         >
           Go Back
         </button>
@@ -87,17 +85,15 @@ export default function ApplySellerPage() {
 
   if (status === 'rejected') {
     return (
-      <div className="max-w-2xl mx-auto mt-12 bg-white rounded-2xl shadow-sm border border-c100 p-8 text-center">
-        <div className="w-16 h-16 bg-red text-red rounded-full flex items-center justify-center mx-auto mb-6">
-          <CheckCircle className="w-8 h-8" />
-        </div>
-        <h2 className="text-2xl font-bold text-c900 mb-4">Application Rejected</h2>
-        <p className="text-c600 mb-8">
+      <div className="dash-empty mt-12 max-w-2xl mx-auto border border-c100 rounded-2xl shadow-sm bg-white p-8">
+        <div className="dash-empty__icon !bg-red !bg-opacity-10 text-red mb-6"><CheckCircle className="w-8 h-8" /></div>
+        <div className="dash-empty__title text-2xl font-bold text-c900 mb-4">Application Rejected</div>
+        <div className="dash-empty__desc text-c600 mb-8">
           Unfortunately, your application to become a seller was not approved at this time.
-        </p>
+        </div>
         <button
           onClick={() => router.back()}
-          className="bg-c100 text-c700 px-6 py-2 rounded-lg font-medium hover:bg-c200 transition-colors"
+          className="btn btn--secondary"
         >
           Go Back
         </button>
@@ -106,24 +102,22 @@ export default function ApplySellerPage() {
   }
 
   return (
-    <div className="max-w-3xl mx-auto">
-      <div className="bg-green rounded-2xl p-8 text-white mb-8 shadow-lg relative overflow-hidden">
-        <div className="relative z-10">
-          <div className="w-12 h-12 bg-white/10 rounded-xl flex items-center justify-center mb-6 backdrop-blur-sm border border-white/20">
-            <Store className="w-6 h-6 text-green" />
+    <div className="max-w-3xl mx-auto py-8">
+      <div className="page-header bg-greenL rounded-2xl p-8 mb-8">
+        <div className="flex items-center gap-4">
+          <div className="w-16 h-16 bg-green text-white rounded-xl flex items-center justify-center shadow-md">
+            <Store className="w-8 h-8" />
           </div>
-          <h1 className="text-3xl font-bold mb-3">Become a Tutaly Seller</h1>
-          <p className="text-green max-w-xl text-lg">
-            Join the Tutaly marketplace and start selling your digital products, physical goods, and professional services to thousands of users.
-          </p>
+          <div>
+            <h1 className="text-3xl font-bold text-c900 mb-2">Become a Tutaly Seller</h1>
+            <p className="text-c700 max-w-xl text-lg">
+              Join the Tutaly shop and start selling your digital products, physical goods, and professional services to thousands of users.
+            </p>
+          </div>
         </div>
-        
-        {/* Decorative elements */}
-        <div className="absolute right-0 top-0 w-64 h-64 bg-green rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-x-1/2 -translate-y-1/4"></div>
-        <div className="absolute right-40 bottom-0 w-48 h-48 bg-blue rounded-full mix-blend-multiply filter blur-3xl opacity-20 translate-y-1/4"></div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
+      <div className="dcard">
         <div className="p-6 sm:p-8">
           <h2 className="text-xl font-bold text-c900 mb-6">Seller Application</h2>
           
@@ -135,7 +129,7 @@ export default function ApplySellerPage() {
               <textarea
                 required
                 rows={4}
-                className="w-full px-4 py-3 rounded-xl border border-c200 focus:ring-2 focus:ring-green focus:border-transparent transition-all resize-none text-black"
+                className="input text-black h-24"
                 placeholder="Tell us about yourself or your business. What kind of products/services do you plan to offer?"
                 value={formData.bio}
                 onChange={(e) => setFormData({ ...formData, bio: e.target.value })}
@@ -152,7 +146,7 @@ export default function ApplySellerPage() {
               <input
                 type="text"
                 required
-                className="w-full px-4 py-3 rounded-xl border border-c200 focus:ring-2 focus:ring-green focus:border-transparent transition-all text-black"
+                className="input text-black"
                 placeholder="e.g. Resume Templates, Career Coaching, Office Supplies"
                 value={formData.categoryFocus}
                 onChange={(e) => setFormData({ ...formData, categoryFocus: e.target.value })}
@@ -163,13 +157,13 @@ export default function ApplySellerPage() {
               <button
                 type="submit"
                 disabled={loading}
-                className="bg-green text-white px-8 py-3 rounded-xl font-bold hover:bg-green transition-colors flex items-center gap-2 disabled:opacity-70 disabled:cursor-not-allowed shadow-sm hover:shadow-md"
+                className="btn btn--primary px-8 py-3 text-base"
               >
                 {loading ? (
-                  <Loader2 className="w-5 h-5 animate-spin" />
+                  <Loader2 className="w-5 h-5 animate-spin mx-auto" />
                 ) : (
                   <>
-                    Submit Application <ArrowRight className="w-5 h-5" />
+                    Submit Application <ArrowRight className="w-5 h-5 ml-2" />
                   </>
                 )}
               </button>

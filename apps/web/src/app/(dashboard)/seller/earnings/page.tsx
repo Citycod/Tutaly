@@ -83,63 +83,66 @@ alert(err.response?.data?.message || 'Failed to process withdrawal.');
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
-      <div className="flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4">
-        <div>
-          <h1 className="text-3xl font-bold text-c900 flex items-center gap-3">
-            <Wallet className="w-8 h-8 text-green" />
+    <>
+      <div className="page-header">
+        <div className="page-header__title">
+          <h1 className="text-2xl font-bold text-c900 mb-1 flex items-center gap-3">
+            <Wallet className="w-6 h-6 text-green" />
             Earnings & Wallet
           </h1>
-          <p className="text-c500 mt-1">Track your revenue, escrow balance, and request payouts.</p>
+          <p className="text-c500 text-sm">Track your revenue, escrow balance, and request payouts.</p>
         </div>
-        <button 
-          onClick={handleWithdrawal}
-          disabled={withdrawing || displayData.availableBalance <= 0}
-          className="flex items-center gap-2 bg-c900 text-white px-6 py-3 rounded-xl font-bold shadow-lg shadow-gray-900/20 hover:bg-black transition-all disabled:opacity-50"
-        >
-          {withdrawing ? 'Processing...' : <><ArrowDownToLine className="w-5 h-5" /> Withdraw Funds</>}
-        </button>
+        <div className="page-header__actions">
+          <button 
+            onClick={handleWithdrawal}
+            disabled={withdrawing || displayData.availableBalance <= 0}
+            className="btn btn--primary"
+          >
+            {withdrawing ? 'Processing...' : <><ArrowDownToLine className="w-4 h-4 mr-2" /> Withdraw Funds</>}
+          </button>
+        </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10">
+      <div className="stat-grid mb-8">
         {/* Available Balance */}
-        <div className="bg-green rounded-2xl shadow-sm border border-green p-6 text-white relative overflow-hidden">
-          <div className="absolute top-0 right-0 -mr-4 -mt-4 w-24 h-24 bg-white opacity-10 rounded-full blur-xl"></div>
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-bold text-green">Available to Withdraw</p>
-            <Wallet className="w-6 h-6 text-green" />
+        <div className="stat-card" style={{ background: 'var(--green-l)', border: '1px solid var(--green)' }}>
+          <div className="stat-card__label flex items-center justify-between w-full" style={{ color: 'var(--green)' }}>
+            Available to Withdraw
+            <Wallet className="w-5 h-5" />
           </div>
-          <h2 className="text-4xl font-black mb-1">₦{displayData.availableBalance.toLocaleString()}</h2>
-          <p className="text-sm text-green">Cleared funds ready for payout</p>
+          <div className="stat-card__value text-green">₦{displayData.availableBalance.toLocaleString()}</div>
+          <p className="text-xs text-green mt-1 font-semibold">Cleared funds ready for payout</p>
         </div>
 
         {/* Escrow Balance */}
-        <div className="bg-white rounded-2xl shadow-sm border border-c100 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-bold text-c500">In Escrow (Pending)</p>
-            <Clock className="w-6 h-6 text-gold" />
+        <div className="stat-card">
+          <div className="stat-card__label flex items-center justify-between w-full">
+            In Escrow (Pending)
+            <Clock className="w-5 h-5 text-gold" />
           </div>
-          <h2 className="text-3xl font-bold text-c900 mb-1">₦{displayData.escrowBalance.toLocaleString()}</h2>
-          <p className="text-sm text-gold font-medium flex items-center gap-1">
-            <AlertCircle className="w-4 h-4" /> Awaiting buyer confirmation
+          <div className="stat-card__value">₦{displayData.escrowBalance.toLocaleString()}</div>
+          <p className="text-xs text-gold font-bold flex items-center gap-1 mt-1">
+            <AlertCircle className="w-3 h-3" /> Awaiting buyer confirmation
           </p>
         </div>
 
         {/* Total Earnings */}
-        <div className="bg-white rounded-2xl shadow-sm border border-c100 p-6">
-          <div className="flex items-center justify-between mb-4">
-            <p className="font-bold text-c500">Total Lifetime Earnings</p>
-            <TrendingUp className="w-6 h-6 text-blue" />
+        <div className="stat-card">
+          <div className="stat-card__label flex items-center justify-between w-full">
+            Total Lifetime Earnings
+            <TrendingUp className="w-5 h-5 text-blue" />
           </div>
-          <h2 className="text-3xl font-bold text-c900 mb-1">₦{displayData.totalEarnings.toLocaleString()}</h2>
-          <p className="text-sm text-c500">Since joining Tutaly</p>
+          <div className="stat-card__value">₦{displayData.totalEarnings.toLocaleString()}</div>
+          <p className="text-xs text-c500 mt-1">Since joining Tutaly</p>
         </div>
       </div>
 
-      <div className="bg-white rounded-2xl shadow-sm border border-c100 overflow-hidden">
-        <div className="p-6 border-b border-c100 flex items-center gap-3">
-          <History className="w-5 h-5 text-c400" />
-          <h2 className="text-lg font-bold text-c900">Transaction History</h2>
+      <div className="dcard !p-0 overflow-hidden">
+        <div className="dcard__header">
+          <div className="dcard__title flex items-center gap-3">
+            <History className="w-5 h-5 text-c400" />
+            Transaction History
+          </div>
         </div>
         
         {displayData.recentTransactions.length === 0 ? (
@@ -187,6 +190,6 @@ alert(err.response?.data?.message || 'Failed to process withdrawal.');
           </div>
         )}
       </div>
-    </div>
+    </>
   );
 }

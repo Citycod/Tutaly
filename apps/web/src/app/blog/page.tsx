@@ -63,7 +63,7 @@ export default function BlogPage() {
               </div>
               <div className="p-6 flex flex-col flex-1">
                 <div className="text-goldH text-sm font-bold mb-3">Company News</div>
-                <h3 className="text-xl font-bold text-c100 mb-3 line-clamp-2">Introducing the Tutaly Mentorship Marketplace</h3>
+                <h3 className="text-xl font-bold text-c100 mb-3 line-clamp-2">Introducing the Tutaly Mentorship Shop</h3>
                 <p className="text-c400 text-sm mb-6 line-clamp-3 flex-1">Today we are launching a new way to connect with industry leaders for 1-on-1 coaching, resume reviews, and interview prep.</p>
                 <Link href="#" className="text-blue font-medium text-sm hover:text-blueL inline-flex items-center gap-1">Read article &rarr;</Link>
               </div>
