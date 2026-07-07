@@ -1,7 +1,11 @@
-import { Injectable, BadRequestException, NotFoundException } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { Subscription, SubscriptionStatus, PaymentGateway } from '../entities/subscription.entity';
+import {
+  Subscription,
+  SubscriptionStatus,
+  PaymentGateway,
+} from '../entities/subscription.entity';
 import { Invoice, InvoiceStatus } from '../entities/invoice.entity';
 import { PaymentGatewayFactory } from '../../shop/gateways/payment-gateway.factory';
 import { Currency } from '../../shop/entities/shop.entity';
@@ -39,7 +43,12 @@ export class BillingService {
     };
   }
 
-  async initializeSubscription(userId: string, planName: string, gatewayName: PaymentGateway, price: number) {
+  async initializeSubscription(
+    userId: string,
+    planName: string,
+    gatewayName: PaymentGateway,
+    price: number,
+  ) {
     const user = await this.userRepository.findOne({ where: { id: userId } });
     if (!user) throw new NotFoundException('User not found');
 
@@ -50,11 +59,11 @@ export class BillingService {
       status: SubscriptionStatus.PENDING_PAYMENT,
       paymentGateway: gatewayName,
     });
-    
+
     const savedSub = await this.subscriptionRepository.save(subscription);
-    
+
     const reference = `TUT-SUB-${Date.now()}-${crypto.randomBytes(4).toString('hex')}`;
-    
+
     savedSub.paymentRef = reference;
     await this.subscriptionRepository.save(savedSub);
 
@@ -96,7 +105,7 @@ export class BillingService {
     }
 
     subscription.status = SubscriptionStatus.ACTIVE;
-    
+
     const now = new Date();
     const nextMonth = new Date(now);
     nextMonth.setMonth(nextMonth.getMonth() + 1);
@@ -104,7 +113,7 @@ export class BillingService {
     subscription.currentPeriodStart = now;
     subscription.currentPeriodEnd = nextMonth;
     subscription.autoRenew = true;
-    
+
     await this.subscriptionRepository.save(subscription);
 
     const invoice = this.invoiceRepository.create({
@@ -116,7 +125,7 @@ export class BillingService {
       status: InvoiceStatus.PAID,
       paymentRef,
     });
-    
+
     await this.invoiceRepository.save(invoice);
 
     return subscription;
