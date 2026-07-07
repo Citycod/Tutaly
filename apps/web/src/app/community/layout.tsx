@@ -39,7 +39,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
       try {
         const token = localStorage.getItem('access_token');
         if (!token) return;
-        const res = await apiAuth.withToken(token).get('/connect/discover?limit=3');
+        const res = await apiAuth.withToken(token).get('/community/discover?limit=3');
         if (isMounted) {
           setSuggestedUsers(res.data?.data || []);
         }
@@ -56,16 +56,16 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
   }, []);
 
   const navItems = [
-    { name: 'Feed', href: '/connect', icon: Home },
-    { name: 'Discover', href: '/connect/discover', icon: Search },
-    { name: 'Messages', href: '/connect/messages', icon: MessageCircle },
-    { name: 'Notifications', href: '/connect/notifications', icon: Bell, badge: unreadCount },
-    { name: 'Network', href: '/connect/network', icon: Users },
+    { name: 'Feed', href: '/community', icon: Home },
+    { name: 'Discover', href: '/community/discover', icon: Search },
+    { name: 'Messages', href: '/community/messages', icon: MessageCircle },
+    { name: 'Notifications', href: '/community/notifications', icon: Bell, badge: unreadCount },
+    { name: 'Network', href: '/community/network', icon: Users },
   ];
 
   const sidebarLinks = [
-    { name: 'My Posts', href: '/connect/my-posts', icon: PenSquare },
-    { name: 'Saved Posts', href: '/connect/saved', icon: BookMarked },
+    { name: 'My Posts', href: '/community/my-posts', icon: PenSquare },
+    { name: 'Saved Posts', href: '/community/saved', icon: BookMarked },
   ];
 
   return (
@@ -140,7 +140,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
               <div className="space-y-4">
                 {suggestedUsers.map((user) => (
                   <div key={user.id} className="flex items-center gap-3 px-1">
-                    <Link href={`/connect/profile/${user.username || user.id}`} className="shrink-0">
+                    <Link href={`/community/profile/${user.username || user.id}`} className="shrink-0">
                       <div className="w-10 h-10 rounded-full bg-green flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
                         {user.avatar ? (
                           <img src={user.avatar} alt={user.firstName} className="w-full h-full object-cover" />
@@ -150,7 +150,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                       </div>
                     </Link>
                     <div className="flex-1 min-w-0">
-                      <Link href={`/connect/profile/${user.username || user.id}`} className="block">
+                      <Link href={`/community/profile/${user.username || user.id}`} className="block">
                         <p className="text-sm font-semibold text-c900 truncate">
                           {user.firstName} {user.lastName}
                         </p>
@@ -163,13 +163,13 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                   </div>
                 ))}
               </div>
-              <Link href="/connect/discover" className="block mt-4 text-center text-sm font-medium text-green hover:text-green transition-colors">
+              <Link href="/community/discover" className="block mt-4 text-center text-sm font-medium text-green hover:text-green transition-colors">
                 View more
               </Link>
             </div>
           )}
           
-          <SidebarAd placement="connect_sidebar" />
+          <SidebarAd placement="community_sidebar" />
         </div>
       </div>
 

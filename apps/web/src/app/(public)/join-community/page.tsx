@@ -4,8 +4,8 @@ import Link from 'next/link';
 import { Users, MessageSquare, Heart, CheckCircle2, ArrowRight } from 'lucide-react';
 
 export const metadata: Metadata = {
-  title: 'Join the Connect Community',
-  description: 'Network with Nigerian professionals, share your career journey, and discover new opportunities on Tutaly Connect.',
+  title: 'Join the Community Community',
+  description: 'Network with Nigerian professionals, share your career journey, and discover new opportunities on Tutaly Community.',
 };
 
 export default function JoinCommunityPage() {
@@ -19,13 +19,13 @@ export default function JoinCommunityPage() {
             Your Professional Network, Built for Nigeria
           </h1>
           <p className="text-xl text-c300 mb-10 max-w-2xl mx-auto font-light">
-            Tutaly Connect is a safe, transparent community where professionals share career advice, discuss salaries, and network without the noise.
+            Tutaly Community is a safe, transparent community where professionals share career advice, discuss salaries, and network without the noise.
           </p>
           <Link 
             href="/auth/signup?role=seeker" 
             className="inline-flex items-center justify-center gap-2 rounded-xl bg-blue px-8 py-4 text-lg font-bold text-white shadow-lg hover:bg-blue hover:-translate-y-1 transition-all"
           >
-            Join Connect for Free <ArrowRight className="w-5 h-5" />
+            Join Community for Free <ArrowRight className="w-5 h-5" />
           </Link>
           <div className="mt-8 flex items-center justify-center gap-8 text-sm text-c400 font-medium">
             <span className="flex items-center gap-2"><Users className="w-5 h-5 text-blueL" /> 10,000+ Members</span>
@@ -40,7 +40,7 @@ export default function JoinCommunityPage() {
           <div>
             <h2 className="text-3xl font-bold text-c900 mb-6">More Than Just a Job Board</h2>
             <p className="text-lg text-c600 mb-8">
-              We built Connect because we realized that the best career moves come from authentic conversations, not just applying to listings.
+              We built Community because we realized that the best career moves come from authentic conversations, not just applying to listings.
             </p>
             
             <div className="space-y-6">
@@ -87,7 +87,7 @@ export default function JoinCommunityPage() {
                 </div>
               </div>
               <p className="text-c700 text-lg italic mb-6">
-                "Before an interview, I asked the Connect community what to expect from the technical round. Three current employees gave me tips that helped me land the job. It's the most helpful platform I've used."
+                "Before an interview, I asked the Community what to expect from the technical round. Three current employees gave me tips that helped me land the job. It's the most helpful platform I've used."
               </p>
               <div className="flex items-center gap-2 text-sm text-c500 font-medium">
                 <CheckCircle2 className="w-4 h-4 text-green" /> Verified Member

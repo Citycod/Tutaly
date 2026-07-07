@@ -93,7 +93,7 @@ setError(err.response?.data?.message || err.message || 'Failed to create ad');
                 <option value="homepage_sidebar">Homepage Sidebar</option>
                 <option value="jobs_sidebar">Jobs Sidebar</option>
                 <option value="shop_top">Shop Top</option>
-                <option value="connect_sidebar">Connect Sidebar</option>
+                <option value="community_sidebar">Community Sidebar</option>
               </select>
             </div>
           </div>

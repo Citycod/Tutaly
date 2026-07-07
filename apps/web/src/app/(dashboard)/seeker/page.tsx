@@ -20,7 +20,7 @@ export default function SeekerOverviewPage() {
           </div>
           <div>
             <div className="ad-banner__title">Get seen by more employers</div>
-            <div className="ad-banner__desc">Run a targeted ad to promote your profile or marketplace listings — starts at ₦5,000.</div>
+            <div className="ad-banner__desc">Run a targeted ad to promote your profile or shop listings — starts at ₦5,000.</div>
           </div>
         </div>
         <div className="ad-banner__cta">

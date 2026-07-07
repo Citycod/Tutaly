@@ -27,7 +27,7 @@ export default function SavedPostsPage() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
       // Note: we assume the backend returns saved posts populated correctly
-      const res = await apiAuth.withToken(token).get(`/connect/posts/saved?page=${pageNum}&limit=10`);
+      const res = await apiAuth.withToken(token).get(`/community/posts/saved?page=${pageNum}&limit=10`);
       const newPosts = res.data?.data || [];
       if (newPosts.length < 10) setHasMore(false);
       
@@ -53,7 +53,7 @@ export default function SavedPostsPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).delete(`/connect/posts/${postId}/save`);
+      await apiAuth.withToken(token).delete(`/community/posts/${postId}/save`);
       setPosts(prev => prev.filter(p => p.id !== postId));
     } catch (err) {}
   };
@@ -97,14 +97,14 @@ export default function SavedPostsPage() {
           <p className="text-c500 text-sm max-w-sm mx-auto">
             You haven't saved any posts yet. Bookmark interesting posts from your feed to find them here.
           </p>
-          <Link href="/connect" className="mt-6 inline-block text-sm font-semibold text-green bg-green hover:bg-green px-5 py-2.5 rounded-xl transition-colors">
+          <Link href="/community" className="mt-6 inline-block text-sm font-semibold text-green bg-green hover:bg-green px-5 py-2.5 rounded-xl transition-colors">
             Go to Feed
           </Link>
         </div>
       ) : (
         <div className="space-y-4">
           {posts.map((post) => {
-            const authorProfileLink = `/connect/profile/${post.author.username || post.author.id}`;
+            const authorProfileLink = `/community/profile/${post.author.username || post.author.id}`;
             const displayImage = post.imageUrls?.[0] || post.imageUrl;
 
             return (

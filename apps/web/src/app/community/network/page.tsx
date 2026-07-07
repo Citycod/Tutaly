@@ -34,9 +34,9 @@ export default function NetworkPage() {
       if (!token) return;
 
       const [followersRes, followingRes, pendingRes] = await Promise.all([
-        apiAuth.withToken(token).get('/connect/followers?limit=50'),
-        apiAuth.withToken(token).get('/connect/following?limit=50'),
-        apiAuth.withToken(token).get('/connect/follow/pending?limit=50'),
+        apiAuth.withToken(token).get('/community/followers?limit=50'),
+        apiAuth.withToken(token).get('/community/following?limit=50'),
+        apiAuth.withToken(token).get('/community/follow/pending?limit=50'),
       ]);
 
       setFollowers(followersRes.data?.data || []);
@@ -60,7 +60,7 @@ export default function NetworkPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).patch(`/connect/follow/${followerId}/accept`);
+      await apiAuth.withToken(token).patch(`/community/follow/${followerId}/accept`);
       fetchData();
     } catch (err) {
       console.error('Failed to accept follow', err);
@@ -71,7 +71,7 @@ export default function NetworkPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).patch(`/connect/follow/${followerId}/reject`);
+      await apiAuth.withToken(token).patch(`/community/follow/${followerId}/reject`);
       fetchData();
     } catch (err) {
       console.error('Failed to reject follow', err);
@@ -82,7 +82,7 @@ export default function NetworkPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).delete(`/connect/follow/${userId}`);
+      await apiAuth.withToken(token).delete(`/community/follow/${userId}`);
       fetchData();
     } catch (err) {
       console.error('Failed to unfollow', err);

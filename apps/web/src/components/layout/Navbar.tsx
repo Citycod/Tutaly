@@ -50,7 +50,7 @@ export default function Navbar() {
       const fetchNotifications = async () => {
         try {
           const token = localStorage.getItem('access_token');
-          const res = await apiAuth.withToken(token!).get('/connect/notifications');
+          const res = await apiAuth.withToken(token!).get('/community/notifications');
           const notifs = res.data?.data || [];
           setNotifications(notifs);
           setUnreadCount(notifs.filter((n: any) => !n.isRead).length);
@@ -75,7 +75,7 @@ export default function Navbar() {
     event.stopPropagation();
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token!).patch(`/connect/notifications/${id}/read`);
+      await apiAuth.withToken(token!).patch(`/community/notifications/${id}/read`);
       setNotifications(prev => prev.map(n => n.id === id ? { ...n, isRead: true } : n));
       setUnreadCount(prev => Math.max(0, prev - 1));
     } catch {}
@@ -83,10 +83,10 @@ export default function Navbar() {
 
   const getNotifLink = (type: string, referenceId: string) => {
     switch (type) {
-      case 'FOLLOW': return `/connect/profile/${referenceId}`;
+      case 'FOLLOW': return `/community/profile/${referenceId}`;
       case 'COMMENT':
-      case 'LIKE': return `/connect`;
-      default: return `/connect`;
+      case 'LIKE': return `/community`;
+      default: return `/community`;
     }
   };
 
@@ -104,8 +104,8 @@ export default function Navbar() {
             <li><Link href="/jobs" className={isActive("/jobs")}>Jobs</Link></li>
             <li><Link href="/salaries" className={isActive("/salaries")}>Salaries</Link></li>
             <li><Link href="/reviews" className={isActive("/reviews")}>Reviews</Link></li>
-            <li><Link href="/shop" className={isActive("/shop")}>Marketplace</Link></li>
-            <li><Link href="/connect" className={isActive("/connect")}>Connect</Link></li>
+            <li><Link href="/shop" className={isActive("/shop")}>Shop</Link></li>
+            <li><Link href="/community" className={isActive("/community")}>Community</Link></li>
           </ul>
 
           <div className="nav__actions">
@@ -202,8 +202,8 @@ export default function Navbar() {
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/jobs" className="text-c200 font-medium">Jobs</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/salaries" className="text-c200 font-medium">Salaries</Link>
             <Link onClick={() => setIsMobileMenuOpen(false)} href="/reviews" className="text-c200 font-medium">Reviews</Link>
-            <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop" className="text-c200 font-medium">Marketplace</Link>
-            <Link onClick={() => setIsMobileMenuOpen(false)} href="/connect" className="text-c200 font-medium">Connect</Link>
+            <Link onClick={() => setIsMobileMenuOpen(false)} href="/shop" className="text-c200 font-medium">Shop</Link>
+            <Link onClick={() => setIsMobileMenuOpen(false)} href="/community" className="text-c200 font-medium">Community</Link>
             <div className="border-t border-c700 mt-2 pt-2 flex flex-col gap-2">
               {isAuthenticated ? (
                 <Link onClick={() => setIsMobileMenuOpen(false)} href="/dashboard" className="btn btn--primary text-center">Dashboard</Link>

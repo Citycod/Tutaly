@@ -51,14 +51,14 @@ export default function ShopPage() {
     <div className="page-shell">
       <header className="page-header">
         <div className="container">
-          <div className="page-header__eyebrow">Marketplace</div>
+          <div className="page-header__eyebrow">Shop</div>
           <h1 className="page-header__title">Career resources built for you.</h1>
           <p className="page-header__sub">Resume templates, courses, salary reports, and guides — from people who've done it.</p>
         </div>
       </header>
 
       <div className="container" style={{ padding: '28px 0 80px' }}>
-        <div className="category-rail" role="list" aria-label="Marketplace categories">
+        <div className="category-rail" role="list" aria-label="Shop categories">
           <span 
             className={`cat-pill ${!listingType ? 'active' : ''}`} 
             role="listitem"
@@ -82,7 +82,7 @@ export default function ShopPage() {
           <p className="results-count"><strong>{total}</strong> resources</p>
           <div className="results-sort">
             Sort by
-            <select aria-label="Sort marketplace items">
+            <select aria-label="Sort shop items">
               <option>Bestselling</option>
               <option>Highest rated</option>
               <option>Newest</option>
@@ -128,7 +128,7 @@ export default function ShopPage() {
         )}
 
         {total > 12 && (
-          <nav className="pagination" aria-label="Marketplace results pages">
+          <nav className="pagination" aria-label="Shop results pages">
             <button 
               className="page-btn" 
               disabled={page === 1}

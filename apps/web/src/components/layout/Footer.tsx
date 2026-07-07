@@ -29,8 +29,8 @@ export default function Footer() {
               <li><Link href="/jobs">Find jobs</Link></li>
               <li><Link href="/salaries">Salary check</Link></li>
               <li><Link href="/reviews">Company reviews</Link></li>
-              <li><Link href="/connect">Network</Link></li>
-              <li><Link href="/shop">Marketplace</Link></li>
+              <li><Link href="/community">Network</Link></li>
+              <li><Link href="/shop">Shop</Link></li>
             </ul>
           </nav>
           <nav aria-label="For employers">

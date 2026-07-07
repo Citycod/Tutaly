@@ -318,12 +318,12 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* ── MARKETPLACE ─────────────────────────────────────────────── */}
-      <section className="section section--alt" id="marketplace" aria-labelledby="market-title">
+      {/* ── SHOP ─────────────────────────────────────────────── */}
+      <section className="section section--alt" id="shop" aria-labelledby="market-title">
         <div className="container">
           <div className="reveal visible flex items-end justify-between mb-12 flex-wrap gap-5">
             <div>
-              <div className="section__label">Marketplace</div>
+              <div className="section__label">Shop</div>
               <h2 className="section__title mb-0" id="market-title">Career resources built for you.</h2>
             </div>
             <Link href="/shop" className="btn btn--ghost">Browse all resources</Link>

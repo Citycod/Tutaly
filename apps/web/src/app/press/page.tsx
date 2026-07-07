@@ -37,7 +37,7 @@ export default function PressPage() {
 
                 <article className="border-b border-c700 pb-6">
                   <div className="text-c400 text-sm mb-2">March 22, 2024</div>
-                  <h3 className="text-xl font-bold text-c100 mb-3"><Link href="#" className="hover:text-blue transition-colors">Tutaly Launches Mentorship Marketplace to Bridge the Gap Between Talent and Opportunity</Link></h3>
+                  <h3 className="text-xl font-bold text-c100 mb-3"><Link href="#" className="hover:text-blue transition-colors">Tutaly Launches Mentorship Shop to Bridge the Gap Between Talent and Opportunity</Link></h3>
                   <p className="text-c300 mb-4">A new platform feature allows professionals to book 1-on-1 sessions with industry leaders for coaching and interview preparation.</p>
                   <Link href="#" className="text-blue font-medium text-sm hover:text-blueL inline-flex items-center gap-1">Read full release &rarr;</Link>
                 </article>

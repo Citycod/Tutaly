@@ -7,13 +7,13 @@ import {
   Plus, CheckCircle2, Loader2, Clock, Edit2, Archive
 } from 'lucide-react';
 
-const STATUS_MAP: Record<string, { label: string; color: string; style?: React.CSSProperties }> = {
-  pending_payment: { label: 'Awaiting Payment', color: '', style: { background: 'rgba(201,162,39,0.18)', color: 'var(--gold-h)' } },
-  paid: { label: 'Paid', color: '', style: { background: 'rgba(29,122,58,0.18)', color: '#2DB85A' } },
-  delivered: { label: 'Delivered', color: '', style: { background: 'rgba(27,79,158,0.18)', color: 'var(--blue-l)' } },
-  completed: { label: 'Completed', color: '', style: { background: 'rgba(29,122,58,0.18)', color: '#2DB85A' } },
-  flagged: { label: 'Flagged (Review)', color: '', style: { background: 'rgba(204,43,43,0.18)', color: '#F05050' } },
-  refunded: { label: 'Refunded', color: '', style: { background: 'rgba(255,255,255,0.1)', color: 'var(--c-500)' } },
+const STATUS_MAP: Record<string, { label: string; class: string }> = {
+  pending_payment: { label: 'Awaiting Payment', class: 'status-badge status-badge--pending' },
+  paid: { label: 'Paid', class: 'status-badge status-badge--success' },
+  delivered: { label: 'Delivered', class: 'status-badge status-badge--primary' },
+  completed: { label: 'Completed', class: 'status-badge status-badge--success' },
+  flagged: { label: 'Flagged', class: 'status-badge status-badge--error' },
+  refunded: { label: 'Refunded', class: 'status-badge status-badge--muted' },
 };
 
 export default function SellerShopPage() {
@@ -83,8 +83,8 @@ export default function SellerShopPage() {
 
   if (loading) {
     return (
-      <div style={{ padding: '60px 24px', textAlign: 'center', color: 'var(--c-500)' }}>
-        Loading dashboard...
+      <div className="dash-empty mt-8">
+        <Loader2 className="w-8 h-8 animate-spin text-c400" />
       </div>
     );
   }
@@ -98,8 +98,8 @@ export default function SellerShopPage() {
 
   if (sellerStatus === 'pending') {
     return (
-      <div className="dash-empty" style={{ marginTop: '40px' }}>
-        <div className="dash-empty__icon" style={{ background: 'var(--gold-l)', color: 'var(--gold)' }}><Clock size={28} /></div>
+      <div className="dash-empty mt-10">
+        <div className="dash-empty__icon !bg-gold text-goldH"><Clock size={28} /></div>
         <div className="dash-empty__title">Application Under Review</div>
         <div className="dash-empty__desc">
           Your seller application is being reviewed by the Tutaly team. You'll be notified once a decision is made.
@@ -115,17 +115,19 @@ export default function SellerShopPage() {
 
   return (
     <>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '24px' }}>
-        <div>
-          <h1 className="section__title" style={{ fontSize: '24px', marginBottom: '4px' }}>Seller Dashboard</h1>
-          <p className="section__subtitle" style={{ marginBottom: 0 }}>Manage your listings and fulfil orders.</p>
+      <div className="page-header">
+        <div className="page-header__title">
+          <h1 className="text-2xl font-bold text-c900 mb-1">Seller Dashboard</h1>
+          <p className="text-c500 text-sm">Manage your listings and fulfil orders.</p>
         </div>
-        <Link href="/seller/create" className="btn btn--primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-          <Plus className="w-4 h-4" /> New Listing
-        </Link>
+        <div className="page-header__actions">
+          <Link href="/seller/create" className="btn btn--primary">
+            <Plus className="w-4 h-4 mr-2" /> New Listing
+          </Link>
+        </div>
       </div>
 
-      <div className="stat-grid">
+      <div className="stat-grid mb-6">
         <div className="stat-card">
           <div className="stat-card__label">Active Listings</div>
           <div className="stat-card__value">{products.filter(p => p.isActive).length}</div>
@@ -136,56 +138,56 @@ export default function SellerShopPage() {
         </div>
         <div className="stat-card">
           <div className="stat-card__label">Total Earnings</div>
-          <div className="stat-card__value" style={{ color: 'var(--green)' }}>{formatPrice(totalRevenue)}</div>
+          <div className="stat-card__value text-green">{formatPrice(totalRevenue)}</div>
         </div>
       </div>
 
       <div className="overview-grid">
         
-        {/* Recent Orders Col */}
         <div className="dcard">
-          <div className="dcard__header">
+          <div className="dcard__header flex justify-between items-center mb-4">
             <div>
-              <div className="dcard__title">Recent Orders</div>
-              <div className="dcard__sub">Latest purchases from buyers</div>
+              <div className="dcard__title font-bold text-c900">Recent Orders</div>
+              <div className="dcard__sub text-sm text-c500">Latest purchases from buyers</div>
             </div>
-            <Link href="/seller/orders" style={{ fontSize: '13px', color: 'var(--blue-l)', fontWeight: 600 }}>View all</Link>
+            <Link href="/seller/orders" className="text-sm font-semibold text-blue hover:text-blueH">View all</Link>
           </div>
 
           {orders.length === 0 ? (
-            <div className="dash-empty" style={{ padding: '40px 20px' }}>
-              <div className="dash-empty__title" style={{ color: 'var(--c-500)' }}>No orders yet</div>
+            <div className="dash-empty py-10">
+              <div className="dash-empty__title text-c500">No orders yet</div>
             </div>
           ) : (
             <div>
               {orders.slice(0, 5).map((order: any) => {
                 const statusInfo = STATUS_MAP[order.status] || STATUS_MAP.pending_payment;
                 return (
-                  <div key={order.id} className="order-row">
-                    <div className="order-row__thumb" style={{ background: 'var(--blue-l)' }}>📄</div>
-                    <div className="order-row__body">
-                      <div className="order-row__title">{order.product?.title || 'Unknown Product'}</div>
-                      <div className="order-row__meta">
-                        Purchased by {order.buyer?.firstName || order.buyer?.email} · {new Date(order.createdAt).toLocaleDateString()}
+                  <div key={order.id} className="order-row flex items-center justify-between p-3 hover:bg-c50 border-b border-c100 last:border-0 rounded-lg">
+                    <div className="flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-full bg-blueL text-blue flex items-center justify-center font-bold text-lg">📄</div>
+                      <div>
+                        <div className="font-semibold text-c900">{order.product?.title || 'Unknown Product'}</div>
+                        <div className="text-xs text-c500">
+                          Purchased by {order.buyer?.firstName || order.buyer?.email} · {new Date(order.createdAt).toLocaleDateString()}
+                        </div>
                       </div>
                     </div>
-                    <div className="order-row__status">
-                      <span style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', ...statusInfo.style }}>
+                    <div className="flex items-center gap-4">
+                      <span className={statusInfo.class}>
                         {statusInfo.label}
                       </span>
+                      <div className="font-bold text-c900 w-24 text-right shrink-0">{formatPrice(order.amountPaid, order.currency)}</div>
+                      
+                      {order.status === 'paid' && (
+                        <button
+                          onClick={() => handleMarkDelivered(order.id)}
+                          disabled={deliveringId === order.id}
+                          className="btn btn--sm btn--primary ml-2 w-32 shrink-0"
+                        >
+                          {deliveringId === order.id ? <Loader2 className="w-4 h-4 animate-spin mx-auto" /> : 'Mark Delivered'}
+                        </button>
+                      )}
                     </div>
-                    <div className="order-row__price">{formatPrice(order.amountPaid, order.currency)}</div>
-                    
-                    {order.status === 'paid' && (
-                      <button
-                        onClick={() => handleMarkDelivered(order.id)}
-                        disabled={deliveringId === order.id}
-                        className="btn btn--sm"
-                        style={{ marginLeft: '12px', background: 'var(--green-l)', color: 'var(--green)', borderColor: 'transparent' }}
-                      >
-                        {deliveringId === order.id ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Mark Delivered'}
-                      </button>
-                    )}
                   </div>
                 );
               })}
@@ -193,38 +195,39 @@ export default function SellerShopPage() {
           )}
         </div>
 
-        {/* Listings Col */}
         <div className="dcard">
-          <div className="dcard__header">
-            <div>
-              <div className="dcard__title">Your Listings</div>
-              <div className="dcard__sub">Manage products</div>
-            </div>
+          <div className="dcard__header mb-4">
+            <div className="dcard__title font-bold text-c900">Your Listings</div>
+            <div className="dcard__sub text-sm text-c500">Manage products</div>
           </div>
 
           {products.length === 0 ? (
-            <div className="dash-empty" style={{ padding: '40px 20px' }}>
-              <div className="dash-empty__title" style={{ color: 'var(--c-500)' }}>No listings yet</div>
+            <div className="dash-empty py-10">
+              <div className="dash-empty__title text-c500">No listings yet</div>
             </div>
           ) : (
             <div>
               {products.map((product: any) => (
-                <div key={product.id} className="listing-row">
-                  <div className="listing-row__thumb" style={{ background: 'var(--gold-l)' }}>🎓</div>
-                  <div className="listing-row__body">
-                    <div className="listing-row__title">{product.title}</div>
-                    <div className="listing-row__meta">
-                      Published {new Date(product.createdAt).toLocaleDateString()} · {product.isActive ? 'Active' : 'Inactive'}
+                <div key={product.id} className="flex items-center justify-between p-3 hover:bg-c50 border-b border-c100 last:border-0 rounded-lg">
+                  <div className="flex items-center gap-3">
+                    <div className="w-10 h-10 rounded-full bg-gold text-goldH flex items-center justify-center font-bold text-lg">🎓</div>
+                    <div>
+                      <div className="font-semibold text-c900">{product.title}</div>
+                      <div className="text-xs text-c500">
+                        Published {new Date(product.createdAt).toLocaleDateString()} · {product.isActive ? 'Active' : 'Inactive'}
+                      </div>
                     </div>
                   </div>
-                  <div className="listing-row__sales">
-                    <div className="listing-row__sales-num">{product.salesCount || 0}</div>
-                    <div className="listing-row__sales-label">Sold</div>
-                  </div>
-                  <div className="listing-row__price">{formatPrice(product.price, product.currency)}</div>
-                  <div className="listing-row__actions">
-                    <button className="dash-icon-btn" title="Edit Listing"><Edit2 className="w-4 h-4" /></button>
-                    <button className="dash-icon-btn" title="Archive"><Archive className="w-4 h-4" /></button>
+                  <div className="flex items-center gap-6">
+                    <div className="text-center">
+                      <div className="font-bold text-c900">{product.salesCount || 0}</div>
+                      <div className="text-xs text-c500">Sold</div>
+                    </div>
+                    <div className="font-bold text-green w-24 text-right shrink-0">{formatPrice(product.price, product.currency)}</div>
+                    <div className="flex gap-2">
+                      <button className="p-2 text-c400 hover:text-green transition-colors" title="Edit Listing"><Edit2 className="w-4 h-4" /></button>
+                      <button className="p-2 text-c400 hover:text-red transition-colors" title="Archive"><Archive className="w-4 h-4" /></button>
+                    </div>
                   </div>
                 </div>
               ))}

@@ -14,6 +14,7 @@ import { SalaryModule } from './modules/salary/salary.module';
 import { SupportModule } from './modules/support/support.module';
 import { AdminModule } from './modules/admin/admin.module';
 import { AdsModule } from './modules/ads/ads.module';
+import { BillingModule } from './modules/billing/billing.module';
 import { ThrottlerModule, ThrottlerGuard } from '@nestjs/throttler';
 import { APP_GUARD } from '@nestjs/core';
 
@@ -71,6 +72,7 @@ import { APP_GUARD } from '@nestjs/core';
     SupportModule,
     AdminModule,
     AdsModule,
+    BillingModule,
     ThrottlerModule.forRoot([
       {
         name: 'short',

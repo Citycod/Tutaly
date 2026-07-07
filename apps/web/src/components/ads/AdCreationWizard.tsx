@@ -124,7 +124,7 @@ export default function AdCreationWizard() {
       }
 
       const placements = formData.placementType === 'automatic' 
-        ? ['homepage_top', 'jobs_sidebar', 'connect_sidebar', 'shop_top'] 
+        ? ['homepage_top', 'jobs_sidebar', 'community_sidebar', 'shop_top'] 
         : formData.placements;
 
       const payload = {
@@ -154,7 +154,7 @@ export default function AdCreationWizard() {
       if (res.data?.payment?.redirectUrl) {
         window.location.href = res.data.payment.redirectUrl;
       } else {
-        router.push('/admin/ads?success=true');
+        router.push('/advertise/dashboard?success=true');
       }
     } catch (err: any) {
       alert(err.response?.data?.message || 'Failed to create campaign');
@@ -164,39 +164,39 @@ export default function AdCreationWizard() {
 
   const renderStepsNav = () => (
     <div className="flex flex-col space-y-4">
-      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'campaign' ? 'bg-white border-green shadow-sm' : 'border-transparent text-c500 hover:bg-c100 cursor-pointer'}`} onClick={() => setCurrentStep('campaign')}>
+      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'campaign' ? 'bg-c800 border-green' : 'border-transparent text-c500 hover:bg-c800/50 cursor-pointer'}`} onClick={() => setCurrentStep('campaign')}>
         <div className="flex items-center gap-3">
           <Target className={`w-5 h-5 ${currentStep === 'campaign' ? 'text-green' : 'text-c400'}`} />
           <div className="text-left">
-            <h3 className={`font-bold ${currentStep === 'campaign' ? 'text-c900' : 'text-c600'}`}>1. Campaign</h3>
-            <p className="text-xs text-c500">Objective & Goals</p>
+            <h3 className={`font-bold ${currentStep === 'campaign' ? 'text-c100' : 'text-c500'}`}>1. Campaign</h3>
+            <p className="text-xs text-c400">Objective & Goals</p>
           </div>
         </div>
       </div>
-      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'adset' ? 'bg-white border-green shadow-sm' : 'border-transparent text-c500 hover:bg-c100 cursor-pointer'}`} onClick={() => setCurrentStep('adset')}>
+      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'adset' ? 'bg-c800 border-green' : 'border-transparent text-c500 hover:bg-c800/50 cursor-pointer'}`} onClick={() => setCurrentStep('adset')}>
         <div className="flex items-center gap-3">
           <Users className={`w-5 h-5 ${currentStep === 'adset' ? 'text-green' : 'text-c400'}`} />
           <div className="text-left">
-            <h3 className={`font-bold ${currentStep === 'adset' ? 'text-c900' : 'text-c600'}`}>2. Ad Set</h3>
-            <p className="text-xs text-c500">Audience & Budget</p>
+            <h3 className={`font-bold ${currentStep === 'adset' ? 'text-c100' : 'text-c500'}`}>2. Ad Set</h3>
+            <p className="text-xs text-c400">Audience & Budget</p>
           </div>
         </div>
       </div>
-      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'ad' ? 'bg-white border-green shadow-sm' : 'border-transparent text-c500 hover:bg-c100 cursor-pointer'}`} onClick={() => setCurrentStep('ad')}>
+      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'ad' ? 'bg-c800 border-green' : 'border-transparent text-c500 hover:bg-c800/50 cursor-pointer'}`} onClick={() => setCurrentStep('ad')}>
         <div className="flex items-center gap-3">
           <LayoutTemplate className={`w-5 h-5 ${currentStep === 'ad' ? 'text-green' : 'text-c400'}`} />
           <div className="text-left">
-            <h3 className={`font-bold ${currentStep === 'ad' ? 'text-c900' : 'text-c600'}`}>3. Ad</h3>
-            <p className="text-xs text-c500">Creative & Format</p>
+            <h3 className={`font-bold ${currentStep === 'ad' ? 'text-c100' : 'text-c500'}`}>3. Ad</h3>
+            <p className="text-xs text-c400">Creative & Format</p>
           </div>
         </div>
       </div>
-      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'review' ? 'bg-white border-green shadow-sm' : 'border-transparent text-c500 hover:bg-c100 cursor-pointer'}`} onClick={() => setCurrentStep('review')}>
+      <div className={`p-4 rounded-xl border-l-4 transition-all ${currentStep === 'review' ? 'bg-c800 border-green' : 'border-transparent text-c500 hover:bg-c800/50 cursor-pointer'}`} onClick={() => setCurrentStep('review')}>
         <div className="flex items-center gap-3">
           <CheckCircle className={`w-5 h-5 ${currentStep === 'review' ? 'text-green' : 'text-c400'}`} />
           <div className="text-left">
-            <h3 className={`font-bold ${currentStep === 'review' ? 'text-c900' : 'text-c600'}`}>4. Review</h3>
-            <p className="text-xs text-c500">Launch & Pay</p>
+            <h3 className={`font-bold ${currentStep === 'review' ? 'text-c100' : 'text-c500'}`}>4. Review</h3>
+            <p className="text-xs text-c400">Launch & Pay</p>
           </div>
         </div>
       </div>
@@ -204,8 +204,8 @@ export default function AdCreationWizard() {
   );
 
   const renderEstimator = () => (
-    <div className="bg-white rounded-xl shadow-sm border border-c200 p-6 sticky top-24">
-      <h3 className="font-bold text-c900 flex items-center gap-2 mb-4">
+    <div className="dcard p-6 sticky top-24">
+      <h3 className="font-bold text-c100 flex items-center gap-2 mb-4">
         <Users className="w-5 h-5 text-green" /> Audience Definition
       </h3>
       
@@ -217,26 +217,26 @@ export default function AdCreationWizard() {
         <div className="space-y-6">
           <div>
             <div className="flex justify-between text-sm mb-1">
-              <span className="text-c500">Audience Size</span>
-              <span className="font-bold text-c900">
+              <span className="text-c400">Audience Size</span>
+              <span className="font-bold text-c100">
                 {estimation?.audience_size ? (estimation.audience_size > 1000000 ? `${(estimation.audience_size/1000000).toFixed(1)}M` : `${(estimation.audience_size/1000).toFixed(1)}K`) : '--'}
               </span>
             </div>
-            <div className="h-2 w-full bg-c100 rounded-full overflow-hidden">
-              <div className="h-full bg-gold shadow-glow-gold w-3/5 mx-auto"></div>
+            <div className="h-2 w-full bg-c800 rounded-full overflow-hidden">
+              <div className="h-full bg-gold w-3/5 mx-auto"></div>
             </div>
             <p className="text-xs text-c400 mt-2 text-center">Your audience selection is broad enough.</p>
           </div>
 
-          <div className="pt-4 border-t border-c100">
-            <h4 className="text-sm font-bold text-c900 mb-3">Estimated Daily Results</h4>
+          <div className="pt-4 border-t border-c700">
+            <h4 className="text-sm font-bold text-c100 mb-3">Estimated Daily Results</h4>
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-sm text-c600">Reach</span>
-                <span className="font-bold text-c900">{estimation?.estimated_daily_reach?.toLocaleString() || '--'}</span>
+                <span className="text-sm text-c400">Reach</span>
+                <span className="font-bold text-c100">{estimation?.estimated_daily_reach?.toLocaleString() || '--'}</span>
               </div>
               <div className="flex items-center justify-between">
-                <span className="text-sm text-c600">Clicks</span>
+                <span className="text-sm text-c400">Clicks</span>
                 <span className="font-bold text-green">{estimation?.estimated_daily_clicks?.toLocaleString() || '--'}</span>
               </div>
             </div>
@@ -251,12 +251,12 @@ export default function AdCreationWizard() {
   );
 
   return (
-    <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 py-6">
+    <div className="max-w-7xl mx-auto flex flex-col md:flex-row gap-8 py-6 px-4">
       
       {/* Left Sidebar - Navigation */}
       <div className="w-full md:w-64 shrink-0 hidden md:block">
         <div className="sticky top-24">
-          <h2 className="text-xl font-bold text-c900 mb-6">Create Ad</h2>
+          <h2 className="text-xl font-bold text-c100 mb-6">Create Ad</h2>
           {renderStepsNav()}
         </div>
       </div>
@@ -264,10 +264,10 @@ export default function AdCreationWizard() {
       {/* Main Content Area */}
       <div className="flex-1">
         {currentStep === 'campaign' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-c200 overflow-hidden">
-            <div className="p-6 border-b border-c100">
-              <h2 className="text-2xl font-bold text-c900">Campaign Objective</h2>
-              <p className="text-c500 mt-1">Choose the business goal that matters most to you.</p>
+          <div className="dcard p-0 overflow-hidden">
+            <div className="p-6 border-b border-c700">
+              <h2 className="text-2xl font-bold text-c100">Campaign Objective</h2>
+              <p className="text-c400 mt-1">Choose the business goal that matters most to you.</p>
             </div>
             <div className="p-6 space-y-6">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
@@ -280,33 +280,33 @@ export default function AdCreationWizard() {
                   <div 
                     key={obj.id}
                     onClick={() => updateForm('goal', obj.id)}
-                    className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${formData.goal === obj.id ? 'border-green bg-green/50' : 'border-c200 hover:border-green'}`}
+                    className={`p-5 rounded-xl border-2 cursor-pointer transition-all ${formData.goal === obj.id ? 'border-green bg-green/10' : 'border-c700 hover:border-green'}`}
                   >
-                    <obj.icon className={`w-8 h-8 mb-3 ${formData.goal === obj.id ? 'text-green' : 'text-c400'}`} />
-                    <h3 className={`font-bold text-lg mb-1 ${formData.goal === obj.id ? 'text-green' : 'text-c900'}`}>{obj.title}</h3>
-                    <p className="text-sm text-c500 leading-relaxed">{obj.desc}</p>
+                    <obj.icon className={`w-8 h-8 mb-3 ${formData.goal === obj.id ? 'text-green' : 'text-c500'}`} />
+                    <h3 className={`font-bold text-lg mb-1 ${formData.goal === obj.id ? 'text-green' : 'text-c100'}`}>{obj.title}</h3>
+                    <p className="text-sm text-c400 leading-relaxed">{obj.desc}</p>
                   </div>
                 ))}
               </div>
 
-              <div className="mt-8 pt-6 border-t border-c100">
+              <div className="mt-8 pt-6 border-t border-c700">
                 <div className="flex items-start gap-3">
                   <input 
                     type="checkbox" 
                     id="specialCategory"
                     checked={formData.isSpecialAdCategory}
                     onChange={(e) => updateForm('isSpecialAdCategory', e.target.checked)}
-                    className="mt-1 w-4 h-4 text-green border-c300 rounded focus:ring-green"
+                    className="mt-1 w-4 h-4 text-green border-c700 bg-c800 rounded focus:ring-green"
                   />
                   <label htmlFor="specialCategory" className="cursor-pointer">
-                    <span className="font-bold text-c900 block">Declare Special Ad Category</span>
-                    <span className="text-sm text-c500">Check this if your ad is related to Employment, Housing, or Credit to comply with targeting policies.</span>
+                    <span className="font-bold text-c100 block">Declare Special Ad Category</span>
+                    <span className="text-sm text-c400">Check this if your ad is related to Employment, Housing, or Credit to comply with targeting policies.</span>
                   </label>
                 </div>
               </div>
             </div>
-            <div className="p-4 bg-c100 border-t border-c100 flex justify-end">
-              <button onClick={() => setCurrentStep('adset')} className="px-6 py-2.5 bg-green text-white font-bold rounded-lg hover:bg-green transition-colors">
+            <div className="p-4 bg-c800 border-t border-c700 flex justify-end">
+              <button onClick={() => setCurrentStep('adset')} className="btn btn--primary">
                 Next: Ad Set
               </button>
             </div>
@@ -314,47 +314,47 @@ export default function AdCreationWizard() {
         )}
 
         {currentStep === 'adset' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-c200 overflow-hidden">
-            <div className="p-6 border-b border-c100">
-              <h2 className="text-2xl font-bold text-c900">Audience & Budget</h2>
-              <p className="text-c500 mt-1">Define who you want to see your ads and how much you want to spend.</p>
+          <div className="dcard p-0 overflow-hidden">
+            <div className="p-6 border-b border-c700">
+              <h2 className="text-2xl font-bold text-c100">Audience & Budget</h2>
+              <p className="text-c400 mt-1">Define who you want to see your ads and how much you want to spend.</p>
             </div>
             <div className="p-6 space-y-8">
               
               {/* Budget */}
               <section>
-                <h3 className="text-lg font-bold text-c900 mb-4">Budget & Schedule</h3>
+                <h3 className="text-lg font-bold text-c100 mb-4">Budget & Schedule</h3>
                 <div className="space-y-4">
                   <div>
-                    <label className="block text-sm font-medium text-c700 mb-1">Daily Budget (₦)</label>
+                    <label className="block text-sm font-medium text-c300 mb-1">Daily Budget (₦)</label>
                     <input 
                       type="number" 
                       min="1000"
                       value={formData.daily_budget}
                       onChange={(e) => updateForm('daily_budget', Math.max(1000, Number(e.target.value)))}
-                      className="w-full max-w-xs px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green focus:border-green"
+                      className="input w-full max-w-xs"
                     />
                     <p className="text-xs text-c500 mt-1">Minimum budget is ₦1,000 per day.</p>
                   </div>
                   
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-w-lg">
                     <div>
-                      <label className="block text-sm font-medium text-c700 mb-1">Start Date</label>
+                      <label className="block text-sm font-medium text-c300 mb-1">Start Date</label>
                       <input 
                         type="date" 
                         value={formData.starts_at}
                         onChange={(e) => updateForm('starts_at', e.target.value)}
-                        className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green"
+                        className="input w-full"
                       />
                     </div>
                     {!formData.run_continuously && (
                       <div>
-                        <label className="block text-sm font-medium text-c700 mb-1">End Date</label>
+                        <label className="block text-sm font-medium text-c300 mb-1">End Date</label>
                         <input 
                           type="date" 
                           value={formData.ends_at}
                           onChange={(e) => updateForm('ends_at', e.target.value)}
-                          className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green"
+                          className="input w-full"
                         />
                       </div>
                     )}
@@ -365,36 +365,36 @@ export default function AdCreationWizard() {
                       id="runCont"
                       checked={formData.run_continuously}
                       onChange={(e) => updateForm('run_continuously', e.target.checked)}
-                      className="w-4 h-4 text-green rounded border-c300"
+                      className="w-4 h-4 text-green rounded border-c700 bg-c800"
                     />
-                    <label htmlFor="runCont" className="text-sm text-c700">Run this campaign continuously</label>
+                    <label htmlFor="runCont" className="text-sm text-c300">Run this campaign continuously</label>
                   </div>
                 </div>
               </section>
 
-              <hr className="border-c100" />
+              <hr className="border-c700" />
 
               {/* Audience */}
               <section>
-                <h3 className="text-lg font-bold text-c900 mb-4">Audience</h3>
+                <h3 className="text-lg font-bold text-c100 mb-4">Audience</h3>
                 <div className="space-y-4 max-w-lg">
                   <div>
-                    <label className="block text-sm font-medium text-c700 mb-1">Locations</label>
+                    <label className="block text-sm font-medium text-c300 mb-1">Locations</label>
                     <input 
                       type="text" 
                       placeholder="e.g. Lagos, Abuja, Nigeria"
-                      className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green"
+                      className="input w-full"
                       onBlur={(e) => {
                         if(e.target.value) updateForm('target_states', [e.target.value]);
                       }}
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-c700 mb-1">Detailed Targeting (Industries / Roles)</label>
+                    <label className="block text-sm font-medium text-c300 mb-1">Detailed Targeting (Industries / Roles)</label>
                     <input 
                       type="text" 
                       placeholder="e.g. Technology, Software Engineer"
-                      className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green"
+                      className="input w-full"
                       onBlur={(e) => {
                         if(e.target.value) updateForm('target_industries', [e.target.value]);
                       }}
@@ -403,55 +403,55 @@ export default function AdCreationWizard() {
                 </div>
               </section>
 
-              <hr className="border-c100" />
+              <hr className="border-c700" />
 
               {/* Placements */}
               <section>
-                <h3 className="text-lg font-bold text-c900 mb-4">Placements</h3>
+                <h3 className="text-lg font-bold text-c100 mb-4">Placements</h3>
                 <div className="space-y-3">
                   <div 
                     onClick={() => updateForm('placementType', 'automatic')}
-                    className={`p-4 rounded-xl border-2 cursor-pointer ${formData.placementType === 'automatic' ? 'border-green bg-green' : 'border-c200'}`}
+                    className={`p-4 rounded-xl border-2 cursor-pointer ${formData.placementType === 'automatic' ? 'border-green bg-green/10' : 'border-c700'}`}
                   >
-                    <h4 className="font-bold text-c900">Advantage+ Placements (Recommended)</h4>
-                    <p className="text-sm text-c500 mt-1">We will automatically allocate your budget across multiple placements to maximize results.</p>
+                    <h4 className="font-bold text-c100">Advantage+ Placements (Recommended)</h4>
+                    <p className="text-sm text-c400 mt-1">We will automatically allocate your budget across multiple placements to maximize results.</p>
                   </div>
                   <div 
                     onClick={() => updateForm('placementType', 'manual')}
-                    className={`p-4 rounded-xl border-2 cursor-pointer ${formData.placementType === 'manual' ? 'border-green bg-green' : 'border-c200'}`}
+                    className={`p-4 rounded-xl border-2 cursor-pointer ${formData.placementType === 'manual' ? 'border-green bg-green/10' : 'border-c700'}`}
                   >
-                    <h4 className="font-bold text-c900">Manual Placements</h4>
-                    <p className="text-sm text-c500 mt-1">Manually choose the places to show your ad.</p>
+                    <h4 className="font-bold text-c100">Manual Placements</h4>
+                    <p className="text-sm text-c400 mt-1">Manually choose the places to show your ad.</p>
                   </div>
                 </div>
               </section>
 
             </div>
-            <div className="p-4 bg-c100 border-t border-c100 flex justify-between">
-              <button onClick={() => setCurrentStep('campaign')} className="px-6 py-2.5 text-c600 font-bold hover:bg-c200 rounded-lg transition-colors">Back</button>
-              <button onClick={() => setCurrentStep('ad')} className="px-6 py-2.5 bg-green text-white font-bold rounded-lg hover:bg-green transition-colors">Next: Ad Setup</button>
+            <div className="p-4 bg-c800 border-t border-c700 flex justify-between">
+              <button onClick={() => setCurrentStep('campaign')} className="btn btn--ghost">Back</button>
+              <button onClick={() => setCurrentStep('ad')} className="btn btn--primary">Next: Ad Setup</button>
             </div>
           </div>
         )}
 
         {currentStep === 'ad' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-c200 overflow-hidden">
-            <div className="p-6 border-b border-c100">
-              <h2 className="text-2xl font-bold text-c900">Ad Creative</h2>
-              <p className="text-c500 mt-1">What your ad will look like.</p>
+          <div className="dcard p-0 overflow-hidden">
+            <div className="p-6 border-b border-c700">
+              <h2 className="text-2xl font-bold text-c100">Ad Creative</h2>
+              <p className="text-c400 mt-1">What your ad will look like.</p>
             </div>
             <div className="p-6 space-y-8">
               
               <section>
-                <h3 className="text-lg font-bold text-c900 mb-4">Ad Setup</h3>
+                <h3 className="text-lg font-bold text-c100 mb-4">Ad Setup</h3>
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                   {['banner', 'sponsored_job', 'sponsored_product'].map(fmt => (
                     <div 
                       key={fmt}
                       onClick={() => updateForm('format', fmt)}
-                      className={`p-4 rounded-xl border-2 cursor-pointer text-center transition-all ${formData.format === fmt ? 'border-green bg-green' : 'border-c200 hover:border-green'}`}
+                      className={`p-4 rounded-xl border-2 cursor-pointer text-center transition-all ${formData.format === fmt ? 'border-green bg-green/10' : 'border-c700 hover:border-green'}`}
                     >
-                      <h4 className={`font-bold capitalize ${formData.format === fmt ? 'text-green' : 'text-c700'}`}>{fmt.replace('_', ' ')}</h4>
+                      <h4 className={`font-bold capitalize ${formData.format === fmt ? 'text-green' : 'text-c100'}`}>{fmt.replace('_', ' ')}</h4>
                     </div>
                   ))}
                 </div>
@@ -459,8 +459,8 @@ export default function AdCreationWizard() {
 
               {formData.format === 'banner' && (
                 <section>
-                  <h3 className="text-lg font-bold text-c900 mb-4">Ad Creative</h3>
-                  <div className="border-2 border-dashed border-c300 rounded-xl p-8 text-center bg-c100 hover:bg-c100 transition-colors cursor-pointer relative">
+                  <h3 className="text-lg font-bold text-c100 mb-4">Ad Creative</h3>
+                  <div className="border-2 border-dashed border-c700 rounded-xl p-8 text-center bg-c800 hover:bg-c700 transition-colors cursor-pointer relative">
                     <input 
                       type="file" 
                       accept="image/*"
@@ -471,7 +471,7 @@ export default function AdCreationWizard() {
                     <span className="text-green font-medium">Click to upload media</span>
                     <span className="block text-sm text-c500 mt-1">PNG, JPG up to 2MB</span>
                     {formData.creativeFile && (
-                      <div className="mt-4 text-sm font-bold text-green bg-green py-2 px-4 rounded-full inline-block">
+                      <div className="mt-4 text-sm font-bold text-c900 bg-green py-2 px-4 rounded-full inline-block">
                         Selected: {formData.creativeFile.name}
                       </div>
                     )}
@@ -480,99 +480,99 @@ export default function AdCreationWizard() {
               )}
 
               <section>
-                <h3 className="text-lg font-bold text-c900 mb-4">Destination</h3>
+                <h3 className="text-lg font-bold text-c100 mb-4">Destination</h3>
                 <div className="space-y-4 max-w-lg">
                   <div>
-                    <label className="block text-sm font-medium text-c700 mb-1">Destination URL</label>
+                    <label className="block text-sm font-medium text-c300 mb-1">Destination URL</label>
                     <input 
                       type="url" 
                       placeholder="https://yourwebsite.com"
                       value={formData.destination_url}
                       onChange={(e) => updateForm('destination_url', e.target.value)}
-                      className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green"
+                      className="input w-full"
                     />
                   </div>
                   <div>
-                    <label className="block text-sm font-medium text-c700 mb-1">Primary Text (Optional)</label>
+                    <label className="block text-sm font-medium text-c300 mb-1">Primary Text (Optional)</label>
                     <textarea 
                       placeholder="Tell people what your ad is about..."
                       rows={3}
                       value={formData.primary_text}
                       onChange={(e) => updateForm('primary_text', e.target.value)}
-                      className="w-full px-4 py-2 border border-c300 rounded-lg focus:ring-2 focus:ring-green resize-none"
+                      className="input w-full resize-none"
                     />
                   </div>
                 </div>
               </section>
 
             </div>
-            <div className="p-4 bg-c100 border-t border-c100 flex justify-between">
-              <button onClick={() => setCurrentStep('adset')} className="px-6 py-2.5 text-c600 font-bold hover:bg-c200 rounded-lg transition-colors">Back</button>
-              <button onClick={() => setCurrentStep('review')} className="px-6 py-2.5 bg-green text-white font-bold rounded-lg hover:bg-green transition-colors">Next: Review</button>
+            <div className="p-4 bg-c800 border-t border-c700 flex justify-between">
+              <button onClick={() => setCurrentStep('adset')} className="btn btn--ghost">Back</button>
+              <button onClick={() => setCurrentStep('review')} className="btn btn--primary">Next: Review</button>
             </div>
           </div>
         )}
 
         {currentStep === 'review' && (
-          <div className="bg-white rounded-2xl shadow-sm border border-c200 overflow-hidden">
-            <div className="p-6 border-b border-c100">
-              <h2 className="text-2xl font-bold text-c900">Review & Launch</h2>
-              <p className="text-c500 mt-1">Review your campaign details before publishing.</p>
+          <div className="dcard p-0 overflow-hidden">
+            <div className="p-6 border-b border-c700">
+              <h2 className="text-2xl font-bold text-c100">Review & Launch</h2>
+              <p className="text-c400 mt-1">Review your campaign details before publishing.</p>
             </div>
             <div className="p-6 space-y-6">
               
-              <div className="bg-c100 rounded-xl p-6 border border-c200">
-                <h3 className="font-bold text-c900 mb-4 pb-2 border-b border-c200">Campaign Summary</h3>
+              <div className="bg-c800 rounded-xl p-6 border border-c700">
+                <h3 className="font-bold text-c100 mb-4 pb-2 border-b border-c700">Campaign Summary</h3>
                 <div className="space-y-3 text-sm">
                   <div className="flex justify-between">
-                    <span className="text-c500">Objective:</span>
-                    <span className="font-bold text-c900 capitalize">{formData.goal}</span>
+                    <span className="text-c400">Objective:</span>
+                    <span className="font-bold text-c100 capitalize">{formData.goal}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-c500">Format:</span>
-                    <span className="font-bold text-c900 capitalize">{formData.format.replace('_', ' ')}</span>
+                    <span className="text-c400">Format:</span>
+                    <span className="font-bold text-c100 capitalize">{formData.format.replace('_', ' ')}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-c500">Daily Budget:</span>
-                    <span className="font-bold text-c900">₦{formData.daily_budget.toLocaleString()}</span>
+                    <span className="text-c400">Daily Budget:</span>
+                    <span className="font-bold text-c100">₦{formData.daily_budget.toLocaleString()}</span>
                   </div>
                   <div className="flex justify-between">
-                    <span className="text-c500">Schedule:</span>
-                    <span className="font-bold text-c900">{formData.starts_at} {formData.run_continuously ? '(Continuous)' : `to ${formData.ends_at}`}</span>
+                    <span className="text-c400">Schedule:</span>
+                    <span className="font-bold text-c100">{formData.starts_at} {formData.run_continuously ? '(Continuous)' : `to ${formData.ends_at}`}</span>
                   </div>
-                  <div className="pt-3 mt-3 border-t border-c200 flex justify-between items-center">
-                    <span className="font-bold text-c900 text-lg">Total Charge Today:</span>
+                  <div className="pt-3 mt-3 border-t border-c700 flex justify-between items-center">
+                    <span className="font-bold text-c100 text-lg">Total Charge Today:</span>
                     <span className="font-bold text-green text-2xl">₦{calculateTotalBudget().toLocaleString()}</span>
                   </div>
                 </div>
               </div>
 
               <div>
-                <h3 className="font-bold text-c900 mb-3">Payment Method</h3>
+                <h3 className="font-bold text-c100 mb-3">Payment Method</h3>
                 <div className="flex gap-4">
-                  <label className={`flex-1 border-2 p-4 rounded-xl cursor-pointer flex items-center justify-between ${formData.paymentGateway === 'paystack' ? 'border-green bg-green' : 'border-c200'}`}>
+                  <label className={`flex-1 border-2 p-4 rounded-xl cursor-pointer flex items-center justify-between ${formData.paymentGateway === 'paystack' ? 'border-green bg-green/10' : 'border-c700'}`}>
                     <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-full border-2 border-current p-0.5">
+                      <div className="w-4 h-4 rounded-full border-2 border-current p-0.5 text-green">
                         <div className={`w-full h-full rounded-full ${formData.paymentGateway === 'paystack' ? 'bg-green' : 'bg-transparent'}`}></div>
                       </div>
-                      <span className="font-bold text-c900">Paystack</span>
+                      <span className="font-bold text-c100">Paystack</span>
                     </div>
                   </label>
-                  <label className={`flex-1 border-2 p-4 rounded-xl cursor-pointer flex items-center justify-between ${formData.paymentGateway === 'flutterwave' ? 'border-green bg-green' : 'border-c200'}`}>
+                  <label className={`flex-1 border-2 p-4 rounded-xl cursor-pointer flex items-center justify-between ${formData.paymentGateway === 'flutterwave' ? 'border-green bg-green/10' : 'border-c700'}`}>
                     <div className="flex items-center gap-3">
-                      <div className="w-4 h-4 rounded-full border-2 border-current p-0.5">
+                      <div className="w-4 h-4 rounded-full border-2 border-current p-0.5 text-green">
                         <div className={`w-full h-full rounded-full ${formData.paymentGateway === 'flutterwave' ? 'bg-green' : 'bg-transparent'}`}></div>
                       </div>
-                      <span className="font-bold text-c900">Flutterwave</span>
+                      <span className="font-bold text-c100">Flutterwave</span>
                     </div>
                   </label>
                 </div>
               </div>
 
             </div>
-            <div className="p-4 bg-c100 border-t border-c100 flex justify-between">
-              <button onClick={() => setCurrentStep('ad')} disabled={isSubmitting} className="px-6 py-2.5 text-c600 font-bold hover:bg-c200 rounded-lg transition-colors">Back</button>
-              <button onClick={handleLaunch} disabled={isSubmitting || calculateTotalBudget() <= 0} className="px-8 py-2.5 bg-green text-white font-bold rounded-lg hover:bg-green transition-colors flex items-center gap-2">
+            <div className="p-4 bg-c800 border-t border-c700 flex justify-between">
+              <button onClick={() => setCurrentStep('ad')} disabled={isSubmitting} className="btn btn--ghost">Back</button>
+              <button onClick={handleLaunch} disabled={isSubmitting || calculateTotalBudget() <= 0} className="btn btn--primary flex items-center gap-2">
                 {isSubmitting ? <Loader2 className="w-5 h-5 animate-spin" /> : <CheckCircle className="w-5 h-5" />}
                 {isSubmitting ? 'Processing...' : `Pay ₦${calculateTotalBudget().toLocaleString()} & Publish`}
               </button>

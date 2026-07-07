@@ -33,7 +33,7 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
     setLoadingComments(true);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await apiAuth.withToken(token!).get(`/connect/posts/${post.id}/comments`);
+      const res = await apiAuth.withToken(token!).get(`/community/posts/${post.id}/comments`);
       setComments(res.data?.data || []);
     } catch { }
     setLoadingComments(false);
@@ -50,14 +50,14 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
     if (!newComment.trim()) return;
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token!).post(`/connect/posts/${post.id}/comments`, { body: newComment });
+      await apiAuth.withToken(token!).post(`/community/posts/${post.id}/comments`, { body: newComment });
       setNewComment('');
       loadComments();
     } catch { }
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(`${window.location.origin}/connect/post/${post.id}`);
+    navigator.clipboard.writeText(`${window.location.origin}/community/post/${post.id}`);
     setShowMenu(false);
     alert('Link copied!');
   };
@@ -67,14 +67,14 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
     if (reason) {
       try {
         const token = localStorage.getItem('access_token');
-        await apiAuth.withToken(token!).post(`/connect/posts/${post.id}/report`, { reason });
+        await apiAuth.withToken(token!).post(`/community/posts/${post.id}/report`, { reason });
         alert('Post reported.');
       } catch { }
     }
     setShowMenu(false);
   };
 
-  const authorProfileLink = `/connect/profile/${post.author.username || post.author.id}`;
+  const authorProfileLink = `/community/profile/${post.author.username || post.author.id}`;
   const displayImage = post.imageUrls?.[0] || post.imageUrl;
 
   return (
@@ -201,7 +201,7 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/connect/feed?page=${pageNum}&limit=10`);
+      const res = await apiAuth.withToken(token).get(`/community/feed?page=${pageNum}&limit=10`);
       const newPosts = res.data?.data || [];
       if (newPosts.length < 10) setHasMore(false);
       
@@ -261,7 +261,7 @@ export default function FeedPage() {
         }
       }
 
-      await apiAuth.withToken(token).post('/connect/posts', { 
+      await apiAuth.withToken(token).post('/community/posts', { 
         content: newPost,
         imageUrls: uploadedUrl ? [uploadedUrl] : undefined
       });
@@ -286,7 +286,7 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).post(`/connect/posts/${postId}/like`);
+      await apiAuth.withToken(token).post(`/community/posts/${postId}/like`);
       setPosts(posts.map(p => p.id === postId ? { ...p, likesCount: p.likesCount + 1 } : p));
       fetchFeed(1, true);
     } catch (err) {}
@@ -297,7 +297,7 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).delete(`/connect/posts/${postId}`);
+      await apiAuth.withToken(token).delete(`/community/posts/${postId}`);
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {}
   };
@@ -308,7 +308,7 @@ export default function FeedPage() {
     <div className="page-shell">
       <header className="page-header">
         <div className="container">
-          <div className="page-header__eyebrow">Connect</div>
+          <div className="page-header__eyebrow">Community</div>
           <h1 className="page-header__title">Build your professional network.</h1>
           <p className="page-header__sub">Follow industry leaders, join communities, and stay visible to the people who matter.</p>
         </div>

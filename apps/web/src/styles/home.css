@@ -489,7 +489,7 @@
 .status--interview { background: rgba(27,79,158,0.2); color: var(--blue-l); }
 .status--offer { background: rgba(29,122,58,0.2); color: #2DB85A; }
 
-/* ─── MARKETPLACE ────────────────────────────────────────── */
+/* ─── SHOP ────────────────────────────────────────── */
 .market-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
