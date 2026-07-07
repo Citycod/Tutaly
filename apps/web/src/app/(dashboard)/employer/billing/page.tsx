@@ -12,6 +12,7 @@ interface Subscription {
   currentPeriodStart: string;
   currentPeriodEnd: string;
   paymentGateway: string;
+  paymentRef?: string;
 }
 
 interface Invoice {
