@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
-import AdBanner from '@/components/layout/AdBanner';
+import AdBanner from '@/components/ads/AdBanner';
 
 const LISTING_TYPE_MAP: Record<string, { label: string; icon: string; color: string; tagClass: string }> = {
   digital: { label: 'Digital', icon: '📄', color: 'rgba(27,79,158,0.15)', tagClass: 'tag--blue' },

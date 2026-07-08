@@ -124,7 +124,7 @@ export class AdsService {
     let query = this.campaignRepo
       .createQueryBuilder('c')
       .where('c.status = :status', { status: CampaignStatus.ACTIVE })
-      .andWhere(':placement = ANY(c.placements)', { placement })
+      .andWhere('c.placements @> :placement', { placement: JSON.stringify([placement]) })
       .andWhere('c.starts_at <= :now', { now })
       .andWhere('(c.ends_at IS NULL OR c.ends_at >= :now)', { now })
       .andWhere('c.total_spent < c.total_budget');
@@ -133,20 +133,20 @@ export class AdsService {
     if (currentUser) {
       if (currentUser.state) {
         query = query.andWhere(
-          '(c.target_states IS NULL OR :state = ANY(c.target_states))',
-          { state: currentUser.state },
+          '(c.target_states IS NULL OR c.target_states @> :state)',
+          { state: JSON.stringify([currentUser.state]) },
         );
       }
       if (currentUser.industry) {
         query = query.andWhere(
-          '(c.target_industries IS NULL OR :industry = ANY(c.target_industries))',
-          { industry: currentUser.industry },
+          '(c.target_industries IS NULL OR c.target_industries @> :industry)',
+          { industry: JSON.stringify([currentUser.industry]) },
         );
       }
       if (currentUser.role) {
         query = query.andWhere(
-          '(c.target_user_types IS NULL OR :role = ANY(c.target_user_types))',
-          { role: currentUser.role },
+          '(c.target_user_types IS NULL OR c.target_user_types @> :role)',
+          { role: JSON.stringify([currentUser.role]) },
         );
       }
     }
