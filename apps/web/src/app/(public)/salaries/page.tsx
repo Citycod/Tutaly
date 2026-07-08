@@ -34,20 +34,24 @@ export default async function SalariesPage(props: {
   let aggregates = [];
   let popularRoles = [];
 
+  let filterMeta = { industries: [], locations: {} };
+
   try {
-    const [aggRes, salRes, popRes] = await Promise.all([
+    const [aggRes, salRes, popRes, filterRes] = await Promise.all([
       serverFetch<any>(`salaries/aggregates?${queryParams.toString()}`, { cache: 'no-store' }),
       serverFetch<any>(`salaries?${queryParams.toString()}`, { cache: 'no-store' }),
-      serverFetch<any>(`salaries/roles/popular`, { cache: 'no-store' })
+      serverFetch<any>(`salaries/roles/popular`, { cache: 'no-store' }),
+      serverFetch<any>('jobs/meta/filters', { cache: 'no-store' }).catch(() => null)
     ]);
     aggregates = aggRes?.data || [];
     salaries = salRes?.data || [];
     popularRoles = popRes?.data || [];
+    filterMeta = filterRes || filterMeta;
   } catch (err) {
     console.error('Failed to fetch salary data for SSR', err);
   }
 
   return (
-    <SalariesClient salaries={salaries} aggregates={aggregates} popularRoles={popularRoles} />
+    <SalariesClient salaries={salaries} aggregates={aggregates} popularRoles={popularRoles} filterMeta={filterMeta} />
   );
 }

@@ -47,9 +47,9 @@ export default async function ReviewsPage(props: {
     <div className="page-shell">
       <header className="page-header">
         <div className="container">
-          <div className="page-header__eyebrow">Company reviews</div>
-          <h1 className="page-header__title">The honest version of the job description.</h1>
-          <p className="page-header__sub">12,000+ companies. Real reviews from real employees, anonymous by default.</p>
+          <div className="page-header__eyebrow">The Call Out</div>
+          <h1 className="page-header__title">Hold them accountable. Know before you sign.</h1>
+          <p className="page-header__sub">12,000+ companies. Real reviews about work ethics and pay, anonymous by default.</p>
           <form action="/reviews/search" className="company-search" role="search" aria-label="Company search" style={{ marginTop: '20px' }}>
             <input
               type="text"
@@ -142,11 +142,11 @@ export default async function ReviewsPage(props: {
                     <div className="review-full__title">&ldquo;{review.title}&rdquo;</div>
                     <div className="review-full__body">
                       <div className="review-pro">
-                        <span className="review-pro__label">Pros</span>
+                        <span className="review-pro__label">Pay & Benefits</span>
                         {review.pros}
                       </div>
                       <div className="review-con">
-                        <span className="review-con__label">Cons</span>
+                        <span className="review-con__label">Work Ethics & Culture</span>
                         {review.cons}
                       </div>
                     </div>

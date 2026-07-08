@@ -82,8 +82,20 @@ export default function JobFilterSidebar({ filterMeta }: { filterMeta?: FilterMe
     router.push('/jobs');
   };
 
+  const [isOpen, setIsOpen] = useState(false);
+
   return (
-    <aside className="filters" aria-label="Job filters">
+    <>
+      <button 
+        className="md:hidden w-full mb-6 btn btn--ghost flex justify-between items-center bg-c800 border border-c700" 
+        onClick={() => setIsOpen(!isOpen)}
+      >
+        <span>{isOpen ? 'Hide Filters' : 'Show Filters'}</span>
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+          <path d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+        </svg>
+      </button>
+      <aside className={`filters ${isOpen ? 'block' : 'hidden md:block'}`} aria-label="Job filters">
       <div className="filters__header">
         <span className="filters__title">Filters</span>
         <span className="filters__clear" onClick={handleClear}>Clear all</span>
@@ -225,5 +237,6 @@ export default function JobFilterSidebar({ filterMeta }: { filterMeta?: FilterMe
         </button>
       </div>
     </aside>
+    </>
   );
 }

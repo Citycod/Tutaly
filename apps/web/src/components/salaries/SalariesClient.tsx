@@ -20,19 +20,72 @@ interface SalariesClientProps {
   salaries?: unknown[];
   aggregates: SalaryAggregate[];
   popularRoles?: SalaryAggregate[];
+  filterMeta?: { industries: string[]; locations: Record<string, Record<string, string[]>> };
 }
 
-export default function SalariesClient({ aggregates, popularRoles = [] }: SalariesClientProps) {
+export default function SalariesClient({ aggregates, popularRoles = [], filterMeta }: SalariesClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   
   const [roleInput, setRoleInput] = useState(searchParams.get('role') || '');
+  const [country, setCountry] = useState(searchParams.get('country') || 'Nigeria');
+  const [state, setState] = useState(searchParams.get('state') || '');
+  const [area, setArea] = useState(searchParams.get('area') || '');
+  const [industry, setIndustry] = useState(searchParams.get('industry') || '');
+  const [isOpen, setIsOpen] = useState(false);
+
+  // Cascading location data
+  const locations = React.useMemo(() => filterMeta?.locations || {}, [filterMeta?.locations]);
+  const industriesList = React.useMemo(() => filterMeta?.industries || [], [filterMeta?.industries]);
+  const countries = React.useMemo(() => Object.keys(locations), [locations]);
+  const states = React.useMemo(() => {
+    if (country && locations[country]) return Object.keys(locations[country]);
+    return [];
+  }, [country, locations]);
+  const areas = React.useMemo(() => {
+    if (country && state && locations[country]?.[state]) return locations[country][state];
+    return [];
+  }, [country, state, locations]);
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setCountry(e.target.value);
+    setState('');
+    setArea('');
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    setState(e.target.value);
+    setArea('');
+  };
 
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     const params = new URLSearchParams();
     if (roleInput) params.set('role', roleInput);
+    if (country) params.set('country', country);
+    if (state) params.set('state', state);
+    if (area) params.set('area', area);
+    if (industry) params.set('industry', industry);
     router.push(`/salaries?${params.toString()}`);
+  };
+
+  const handleApply = () => {
+    const params = new URLSearchParams();
+    if (roleInput) params.set('role', roleInput);
+    if (country) params.set('country', country);
+    if (state) params.set('state', state);
+    if (area) params.set('area', area);
+    if (industry) params.set('industry', industry);
+    router.push(`/salaries?${params.toString()}`);
+  };
+
+  const handleClear = () => {
+    setRoleInput('');
+    setCountry('Nigeria');
+    setState('');
+    setArea('');
+    setIndustry('');
+    router.push('/salaries');
   };
 
   const featured = aggregates.length > 0 ? aggregates[0] : null;
@@ -95,32 +148,70 @@ export default function SalariesClient({ aggregates, popularRoles = [] }: Salari
 
         <div className="layout-split" style={{ padding: 0 }}>
           {/* FILTERS */}
-          <aside className="filters" aria-label="Salary filters">
-            <div className="filters__header">
-              <span className="filters__title">Refine</span>
-              <span className="filters__clear">Clear all</span>
-            </div>
-            <div className="filter-group">
-              <div className="filter-group__label">Location</div>
-              <label className="filter-option checked"><span className="filter-checkbox"></span> Lagos <span className="filter-count">1,840</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> Abuja <span className="filter-count">612</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> Remote, Global <span className="filter-count">2,310</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> London <span className="filter-count">490</span></label>
-            </div>
-            <div className="filter-group">
-              <div className="filter-group__label">Experience</div>
-              <label className="filter-option"><span className="filter-checkbox"></span> 0–2 years <span className="filter-count">820</span></label>
-              <label className="filter-option checked"><span className="filter-checkbox"></span> 3–6 years <span className="filter-count">1,840</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> 7–10 years <span className="filter-count">940</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> 10+ years <span className="filter-count">310</span></label>
-            </div>
-            <div className="filter-group">
-              <div className="filter-group__label">Company size</div>
-              <label className="filter-option"><span className="filter-checkbox"></span> Startup (1–50) <span className="filter-count">680</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> Mid-size (51–500) <span className="filter-count">1,120</span></label>
-              <label className="filter-option"><span className="filter-checkbox"></span> Enterprise (500+) <span className="filter-count">410</span></label>
-            </div>
-          </aside>
+          <div className="w-full">
+            <button 
+              className="md:hidden w-full mb-6 btn btn--ghost flex justify-between items-center bg-c800 border border-c700" 
+              onClick={() => setIsOpen(!isOpen)}
+            >
+              <span>{isOpen ? 'Hide Filters' : 'Show Filters'}</span>
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+                <path d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+              </svg>
+            </button>
+            <aside className={`filters ${isOpen ? 'block' : 'hidden md:block'}`} aria-label="Salary filters">
+              <div className="filters__header">
+                <span className="filters__title">Refine</span>
+                <span className="filters__clear" onClick={handleClear}>Clear all</span>
+              </div>
+              <div className="filter-group">
+                <div className="filter-group__label">Location</div>
+                <div className="flex flex-col gap-2">
+                  <div className="filter-range">
+                    <select value={country} onChange={handleCountryChange} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue">
+                      <option value="">All Countries</option>
+                      {countries.map((c) => (
+                        <option key={c} value={c}>{c}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="filter-range">
+                    <select value={state} onChange={handleStateChange} disabled={states.length === 0} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue disabled:opacity-50">
+                      <option value="">All States</option>
+                      {states.map((s) => (
+                        <option key={s} value={s}>{s}</option>
+                      ))}
+                    </select>
+                  </div>
+                  <div className="filter-range">
+                    <select value={area} onChange={(e) => setArea(e.target.value)} disabled={areas.length === 0} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue disabled:opacity-50">
+                      <option value="">All Areas</option>
+                      {areas.map((a) => (
+                        <option key={a} value={a}>{a}</option>
+                      ))}
+                    </select>
+                  </div>
+                </div>
+              </div>
+              
+              <div className="filter-group">
+                <div className="filter-group__label">Industry</div>
+                <div className="filter-range">
+                  <select value={industry} onChange={(e) => setIndustry(e.target.value)} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue">
+                    <option value="">All Industries</option>
+                    {industriesList.map((ind) => (
+                      <option key={ind} value={ind}>{ind}</option>
+                    ))}
+                  </select>
+                </div>
+              </div>
+
+              <div className="mt-6">
+                <button onClick={handleApply} className="btn btn--primary w-full">
+                  Apply Filters
+                </button>
+              </div>
+            </aside>
+          </div>
 
           {/* BROWSE ROLES */}
           <main aria-label="Browse roles">
