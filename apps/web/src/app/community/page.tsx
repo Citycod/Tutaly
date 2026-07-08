@@ -2,10 +2,9 @@
 
 import React, { useEffect, useState, useCallback, useRef } from 'react';
 import { apiAuth } from '@/lib/api';
-import { Send, Heart, MessageSquare, MoreHorizontal, Trash2, ImagePlus, X, Link as LinkIcon, Flag, Loader2 } from 'lucide-react';
+import { Send, ImagePlus, X, Link as LinkIcon, Flag, Loader2, MoreHorizontal, Trash2 } from 'lucide-react';
 import { uploadToCloudinary } from '@/lib/cloudinary';
 import Link from 'next/link';
-import SidebarAd from '@/components/ads/SidebarAd';
 
 interface PostData {
   id: string;
@@ -18,6 +17,18 @@ interface PostData {
   createdAt: string;
 }
 
+const getInitials = (user: any) => {
+  if (!user) return 'U';
+  if (user.firstName && user.lastName) return `${user.firstName[0]}${user.lastName[0]}`;
+  return (user.firstName || user.username || user.email || 'U')[0].toUpperCase();
+};
+
+const getAuthorName = (author: any) => {
+  if (!author) return 'Loading...';
+  if (author.firstName && author.lastName) return `${author.firstName} ${author.lastName}`;
+  return author.username || author.email?.split('@')[0] || 'User';
+};
+
 const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, currentUserId: string, onDelete: (id: string) => void, onLike: (id: string) => void }) => {
   const [showComments, setShowComments] = useState(false);
   const [comments, setComments] = useState<any[]>([]);
@@ -25,16 +36,11 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
   const [newComment, setNewComment] = useState('');
   const [showMenu, setShowMenu] = useState(false);
 
-  const getAuthorName = (author: any) => {
-    if (author.firstName && author.lastName) return `${author.firstName} ${author.lastName}`;
-    return author.username || author.email?.split('@')[0] || 'User';
-  };
-
   const loadComments = async () => {
     setLoadingComments(true);
     try {
       const token = localStorage.getItem('access_token');
-      const res = await apiAuth.withToken(token!).get(`/community/posts/${post.id}/comments`);
+      const res = await apiAuth.withToken(token!).get(`/connect/posts/${post.id}/comments`);
       setComments(res.data?.data || []);
     } catch { }
     setLoadingComments(false);
@@ -51,7 +57,7 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
     if (!newComment.trim()) return;
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token!).post(`/community/posts/${post.id}/comments`, { body: newComment });
+      await apiAuth.withToken(token!).post(`/connect/posts/${post.id}/comments`, { body: newComment });
       setNewComment('');
       loadComments();
     } catch { }
@@ -68,7 +74,7 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
     if (reason) {
       try {
         const token = localStorage.getItem('access_token');
-        await apiAuth.withToken(token!).post(`/community/posts/${post.id}/report`, { reason });
+        await apiAuth.withToken(token!).post(`/connect/posts/${post.id}/report`, { reason });
         alert('Post reported.');
       } catch { }
     }
@@ -83,13 +89,13 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
       <div className="feed-post__head" style={{ justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Link href={authorProfileLink}>
-            <div className="feed-post__avatar" style={{ background: 'var(--blue)' }}>
-              {post.author.avatar ? (
-                <img src={post.author.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
-              ) : (
-                getAuthorName(post.author).charAt(0).toUpperCase()
-              )}
-            </div>
+            {post.author.avatar ? (
+              <img src={post.author.avatar} alt="avatar" className="feed-post__avatar object-cover" />
+            ) : (
+              <div className="feed-post__avatar" style={{ background: 'var(--blue)' }}>
+                {getInitials(post.author)}
+              </div>
+            )}
           </Link>
           <div>
             <div className="feed-post__name">
@@ -97,7 +103,9 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
                 {getAuthorName(post.author)}
               </Link>
             </div>
-            <div className="feed-post__meta">{new Date(post.createdAt).toLocaleDateString()}</div>
+            <div className="feed-post__meta">
+              {new Date(post.createdAt).toLocaleDateString()}
+            </div>
           </div>
         </div>
 
@@ -127,7 +135,7 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
       <p className="feed-post__body" style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
 
       {displayImage && (
-        <div style={{ borderRadius: 'var(--r-md)', overflow: 'hidden', marginBottom: '16px', background: 'var(--c-700)', display: 'flex', justifyContent: 'center' }}>
+        <div style={{ borderRadius: 'var(--r-md)', overflow: 'hidden', marginBottom: '16px', background: 'var(--c-900)', display: 'flex', justifyContent: 'center' }}>
           <img src={displayImage} alt="Post content" style={{ maxWidth: '100%', maxHeight: '384px', objectFit: 'contain' }} />
         </div>
       )}
@@ -169,7 +177,7 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
               comments.map(c => (
                 <div key={c.id} style={{ display: 'flex', gap: '12px' }}>
                   <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--c-600)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--c-300)', fontSize: '12px' }}>
-                    {c.author?.avatar ? <img src={c.author.avatar} alt="a" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : getAuthorName(c.author)[0].toUpperCase()}
+                    {c.author?.avatar ? <img src={c.author.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : getAuthorName(c.author)[0].toUpperCase()}
                   </div>
                   <div style={{ background: 'var(--c-700)', borderRadius: 'var(--r-md)', padding: '10px 14px', flex: 1 }}>
                     <p style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '4px' }}>{getAuthorName(c.author)}</p>
@@ -204,7 +212,7 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/community/feed?page=${pageNum}&limit=10`);
+      const res = await apiAuth.withToken(token).get(`/connect/feed?page=${pageNum}&limit=10`);
       const newPosts = res.data?.data || [];
       if (newPosts.length < 10) setHasMore(false);
       
@@ -264,7 +272,7 @@ export default function FeedPage() {
         }
       }
 
-      await apiAuth.withToken(token).post('/community/posts', { 
+      await apiAuth.withToken(token).post('/connect/posts', { 
         content: newPost,
         imageUrls: uploadedUrl ? [uploadedUrl] : undefined
       });
@@ -275,9 +283,7 @@ export default function FeedPage() {
       setHasMore(true);
       fetchFeed(1, true);
     } catch (e) {
-      /* eslint-disable @typescript-eslint/no-unused-vars */
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
       console.error('Failed to create post', err);
       setPostError(err?.message || err?.response?.data?.message || 'Failed to create post. Please try again.');
     } finally {
@@ -289,7 +295,7 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).post(`/community/posts/${postId}/like`);
+      await apiAuth.withToken(token).post(`/connect/posts/${postId}/like`);
       setPosts(posts.map(p => p.id === postId ? { ...p, likesCount: p.likesCount + 1 } : p));
       fetchFeed(1, true);
     } catch (err) {}
@@ -300,199 +306,110 @@ export default function FeedPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).delete(`/community/posts/${postId}`);
+      await apiAuth.withToken(token).delete(`/connect/posts/${postId}`);
       setPosts(posts.filter(p => p.id !== postId));
     } catch (err) {}
   };
 
-  const currentInitials = currentUser?.firstName ? currentUser.firstName[0] : (currentUser?.email ? currentUser.email[0].toUpperCase() : '?');
-
   return (
-    <div className="page-shell">
-      <header className="page-header">
-        <div className="container">
-          <div className="page-header__eyebrow">Community</div>
-          <h1 className="page-header__title">Build your professional network.</h1>
-          <p className="page-header__sub">Follow industry leaders, join communities, and stay visible to the people who matter.</p>
-        </div>
-      </header>
-
-      <div className="container">
-        <div className="feed-layout">
-          
-          {/* LEFT: PROFILE */}
-          <aside aria-label="Your profile">
-            <div className="profile-card">
-              <div className="profile-card__avatar">{currentInitials}</div>
-              <div className="profile-card__name">{currentUser?.firstName ? `${currentUser.firstName} ${currentUser.lastName}` : (currentUser?.email || 'Guest')}</div>
-              <div className="profile-card__title">Professional · Nigeria</div>
-              <div className="profile-card__stats">
-                <div className="profile-card__stat">
-                  <div className="profile-card__stat-num">412</div>
-                  <div className="profile-card__stat-label">Connections</div>
-                </div>
-                <div className="profile-card__stat">
-                  <div className="profile-card__stat-num">38</div>
-                  <div className="profile-card__stat-label">Posts</div>
-                </div>
-              </div>
+    <div>
+      <div className="composer">
+        <div className="composer__row">
+          {currentUser?.avatar ? (
+            <img src={currentUser.avatar} alt="avatar" className="composer__avatar object-cover" />
+          ) : (
+            <div className="composer__avatar" style={{ background: 'var(--blue)' }}>
+              {getInitials(currentUser)}
             </div>
-
-            <div className="suggest-card" style={{ marginTop: '16px' }}>
-              <div className="suggest-card__title">Your communities</div>
-              <div className="suggest-row">
-                <div className="suggest-avatar" style={{ background: 'var(--blue)' }}>🌍</div>
-                <div className="suggest-info">
-                  <div className="suggest-name">Remote Engineers Africa</div>
-                  <div className="suggest-role">12,400 members</div>
-                </div>
-              </div>
-              <div className="suggest-row">
-                <div className="suggest-avatar" style={{ background: 'var(--green)' }}>💸</div>
-                <div className="suggest-info">
-                  <div className="suggest-name">Fintech Builders Network</div>
-                  <div className="suggest-role">8,210 members</div>
-                </div>
-              </div>
-            </div>
-          </aside>
-
-          {/* CENTER: FEED */}
-          <main aria-label="Activity feed">
-            <div className="composer">
-              <div className="composer__row">
-                <div className="composer__avatar">{currentInitials}</div>
-                <div style={{ flex: 1, minWidth: 0 }}>
-                  <textarea
-                    value={newPost}
-                    onChange={(e) => setNewPost(e.target.value)}
-                    placeholder="Share an update, ask a question, or celebrate a win..."
-                    className="composer__input"
-                    style={{ width: '100%', resize: 'none', height: '80px', outline: 'none' }}
-                  />
-                  
-                  {imagePreview && (
-                    <div style={{ position: 'relative', marginTop: '12px', display: 'inline-block', borderRadius: 'var(--r-md)', overflow: 'hidden', border: '1px solid var(--c-600)' }}>
-                      <img src={imagePreview} alt="Preview" style={{ maxHeight: '192px', objectFit: 'cover' }} />
-                      <button onClick={removeImage} style={{ position: 'absolute', top: '8px', right: '8px', background: 'var(--c-900)', color: 'var(--c-100)', padding: '4px', borderRadius: '50%', border: 'none', cursor: 'pointer', opacity: 0.8 }}>
-                        <X className="w-4 h-4" />
-                      </button>
-                    </div>
-                  )}
-
-                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
-                    <input type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef} onChange={handleImageSelect} />
-                    <button onClick={() => fileInputRef.current?.click()} style={{ color: 'var(--c-400)', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Attach Image">
-                      <ImagePlus className="w-5 h-5" />
-                    </button>
-                    <button
-                      onClick={handleCreatePost}
-                      disabled={posting || (!newPost.trim() && !imageFile)}
-                      style={{ background: 'var(--blue)', color: 'var(--c-100)', border: 'none', borderRadius: 'var(--r-md)', padding: '8px 16px', fontSize: '13px', fontWeight: 600, cursor: (posting || (!newPost.trim() && !imageFile)) ? 'not-allowed' : 'pointer', opacity: (posting || (!newPost.trim() && !imageFile)) ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '8px' }}
-                    >
-                      {posting ? <Loader2 className="w-4 h-4" style={{ animation: 'spin 1s linear infinite' }} /> : <Send className="w-4 h-4" />}
-                      {posting ? 'Posting...' : 'Post'}
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            {postError && (
-              <div style={{ background: 'var(--red-10)', border: '1px solid var(--red)', padding: '12px', borderRadius: 'var(--r-md)', marginBottom: '16px', fontSize: '13px', color: 'var(--red)' }}>
-                {postError}
-              </div>
-            )}
-
-            {loading ? (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="feed-post" style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
-                    <div className="feed-post__head">
-                      <div className="feed-post__avatar" style={{ background: 'var(--c-600)' }} />
-                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
-                        <div style={{ height: '16px', background: 'var(--c-600)', borderRadius: '4px', width: '33%' }} />
-                        <div style={{ height: '12px', background: 'var(--c-700)', borderRadius: '4px', width: '20%' }} />
-                      </div>
-                    </div>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
-                      <div style={{ height: '16px', background: 'var(--c-700)', borderRadius: '4px', width: '100%' }} />
-                      <div style={{ height: '16px', background: 'var(--c-700)', borderRadius: '4px', width: '80%' }} />
-                    </div>
-                  </div>
-                ))}
-              </div>
-            ) : posts.length === 0 ? (
-              <div className="feed-post" style={{ textAlign: 'center', padding: '48px 20px' }}>
-                <div style={{ width: '64px', height: '64px', background: 'var(--c-700)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                  <MessageSquare style={{ width: '32px', height: '32px', color: 'var(--c-400)' }} />
-                </div>
-                <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '8px' }}>Your feed is empty</h3>
-                <p style={{ fontSize: '14px', color: 'var(--c-400)', maxWidth: '320px', margin: '0 auto' }}>
-                  Follow people to see their posts here, or create your first post to get the conversation started.
-                </p>
-              </div>
-            ) : (
-              <div className="space-y-4">
-                {posts.map((post) => (
-                  <PostItem key={post.id} post={post} currentUserId={currentUserId} onDelete={handleDeletePost} onLike={handleLike} />
-                ))}
-              </div>
-            )}
-
-            {hasMore && !loading && posts.length > 0 && (
-              <div style={{ textAlign: 'center', paddingTop: '16px', paddingBottom: '32px' }}>
-                <button onClick={loadMore} style={{ background: 'var(--c-800)', border: '1px solid var(--c-600)', color: 'var(--c-200)', padding: '8px 24px', borderRadius: 'var(--r-md)', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
-                  Load More
+          )}
+          <div style={{ flex: 1 }}>
+            <textarea
+              className="composer__input"
+              style={{ width: '100%', minHeight: '80px', resize: 'none' }}
+              placeholder="Share an update, ask a question, or celebrate a win..."
+              value={newPost}
+              onChange={(e) => setNewPost(e.target.value)}
+            />
+            
+            {imagePreview && (
+              <div style={{ position: 'relative', marginTop: '12px', display: 'inline-block' }}>
+                <img src={imagePreview} alt="Preview" style={{ height: '120px', borderRadius: 'var(--r-md)', objectFit: 'cover' }} />
+                <button
+                  onClick={removeImage}
+                  style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--c-800)', color: 'var(--c-200)', border: '1px solid var(--c-600)', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer' }}
+                >
+                  <X className="w-3 h-3" />
                 </button>
               </div>
             )}
-          </main>
 
-          {/* RIGHT: SUGGESTIONS */}
-          <aside aria-label="Suggested connections">
-            <div className="suggest-card">
-              <div className="suggest-card__title">People to follow</div>
-              <div className="suggest-row">
-                <div className="suggest-avatar" style={{ background: 'var(--blue)' }}>TO</div>
-                <div className="suggest-info">
-                  <div className="suggest-name">Tunde Olanrewaju</div>
-                  <div className="suggest-role">PM Coach, Lagos</div>
-                </div>
-                <span className="suggest-follow">Follow</span>
+            {postError && (
+              <p style={{ color: 'var(--red)', fontSize: '13px', marginTop: '8px' }}>{postError}</p>
+            )}
+
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+              <div>
+                <input
+                  type="file"
+                  accept="image/*"
+                  ref={fileInputRef}
+                  onChange={handleImageSelect}
+                  style={{ display: 'none' }}
+                />
+                <button
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'transparent', border: 'none', color: 'var(--c-400)', fontSize: '13px', fontWeight: 500, cursor: 'pointer' }}
+                >
+                  <ImagePlus className="w-4 h-4" /> Photo
+                </button>
               </div>
-              <div className="suggest-row">
-                <div className="suggest-avatar" style={{ background: 'var(--gold)' }}>PN</div>
-                <div className="suggest-info">
-                  <div className="suggest-name">Priya Nair</div>
-                  <div className="suggest-role">Data Scientist, Remote</div>
-                </div>
-                <span className="suggest-follow">Follow</span>
-              </div>
-              <div className="suggest-row">
-                <div className="suggest-avatar" style={{ background: 'var(--green)' }}>CE</div>
-                <div className="suggest-info">
-                  <div className="suggest-name">Chidinma Eze</div>
-                  <div className="suggest-role">Staff Engineer, Lagos</div>
-                </div>
-                <span className="suggest-follow">Follow</span>
-              </div>
+
+              <button
+                onClick={handleCreatePost}
+                disabled={posting || (!newPost.trim() && !imageFile)}
+                className="btn btn--primary btn--sm"
+                style={{ opacity: posting || (!newPost.trim() && !imageFile) ? 0.5 : 1 }}
+              >
+                {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                Post
+              </button>
             </div>
-
-            <div className="suggest-card">
-              <div className="suggest-card__title">Trending topics</div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                <a href="#" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#RemoteWork</a>
-                <a href="#" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#SalaryTransparency</a>
-                <a href="#" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#FintechHiring</a>
-                <a href="#" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#CareerGrowth</a>
-              </div>
-            </div>
-
-            <SidebarAd placement="community_sidebar" />
-          </aside>
-
+          </div>
         </div>
+      </div>
+
+      <div className="feed-posts">
+        {loading ? (
+          <div style={{ padding: '40px 0', textAlign: 'center' }}>
+            <Loader2 style={{ width: '32px', height: '32px', animation: 'spin 1s linear infinite', color: 'var(--c-400)', margin: '0 auto' }} />
+          </div>
+        ) : posts.length === 0 ? (
+          <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-lg)', padding: '40px', textAlign: 'center' }}>
+            <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '8px' }}>No posts yet</h3>
+            <p style={{ fontSize: '14px', color: 'var(--c-400)' }}>Be the first to share something with the community!</p>
+          </div>
+        ) : (
+          posts.map(post => (
+            <PostItem 
+              key={post.id} 
+              post={post} 
+              currentUserId={currentUserId} 
+              onDelete={handleDeletePost}
+              onLike={handleLike}
+            />
+          ))
+        )}
+
+        {posts.length > 0 && hasMore && (
+          <div style={{ textAlign: 'center', marginTop: '20px' }}>
+            <button
+              onClick={loadMore}
+              className="btn btn--ghost btn--sm"
+            >
+              Load More
+            </button>
+          </div>
+        )}
       </div>
     </div>
   );

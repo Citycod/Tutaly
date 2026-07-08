@@ -33,7 +33,7 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get('/community/conversations');
+      const res = await apiAuth.withToken(token).get('/connect/conversations');
       setConversations(res.data?.data || []);
     } catch (err) {
       console.error('Failed to load conversations', err);
@@ -58,11 +58,11 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/community/messages/${partner.id}?limit=50`);
+      const res = await apiAuth.withToken(token).get(`/connect/messages/${partner.id}?limit=50`);
       setMessages((res.data?.data || []).reverse());
       
       // Mark as read silently
-      apiAuth.withToken(token).patch(`/community/messages/${partner.id}/read`).catch(() => {});
+      apiAuth.withToken(token).patch(`/connect/messages/${partner.id}/read`).catch(() => {});
     } catch (err) {
       console.error('Failed to load messages', err);
     } finally {
@@ -93,7 +93,7 @@ export default function MessagesPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).post(`/community/messages/${selectedPartner.id}`, { body: messageToSend });
+      const res = await apiAuth.withToken(token).post(`/connect/messages/${selectedPartner.id}`, { body: messageToSend });
       
       // Update temp message with real one
       setMessages(prev => prev.map(m => m.id === optimisticMsg.id ? res.data?.data || m : m));

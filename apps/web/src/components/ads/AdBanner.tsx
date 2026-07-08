@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 interface AdData {
   id: string;
@@ -20,14 +21,11 @@ export default function AdBanner({ placement }: { placement: string }) {
     // Currently, mocking the fetch call:
     const fetchAd = async () => {
       try {
-        const res = await fetch(`/api/ads/active?placement=${placement}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data && data.length > 0) {
-            // Select random ad for this placement
-            const randomAd = data[Math.floor(Math.random() * data.length)];
-            setAd(randomAd);
-          }
+        const res = await api.get(`/ads/active?placement=${placement}`);
+        if (res.data && res.data.length > 0) {
+          // Select random ad for this placement
+          const randomAd = res.data[Math.floor(Math.random() * res.data.length)];
+          setAd(randomAd);
         } else {
           // Fallback to mock data for presentation purposes if backend route isn't returning correctly
           setTimeout(() => {
@@ -41,6 +39,15 @@ export default function AdBanner({ placement }: { placement: string }) {
         }
       } catch (e) {
         console.error("Error fetching ad", e);
+        // Fallback to mock data on error
+        setTimeout(() => {
+          setAd({
+            id: 'mock-1',
+            image_url: 'https://placehold.co/1200x90/1B4F9E/FFFFFF?text=Promote+Your+Business+Here',
+            target_url: '/advertise',
+            type: 'banner'
+          });
+        }, 500);
       } finally {
         setIsLoading(false);
       }
