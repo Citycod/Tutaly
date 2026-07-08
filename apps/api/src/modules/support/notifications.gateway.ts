@@ -31,7 +31,7 @@ export class NotificationsGateway
     private readonly configService: ConfigService,
   ) {}
 
-  async handleConnection(client: Socket) {
+  handleConnection(client: Socket) {
     try {
       const authHeader = client.handshake.headers.authorization;
       const token = authHeader?.split(' ')[1] || (client.handshake.query.token as string);
