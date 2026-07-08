@@ -2,482 +2,306 @@
 
 import React, { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import Link from 'next/link';
 import { apiAuth, api } from '@/lib/api';
-import {
-  ArrowLeft, Upload, Save, Loader2, Cpu, Package, Wrench, ImagePlus, X,
-} from 'lucide-react';
+import { X, Upload } from 'lucide-react';
+import { clsx, type ClassValue } from 'clsx';
+import { twMerge } from 'tailwind-merge';
+import dynamic from 'next/dynamic';
+import 'react-quill-new/dist/quill.snow.css';
 
-export default function CreateProductPage() {
+const ReactQuill = dynamic(() => import('react-quill-new'), { ssr: false });
+
+function cn(...inputs: ClassValue[]) {
+  return twMerge(clsx(inputs));
+}
+
+type FormData = {
+  title: string;
+  description: string;
+  listingType: string;
+  subcategoryId: string;
+  pricingType: string;
+  price: string;
+  currency: string;
+  priceUnit: string;
+  minQuantity: string;
+  priceMayVary: boolean;
+  isWorkRelatedConfirmed: boolean;
+};
+
+const DEFAULT_FORM_DATA: FormData = {
+  title: '',
+  description: '',
+  listingType: 'digital',
+  subcategoryId: '',
+  pricingType: 'fixed',
+  price: '',
+  currency: 'NGN',
+  priceUnit: '',
+  minQuantity: '1',
+  priceMayVary: false,
+  isWorkRelatedConfirmed: false,
+};
+
+export default function CreateListing() {
   const router = useRouter();
-  const [loading, setLoading] = useState(false);
+  const [formData, setFormData] = useState<FormData>(DEFAULT_FORM_DATA);
   const [categories, setCategories] = useState<any[]>([]);
-  const [subcategories, setSubcategories] = useState<any[]>([]);
-  const [checking, setChecking] = useState(true);
-
-  const [form, setForm] = useState({
-    title: '',
-    description: '',
-    listingType: 'digital',
-    categoryId: '',
-    subcategoryId: '',
-    pricingType: 'per_unit',
-    price: '',
-    currency: 'NGN',
-    priceUnit: '',
-    minQuantity: 1,
-    priceMayVary: false,
-    isWorkRelatedConfirmed: false,
-  });
-
+  const [submitting, setSubmitting] = useState(false);
+  const [errorMsg, setErrorMsg] = useState('');
+  
+  // File uploads
   const [digitalFile, setDigitalFile] = useState<File | null>(null);
-  const [productImages, setProductImages] = useState<File[]>([]);
-  const [imagePreviewUrls, setImagePreviewUrls] = useState<string[]>([]);
+  const [imageFiles, setImageFiles] = useState<File[]>([]);
 
   useEffect(() => {
-    checkSellerStatus();
+    // Fetch categories on mount
+    const fetchCategories = async () => {
+      try {
+        const res = await api.get('/shop/categories');
+        setCategories(res.data || []);
+        // Automatically select the first subcategory if available
+        if (res.data?.length > 0 && res.data[0].subcategories?.length > 0) {
+          updateForm({ subcategoryId: res.data[0].subcategories[0].id });
+        }
+      } catch (err) {
+        console.error('Failed to fetch categories', err);
+      }
+    };
+    fetchCategories();
   }, []);
 
-  const checkSellerStatus = async () => {
+  const updateForm = (updates: Partial<FormData>) => {
+    setFormData((prev) => ({ ...prev, ...updates }));
+  };
+
+  const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files) {
+      setImageFiles(Array.from(e.target.files));
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setDigitalFile(e.target.files[0]);
+    }
+  };
+
+  const handleSubmit = async () => {
+    if (!formData.title || !formData.description) return setErrorMsg('Title and Description are required.');
+    if (!formData.subcategoryId) return setErrorMsg('Please select a category.');
+    if (!formData.isWorkRelatedConfirmed) return setErrorMsg('You must confirm the listing is career/work related.');
+    if (formData.pricingType !== 'quote_based' && (!formData.price || Number(formData.price) <= 0)) {
+      return setErrorMsg('Price is required for fixed or per-unit pricing.');
+    }
+    if (formData.listingType === 'digital' && !digitalFile) {
+      return setErrorMsg('Please upload a file for your digital listing.');
+    }
+    
+    setSubmitting(true);
+    setErrorMsg('');
+    
     try {
       const token = localStorage.getItem('access_token');
-      if (!token) {
-        router.push('/auth/signin');
-        return;
-      }
-      const res = await apiAuth.withToken(token).get('/shop/seller/status');
-      const status = res.data?.sellerStatus || res.data?.data?.sellerStatus || 'none';
-      if (status !== 'approved') {
-        router.push('/seller/apply');
-        return;
-      }
-      await fetchCategories();
-    } catch (err) {
-      console.error('Failed to verify seller status', err);
-      router.push('/seller/apply');
-    } finally {
-      setChecking(false);
-    }
-  };
+      if (!token) throw new Error('Not authenticated');
 
-  const fetchCategories = async () => {
-    try {
-      const res = await api.get('/shop/categories');
-      setCategories(res.data?.data || []);
-    } catch (err) {
-      console.error('Failed to fetch categories', err);
-    }
-  };
-
-  const handleCategoryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const catId = e.target.value;
-    setForm(prev => ({ ...prev, categoryId: catId, subcategoryId: '' }));
-    const cat = categories.find(c => c.id === catId);
-    setSubcategories(cat?.subcategories || []);
-  };
-
-  const handleAddImages = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = Array.from(e.target.files || []);
-    const remaining = 5 - productImages.length;
-    const toAdd = files.slice(0, remaining);
-
-    setProductImages(prev => [...prev, ...toAdd]);
-
-    // Generate preview URLs
-    toAdd.forEach(file => {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setImagePreviewUrls(prev => [...prev, reader.result as string]);
-      };
-      reader.readAsDataURL(file);
-    });
-
-    // Reset input value so the same file can be selected again
-    e.target.value = '';
-  };
-
-  const handleRemoveImage = (index: number) => {
-    setProductImages(prev => prev.filter((_, i) => i !== index));
-    setImagePreviewUrls(prev => prev.filter((_, i) => i !== index));
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    if (!form.isWorkRelatedConfirmed) {
-      alert('You must confirm this product is work-related.');
-      return;
-    }
-
-    setLoading(true);
-    try {
-      const token = localStorage.getItem('access_token');
-      if (!token) return;
-
-      // Strip categoryId — only subcategoryId is needed by the API
-      const { categoryId: _catId, ...formData } = form;
-      const payload = {
-        ...formData,
-        price: form.pricingType === 'per_unit' ? Number(form.price) : undefined,
+      const payload: any = {
+        title: formData.title,
+        description: formData.description,
+        listingType: formData.listingType,
+        subcategoryId: formData.subcategoryId,
+        pricingType: formData.pricingType,
+        isWorkRelatedConfirmed: formData.isWorkRelatedConfirmed,
       };
 
-      // 1. Create product
+      if (formData.pricingType !== 'quote_based') {
+        payload.price = Number(formData.price);
+        payload.currency = formData.currency;
+      }
+      
+      if (formData.pricingType === 'per_unit') {
+        payload.priceUnit = formData.priceUnit;
+        payload.minQuantity = Number(formData.minQuantity);
+        payload.priceMayVary = formData.priceMayVary;
+      }
+
+      // Create product
       const res = await apiAuth.withToken(token).post('/shop/products', payload);
-      const product = res.data?.data;
+      const productId = res.data.id || res.data.data?.id;
 
-      if (product?.id) {
-        // 2. Upload digital file if digital listing
-        if (form.listingType === 'digital' && digitalFile) {
-          const formData = new FormData();
-          formData.append('file', digitalFile);
-
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/shop/products/${product.id}/upload`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-            body: formData,
-          });
-        }
-
-        // 3. Upload product images (for all listing types)
-        for (const imageFile of productImages) {
-          const formData = new FormData();
-          formData.append('image', imageFile);
-
-          await fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/shop/products/${product.id}/images`, {
-            method: 'POST',
-            headers: {
-              'Authorization': `Bearer ${token}`,
-            },
-            body: formData,
-          });
-        }
+      if (!productId) {
+         throw new Error("Product creation did not return an ID");
       }
 
+      // Upload Digital File if needed
+      if (formData.listingType === 'digital' && digitalFile) {
+        const fileData = new FormData();
+        fileData.append('file', digitalFile);
+        await apiAuth.withToken(token).post(`/shop/products/${productId}/upload`, fileData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      }
+
+      // Upload Images if any
+      if (imageFiles.length > 0) {
+        const imgData = new FormData();
+        imageFiles.forEach(img => imgData.append('image', img));
+        await apiAuth.withToken(token).post(`/shop/products/${productId}/images`, imgData, {
+          headers: { 'Content-Type': 'multipart/form-data' }
+        });
+      }
+
+      alert('Listing created successfully!');
       router.push('/seller');
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = e as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = e as any;
-alert(err.response?.data?.message || 'Failed to create product');
+      console.error(err);
+      setErrorMsg(err.response?.data?.message || err.message || 'Failed to create listing');
     } finally {
-      setLoading(false);
+      setSubmitting(false);
     }
   };
 
-  if (checking) {
-    return (
-      <div className="flex justify-center items-center h-64">
-        <Loader2 className="w-8 h-8 animate-spin text-green" />
-      </div>
-    );
-  }
-
   return (
-    <div className="px-4 py-6 sm:p-8 pb-16 max-w-3xl mx-auto">
-      <div className="page-header">
-        <div className="page-header__title">
-          <Link href="/seller" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-4 font-medium">
-            <ArrowLeft className="w-4 h-4" /> Back to Dashboard
-          </Link>
-          <h1 className="text-2xl font-bold text-c900 mb-1">Create New Listing</h1>
-          <p className="text-c500 text-sm">Add a new template, tool, or professional service.</p>
+    <div className="dcard max-w-4xl mx-auto">
+      <div className="mb-8">
+        <h1 className="text-2xl font-bold" style={{ color: 'var(--c-100)' }}>Create New Listing</h1>
+        <p className="text-sm" style={{ color: 'var(--c-500)' }}>Add a new career resource, service, or digital product to the marketplace.</p>
+      </div>
+
+      {errorMsg && (
+        <div className="mb-8 rounded-xl p-4 border flex items-start" style={{ borderColor: 'var(--red)', backgroundColor: 'var(--red-10)' }}>
+          <p className="text-sm" style={{ color: 'var(--red)' }}>{errorMsg}</p>
+        </div>
+      )}
+
+      <div className="form-section">
+        <div className="form-section__title">Basic details</div>
+        
+        <div className="form-field">
+          <label className="form-label">Listing Title <span style={{ color: 'var(--red)', marginLeft: '4px' }}>*</span></label>
+          <input className="input" type="text" placeholder="e.g. 2026 Tech Resume Template" value={formData.title} onChange={e => updateForm({ title: e.target.value })} />
+        </div>
+
+        <div className="form-grid-2">
+          <div className="form-field">
+            <label className="form-label">Type of Listing</label>
+            <select className="input" value={formData.listingType} onChange={e => updateForm({ listingType: e.target.value })}>
+              <option value="digital">Digital Product (Download)</option>
+              <option value="physical">Physical Item (Shipped)</option>
+              <option value="service">Service (Consulting / Mentorship)</option>
+            </select>
+          </div>
+          <div className="form-field">
+            <label className="form-label">Category</label>
+            <select className="input" value={formData.subcategoryId} onChange={e => updateForm({ subcategoryId: e.target.value })}>
+              {categories.map(cat => (
+                <optgroup key={cat.id} label={cat.name}>
+                  {cat.subcategories?.map((sub: any) => (
+                    <option key={sub.id} value={sub.id}>{sub.name}</option>
+                  ))}
+                </optgroup>
+              ))}
+            </select>
+          </div>
         </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="dcard p-4 sm:p-8 space-y-6 sm:space-y-8">
-        {/* Type Selection */}
-        <div>
-          <label className="block text-sm font-bold text-c900 mb-3">Listing Type</label>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <button
-              type="button"
-              onClick={() => setForm(prev => ({ ...prev, listingType: 'digital' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'digital' ? 'border-purple-500 ring-2 ring-purple-500 ring-opacity-20 bg-purple-50' : 'border-c200 hover:border-purple-300'}`}
-            >
-              <Cpu className={`w-6 h-6 mb-2 ${form.listingType === 'digital' ? 'text-purple-600' : 'text-c400'}`} />
-              <h3 className="font-bold text-c900 mb-1">Digital</h3>
-              <p className="text-xs text-c500 leading-relaxed">Files, templates, scripts</p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm(prev => ({ ...prev, listingType: 'physical' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'physical' ? 'border-blue ring-2 ring-blue ring-opacity-20 bg-blueL' : 'border-c200 hover:border-blueL'}`}
-            >
-              <Package className={`w-6 h-6 mb-2 ${form.listingType === 'physical' ? 'text-blue' : 'text-c400'}`} />
-              <h3 className="font-bold text-c900 mb-1">Physical</h3>
-              <p className="text-xs text-c500 leading-relaxed">Books, hardware, merch</p>
-            </button>
-            <button
-              type="button"
-              onClick={() => setForm(prev => ({ ...prev, listingType: 'service' }))}
-              className={`p-4 rounded-xl border text-left transition-all ${form.listingType === 'service' ? 'border-gold ring-2 ring-gold ring-opacity-20 bg-gold' : 'border-c200 hover:border-gold'}`}
-            >
-              <Wrench className={`w-6 h-6 mb-2 ${form.listingType === 'service' ? 'text-gold' : 'text-c400'}`} />
-              <h3 className="font-bold text-c900 mb-1">Service</h3>
-              <p className="text-xs text-c500 leading-relaxed">Consulting, design, review</p>
-            </button>
-          </div>
-        </div>
-
-        <div className="space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-c700 mb-1">Title</label>
-            <input
-              type="text"
-              value={form.title}
-              onChange={(e) => setForm({ ...form, title: e.target.value })}
-              className="input text-black"
-              required
-              maxLength={100}
+      <div className="form-section">
+        <div className="form-section__title">Description</div>
+        <div className="form-field">
+          <div className="rounded-lg overflow-hidden border" style={{ backgroundColor: 'var(--c-800)', borderColor: 'var(--c-600)' }}>
+            <ReactQuill 
+              theme="snow" 
+              value={formData.description} 
+              onChange={val => updateForm({ description: val })}
+              className="border-0"
+              style={{ minHeight: '200px' }}
             />
           </div>
+        </div>
+      </div>
 
-          <div>
-            <label className="block text-sm font-medium text-c700 mb-1">Description</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => setForm({ ...form, description: e.target.value })}
-              rows={5}
-              className="input text-black resize-y"
-              required
-              minLength={20}
-            />
+      <div className="form-section mt-14">
+        <div className="form-section__title">Pricing & Format</div>
+        
+        <div className="form-field">
+          <label className="form-label">Pricing Strategy</label>
+          <div className="flex p-1 rounded-lg w-full border mb-4" style={{ backgroundColor: 'var(--c-800)', borderColor: 'var(--c-700)' }}>
+            <button type="button" onClick={() => updateForm({ pricingType: 'fixed' })} className={cn("flex-1 py-2 text-sm font-medium rounded-md transition-all", formData.pricingType === 'fixed' ? "shadow-sm" : "opacity-60")} style={formData.pricingType === 'fixed' ? { backgroundColor: 'var(--c-700)', color: 'var(--c-100)' } : { color: 'var(--c-400)' }}>
+              Fixed Price
+            </button>
+            <button type="button" onClick={() => updateForm({ pricingType: 'per_unit' })} className={cn("flex-1 py-2 text-sm font-medium rounded-md transition-all", formData.pricingType === 'per_unit' ? "shadow-sm" : "opacity-60")} style={formData.pricingType === 'per_unit' ? { backgroundColor: 'var(--c-700)', color: 'var(--c-100)' } : { color: 'var(--c-400)' }}>
+              Per Unit / Hour
+            </button>
+            <button type="button" onClick={() => updateForm({ pricingType: 'quote_based' })} className={cn("flex-1 py-2 text-sm font-medium rounded-md transition-all", formData.pricingType === 'quote_based' ? "shadow-sm" : "opacity-60")} style={formData.pricingType === 'quote_based' ? { backgroundColor: 'var(--c-700)', color: 'var(--c-100)' } : { color: 'var(--c-400)' }}>
+              Custom Quote
+            </button>
           </div>
-
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div>
-              <label className="block text-sm font-medium text-c700 mb-1">Category</label>
-              <select
-                value={form.categoryId}
-                onChange={handleCategoryChange}
-                className="input text-black"
-                required
-              >
-                <option value="">Select...</option>
-                {categories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-            <div>
-              <label className="block text-sm font-medium text-c700 mb-1">Subcategory</label>
-              <select
-                value={form.subcategoryId}
-                onChange={(e) => setForm({ ...form, subcategoryId: e.target.value })}
-                className="input text-black"
-                required
-                disabled={!form.categoryId}
-              >
-                <option value="">Select...</option>
-                {subcategories.map(c => <option key={c.id} value={c.id}>{c.name}</option>)}
-              </select>
-            </div>
-          </div>
-          
-          {/* USER-FACING DESCRIPTION (MUST DISPLAY) */}
-          {categories.find(c => c.id === form.categoryId)?.name === 'Other / Uncategorized' && (
-            <div className="bg-orange-50 border border-orange-200 p-4 rounded-xl mt-4">
-              <p className="text-sm text-orange-800 font-medium mb-1">
-                This section is for services or products that do not fit into existing categories.
-              </p>
-              <p className="text-sm text-orange-800 font-medium">
-                All listings must be strictly work-related, office-related, or business-related.
-                Non-professional or unrelated items will be removed.
-              </p>
-            </div>
-          )}
         </div>
 
-        {/* Pricing */}
-        <div className="border-t border-c100 pt-8">
-          <label className="block text-sm font-bold text-c900 mb-4">Pricing</label>
+        {formData.pricingType !== 'quote_based' && (
+          <div className="form-grid-2">
+            <div className="form-field">
+              <label className="form-label">Price</label>
+              <div style={{ display: 'flex', gap: '8px' }}>
+                <select className="input" style={{ width: '100px', flexShrink: 0 }} value={formData.currency} onChange={e => updateForm({ currency: e.target.value })}>
+                  <option value="NGN">NGN (₦)</option>
+                  <option value="USD">USD ($)</option>
+                  <option value="EUR">EUR (€)</option>
+                  <option value="GBP">GBP (£)</option>
+                </select>
+                <input className="input" style={{ flex: 1 }} type="number" placeholder="e.g. 5000" value={formData.price} onChange={e => updateForm({ price: e.target.value })} />
+              </div>
+            </div>
 
-          <div className="flex gap-4 mb-5">
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input
-                type="radio"
-                checked={form.pricingType === 'per_unit'}
-                onChange={() => setForm({ ...form, pricingType: 'per_unit' })}
-                className="text-green focus:ring-green"
-              /> Fixed Price
-            </label>
-            <label className="flex items-center gap-2 text-sm cursor-pointer">
-              <input
-                type="radio"
-                checked={form.pricingType === 'request_quote'}
-                onChange={() => setForm({ ...form, pricingType: 'request_quote' })}
-                className="text-green focus:ring-green"
-              /> Request Quote
-            </label>
+            {formData.pricingType === 'per_unit' && (
+              <div className="form-field">
+                <label className="form-label">Unit (e.g. "hour", "session")</label>
+                <input className="input" type="text" placeholder="e.g. hour" value={formData.priceUnit} onChange={e => updateForm({ priceUnit: e.target.value })} />
+              </div>
+            )}
           </div>
+        )}
+      </div>
 
-          {form.pricingType === 'per_unit' && (
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-sm font-medium text-c700 mb-1">Price</label>
-                <div className="flex gap-2">
-                  <select
-                    value={form.currency}
-                    onChange={(e) => setForm({ ...form, currency: e.target.value })}
-                    className="input font-bold text-black w-24"
-                  >
-                    <option value="NGN">NGN</option>
-                    <option value="USD">USD</option>
-                    <option value="EUR">EUR</option>
-                  </select>
-                  <input
-                    type="number"
-                    value={form.price}
-                    onChange={(e) => setForm({ ...form, price: e.target.value })}
-                    className="input text-black flex-1"
-                    required
-                    min={1}
-                    placeholder="0.00"
-                  />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-c700 mb-1">Unit (Optional)</label>
-                <input
-                  type="text"
-                  value={form.priceUnit}
-                  onChange={(e) => setForm({ ...form, priceUnit: e.target.value })}
-                  placeholder="e.g. Hour, Page, Item"
-                  className="input text-black"
-                />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-c700 mb-1">Minimum Quantity</label>
-                <input
-                  type="number"
-                  value={form.minQuantity}
-                  onChange={(e) => setForm({ ...form, minQuantity: Number(e.target.value) })}
-                  className="input text-black"
-                  required
-                  min={1}
-                />
-              </div>
-            </div>
-          )}
-          {form.listingType === 'service' && (
-            <div className="mt-4">
-              <label className="flex items-center gap-2 text-sm cursor-pointer">
-                <input
-                  type="checkbox"
-                  checked={form.priceMayVary}
-                  onChange={(e) => setForm({ ...form, priceMayVary: e.target.checked })}
-                  className="text-green focus:ring-green rounded"
-                />
-                Final price may vary based on scope
-              </label>
-            </div>
-          )}
-        </div>
-
-        {/* Product Images — Available for ALL listing types */}
-        <div className="border-t border-c100 pt-8">
-          <label className="block text-sm font-bold text-c900 mb-2">
-            Product Images
-          </label>
-          <p className="text-sm text-c500 mb-4">
-            Upload up to 5 images to showcase your {form.listingType === 'digital' ? 'product preview' : form.listingType === 'service' ? 'service portfolio' : 'product'}. JPEG, PNG, WebP or GIF, max 5MB each.
-          </p>
-
-          {/* Preview Grid */}
-          {imagePreviewUrls.length > 0 && (
-            <div className="grid grid-cols-3 sm:grid-cols-4 lg:grid-cols-5 gap-2 sm:gap-3 mb-4">
-              {imagePreviewUrls.map((url, index) => (
-                <div key={index} className="relative group aspect-square rounded-lg overflow-hidden border border-c200">
-                  <img src={url} alt={`Preview ${index + 1}`} className="w-full h-full object-cover" />
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveImage(index)}
-                    className="absolute top-1 right-1 bg-red text-white rounded-full p-0.5 opacity-0 group-hover:opacity-100 transition-opacity"
-                  >
-                    <X className="w-3.5 h-3.5" />
-                  </button>
-                </div>
-              ))}
-            </div>
-          )}
-
-          {productImages.length < 5 && (
-            <div className="border-2 border-dashed border-c300 rounded-xl p-6 text-center hover:bg-c100 transition-colors">
-              <ImagePlus className="w-8 h-8 text-c400 mx-auto mb-3" />
-              <input
-                type="file"
-                accept="image/jpeg,image/png,image/webp,image/gif"
-                onChange={handleAddImages}
-                className="hidden"
-                id="product-images-upload"
-                multiple
-              />
-              <label htmlFor="product-images-upload" className="cursor-pointer">
-                <span className="font-bold text-green hover:text-green">Click to upload images</span>
-                <span className="text-c500"> or drag and drop</span>
-              </label>
-              <p className="text-xs text-c400 mt-2">
-                {productImages.length}/5 images added
-              </p>
-            </div>
-          )}
-        </div>
-
-        {/* Digital File Upload — Only for digital listings */}
-        {form.listingType === 'digital' && (
-          <div className="border-t border-c100 pt-8">
-            <label className="block text-sm font-bold text-c900 mb-2">Digital File</label>
-            <p className="text-sm text-c500 mb-4">Upload the file that buyers will download upon purchase. Held securely in private storage.</p>
-            <div className="border-2 border-dashed border-c300 rounded-xl p-8 text-center hover:bg-c100 transition-colors">
-              <Upload className="w-8 h-8 text-c400 mx-auto mb-3" />
-              <input
-                type="file"
-                onChange={(e) => setDigitalFile(e.target.files?.[0] || null)}
-                className="hidden"
-                id="digital-upload"
-                required
-              />
-              <label htmlFor="digital-upload" className="cursor-pointer">
-                <span className="font-bold text-green hover:text-green">Click to upload</span>
-                <span className="text-c500"> or drag and drop</span>
-              </label>
-              <p className="text-xs text-c400 mt-2">ZIP, PDF, DOCX up to 100MB</p>
-              {digitalFile && (
-                <div className="mt-4 inline-flex items-center gap-2 bg-green text-green px-3 py-1.5 rounded-lg text-sm font-medium">
-                  {digitalFile.name}
-                </div>
-              )}
-            </div>
+      <div className="form-section">
+        <div className="form-section__title">Media & Files</div>
+        
+        {formData.listingType === 'digital' && (
+          <div className="form-field border rounded-lg p-6 text-center border-dashed mb-6 flex flex-col items-center justify-center" style={{ borderColor: 'var(--c-600)', backgroundColor: 'var(--c-800)' }}>
+            <Upload width={32} height={32} style={{ color: 'var(--c-500)', marginBottom: '12px' }} />
+            <div className="font-bold mb-1" style={{ color: 'var(--c-100)' }}>Digital Deliverable File</div>
+            <p className="text-xs mb-4" style={{ color: 'var(--c-400)' }}>Upload the PDF, ZIP, or DOCX that the user will receive after purchase.</p>
+            <input type="file" onChange={handleFileChange} />
           </div>
         )}
 
-        {/* Compliance */}
-        <div className="border-t border-c100 pt-8">
-          <label className="flex items-start gap-3 p-4 bg-c100 rounded-xl cursor-pointer">
-            <input
-              type="checkbox"
-              checked={form.isWorkRelatedConfirmed}
-              onChange={(e) => setForm({ ...form, isWorkRelatedConfirmed: e.target.checked })}
-              className="mt-1 text-green focus:ring-green rounded"
-              required
-            />
-            <span className="text-sm text-c700">
-              I confirm that this listing is strictly related to professional work, career development, or business tools. I understand that non-work related items will be removed and my seller account may be suspended.
-            </span>
-          </label>
+        <div className="form-field border rounded-lg p-6 text-center border-dashed flex flex-col items-center justify-center" style={{ borderColor: 'var(--c-600)', backgroundColor: 'var(--c-800)' }}>
+          <Upload width={32} height={32} style={{ color: 'var(--c-500)', marginBottom: '12px' }} />
+          <div className="font-bold mb-1" style={{ color: 'var(--c-100)' }}>Display Images</div>
+          <p className="text-xs mb-4" style={{ color: 'var(--c-400)' }}>Upload up to 5 images to show in the marketplace gallery.</p>
+          <input type="file" multiple accept="image/*" onChange={handleImageChange} />
         </div>
+      </div>
 
-        <div className="flex justify-end pt-4 border-t border-c100">
-          <button
-            type="submit"
-            disabled={loading}
-            className="btn btn--primary"
-          >
-            {loading ? <Loader2 className="w-5 h-5 animate-spin mr-2" /> : <Save className="w-5 h-5 mr-2" />}
-            Publish Listing
-          </button>
-        </div>
-      </form>
+      <div className="form-section">
+        <label className="check-row flex items-start p-5 rounded-2xl border-2 cursor-pointer transition-all" style={formData.isWorkRelatedConfirmed ? { borderColor: 'var(--gold)', backgroundColor: 'var(--gold-10)' } : { borderColor: 'var(--c-700)', backgroundColor: 'var(--c-800)' }}>
+          <div className="flex items-center h-6 pt-1">
+             <div className={cn("filter-checkbox", formData.isWorkRelatedConfirmed ? "checked" : "")} style={formData.isWorkRelatedConfirmed ? { borderColor: 'var(--gold)', backgroundColor: 'var(--gold)' } : { borderColor: 'var(--c-500)' }} onClick={(e) => { e.preventDefault(); updateForm({ isWorkRelatedConfirmed: !formData.isWorkRelatedConfirmed }); }}></div>
+          </div>
+          <div className="ml-4 flex-1" onClick={(e) => { e.preventDefault(); updateForm({ isWorkRelatedConfirmed: !formData.isWorkRelatedConfirmed }); }}>
+            <span className="block text-base font-bold" style={{ color: 'var(--c-100)' }}>Confirm Work/Career Focus</span>
+            <span className="block text-sm mt-1" style={{ color: 'var(--c-400)' }}>I confirm this listing is directly related to professional development, career growth, or workplace productivity. Non-work-related listings will be removed.</span>
+          </div>
+        </label>
+      </div>
+
+      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '30px' }}>
+        <button type="button" className="btn btn--ghost" onClick={() => router.push('/seller')}>Cancel</button>
+        <button type="button" className="btn btn--primary" onClick={handleSubmit} disabled={submitting}>{submitting ? 'Creating...' : 'Create Listing'}</button>
+      </div>
+
     </div>
   );
 }

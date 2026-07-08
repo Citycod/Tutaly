@@ -94,6 +94,8 @@ export default function DashboardLayout({
   const sellerLinks = [
     { name: 'Dashboard', href: '/seller', icon: Store },
     { name: 'Add Product', href: '/seller/create', icon: FileText },
+    { name: 'Orders', href: '/seller/orders', icon: Package },
+    { name: 'Earnings', href: '/seller/earnings', icon: CreditCard },
   ];
 
   const adminLinks = [
