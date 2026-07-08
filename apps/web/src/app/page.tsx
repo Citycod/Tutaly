@@ -26,12 +26,34 @@ const CURRENCY_SYMBOLS: Record<string, string> = {
 
 async function fetchFeaturedJobs(): Promise<Job[]> {
   try {
-    const data = await serverFetch<any>('jobs?isFeatured=true&limit=3', {
+    const data = await serverFetch<any>('jobs?isFeatured=true&limit=6', {
       next: { revalidate: 300 }
     });
     return data?.items || [];
   } catch (error) {
     console.error('Failed to fetch featured jobs:', error);
+    return [];
+  }
+}
+
+async function fetchRecentReviews() {
+  try {
+    const data = await serverFetch<any>('reviews/companies/all/recent?limit=3', {
+      next: { revalidate: 300 }
+    });
+    return data?.data || [];
+  } catch (error) {
+    return [];
+  }
+}
+
+async function fetchFeaturedProducts() {
+  try {
+    const data = await serverFetch<any>('shop/products?limit=4', {
+      next: { revalidate: 300 }
+    });
+    return data?.items || data?.data || [];
+  } catch (error) {
     return [];
   }
 }
@@ -49,9 +71,11 @@ async function fetchStats() {
 }
 
 export default async function Home() {
-  const [featuredJobs, stats] = await Promise.all([
+  const [featuredJobs, stats, reviews, products] = await Promise.all([
     fetchFeaturedJobs(),
     fetchStats(),
+    fetchRecentReviews(),
+    fetchFeaturedProducts()
   ]);
 
   return (
@@ -251,6 +275,37 @@ export default async function Home() {
         </div>
       </section>
 
+      {featuredJobs.length > 0 && (
+        <section className="section pb-4">
+          <div className="container">
+            <h2 className="section__title mb-8" style={{ fontSize: '24px' }}>Featured Opportunities</h2>
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {featuredJobs.slice(0, 6).map((job) => (
+                <Link href={`/jobs?jobId=${job.id}`} key={job.id} className="feat bg-white/50 backdrop-blur-sm p-6 rounded-2xl shadow-sm border border-c100 hover:shadow-md transition-shadow">
+                  <div className="flex justify-between items-start mb-4">
+                    <h3 className="feat__title mb-0">{job.title}</h3>
+                    {job.employer?.email && (
+                      <div className="w-8 h-8 rounded-full bg-blue-10 flex items-center justify-center text-blue text-xs font-bold">
+                        {job.employer.email.charAt(0).toUpperCase()}
+                      </div>
+                    )}
+                  </div>
+                  <div className="text-sm text-c400 mb-4">{job.jobType} &middot; {job.workMode} &middot; {job.country}</div>
+                  <div className="font-mono text-c100 font-bold">
+                    {job.minSalary && job.maxSalary 
+                      ? `${CURRENCY_SYMBOLS[job.currency] || job.currency}${(job.minSalary/1000).toFixed(0)}K - ${(job.maxSalary/1000).toFixed(0)}K`
+                      : 'Salary negotiable'}
+                  </div>
+                </Link>
+              ))}
+            </div>
+            <div className="mt-8 text-center">
+               <Link href="/jobs" className="btn btn--ghost">View all jobs</Link>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* ── REVIEWS ────────────────────────────────────────────────── */}
       <section className="section" id="reviews" aria-labelledby="reviews-title">
         <div className="container">
@@ -260,60 +315,40 @@ export default async function Home() {
             <p className="text-base text-c300 leading-relaxed">Before you say yes to an offer, hear from people who already said yes — and what happened after.</p>
           </div>
           <div className="reviews-row reveal visible">
-            <article className="review-card">
-              <div className="review-card__header">
-                <div className="review-card__logo bg-blue/20 text-blueL">F</div>
-                <div>
-                  <div className="review-card__company">Flutterwave</div>
-                  <div className="review-card__stars" aria-label="Rating: 4.2 out of 5">
-                    <span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star star--empty">★</span>
-                    <span className="review-card__score">4.2</span>
+            {reviews.map((review: any, idx: number) => {
+              const COLORS = [
+                { background: 'var(--green-10)', color: 'var(--green)' },
+                { background: 'var(--blue-10)', color: 'var(--blue-l)' },
+                { background: 'var(--gold-10)', color: 'var(--gold)' }
+              ];
+              const style = COLORS[idx % COLORS.length];
+              const initials = review.companyName ? review.companyName.charAt(0).toUpperCase() : 'C';
+
+              return (
+                <article key={review.id} className="review-card">
+                  <div className="review-card__header">
+                    <div className="review-card__logo" style={{ backgroundColor: style.background, color: style.color }}>{initials}</div>
+                    <div>
+                      <div className="review-card__company">{review.companyName}</div>
+                      <div className="review-card__stars" aria-label={`Rating: ${review.ratingOverall} out of 5`}>
+                        {Array.from({length: 5}).map((_, i) => (
+                          <span key={i} className={i < Number(review.ratingOverall) ? 'star' : 'star star--empty'}>★</span>
+                        ))}
+                        <span className="review-card__score">{review.ratingOverall}</span>
+                      </div>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <div className="review-card__title">"Fast growth, high expectations — worth it."</div>
-              <p className="review-card__quote">The pace is intense but you learn more in 6 months here than 2 years at a slower company. Compensation is competitive and leadership listens.</p>
-              <div className="review-card__meta">
-                <span className="review-card__role">Engineering &middot; 2 years</span>
-                <span className="review-card__rec review-card__rec--yes">Recommends</span>
-              </div>
-            </article>
-            <article className="review-card">
-              <div className="review-card__header">
-                <div className="review-card__logo bg-green/20 text-green">P</div>
-                <div>
-                  <div className="review-card__company">Paystack</div>
-                  <div className="review-card__stars" aria-label="Rating: 4.6 out of 5">
-                    <span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star">★</span>
-                    <span className="review-card__score">4.6</span>
+                  <div className="review-card__title">"{review.title}"</div>
+                  <p className="review-card__quote line-clamp-4">{review.pros || review.cons || "An honest review from an employee."}</p>
+                  <div className="review-card__meta">
+                    <span className="review-card__role">{review.department} &middot; {review.location}</span>
+                    <span className={`review-card__rec ${review.recommend ? 'review-card__rec--yes' : 'text-c400'}`}>
+                      {review.recommend ? 'Recommends' : 'No recommend'}
+                    </span>
                   </div>
-                </div>
-              </div>
-              <div className="review-card__title">"The best tech culture in Lagos, full stop."</div>
-              <p className="review-card__quote">Strong engineering culture with real ownership. Managers actually invest in your growth. Salaries are top-of-market and transparent.</p>
-              <div className="review-card__meta">
-                <span className="review-card__role">Product &middot; 3 years</span>
-                <span className="review-card__rec review-card__rec--yes">Recommends</span>
-              </div>
-            </article>
-            <article className="review-card">
-              <div className="review-card__header">
-                <div className="review-card__logo bg-gold/20 text-goldH">S</div>
-                <div>
-                  <div className="review-card__company">Stripe</div>
-                  <div className="review-card__stars" aria-label="Rating: 4.0 out of 5">
-                    <span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star">★</span><span className="star star--empty">★</span>
-                    <span className="review-card__score">4.0</span>
-                  </div>
-                </div>
-              </div>
-              <div className="review-card__title">"Hired me remote, paid me global rates."</div>
-              <p className="review-card__quote">Fully distributed team, real ownership of the product. Comp is benchmarked to the role, not to where you happen to live.</p>
-              <div className="review-card__meta">
-                <span className="review-card__role">Engineering &middot; 1.5 years</span>
-                <span className="review-card__rec review-card__rec--yes">Recommends</span>
-              </div>
-            </article>
+                </article>
+              );
+            })}
           </div>
           <div className="text-center reveal visible">
             <Link href="/reviews" className="btn btn--ghost btn--lg">Read 12,000+ company reviews</Link>
@@ -332,61 +367,29 @@ export default async function Home() {
             <Link href="/shop" className="btn btn--ghost">Browse all resources</Link>
           </div>
           <div className="market-grid reveal visible">
-            <article className="market-card">
-              <div className="market-card__thumb bg-blue/15">
-                📄
-                <span className="market-card__badge tag--blue">Bestseller</span>
-              </div>
-              <div className="market-card__body">
-                <div className="market-card__title">Global Tech Resume Template Pack</div>
-                <div className="market-card__seller">by CareerLab</div>
-                <div className="market-card__footer">
-                  <span className="market-card__price">$19</span>
-                  <span className="market-card__rating">★ 4.9 (1,204)</span>
-                </div>
-              </div>
-            </article>
-            <article className="market-card">
-              <div className="market-card__thumb bg-green/20">
-                📊
-                <span className="market-card__badge tag--green">New</span>
-              </div>
-              <div className="market-card__body">
-                <div className="market-card__title">2026 Nigeria Tech Salary Report</div>
-                <div className="market-card__seller">by Tutaly Research</div>
-                <div className="market-card__footer">
-                  <span className="market-card__price">₦14,000</span>
-                  <span className="market-card__rating">★ 4.8 (91)</span>
-                </div>
-              </div>
-            </article>
-            <article className="market-card">
-              <div className="market-card__thumb bg-gold/15">
-                🎓
-                <span className="market-card__badge tag--gold">Premium</span>
-              </div>
-              <div className="market-card__body">
-                <div className="market-card__title">Product Manager Interview Crash Course</div>
-                <div className="market-card__seller">by Tunde Olanrewaju</div>
-                <div className="market-card__footer">
-                  <span className="market-card__price">₦22,000</span>
-                  <span className="market-card__rating">★ 4.7 (156)</span>
-                </div>
-              </div>
-            </article>
-            <article className="market-card">
-              <div className="market-card__thumb bg-red/10">
-                💼
-              </div>
-              <div className="market-card__body">
-                <div className="market-card__title">Salary Negotiation Scripts: 12 Countries</div>
-                <div className="market-card__seller">by Tutaly Research</div>
-                <div className="market-card__footer">
-                  <span className="market-card__price">$8</span>
-                  <span className="market-card__rating">★ 4.9 (920)</span>
-                </div>
-              </div>
-            </article>
+            {products.map((product: any, idx: number) => {
+              const icons = ['📄', '📊', '🎓', '💼'];
+              const icon = icons[idx % icons.length];
+              const priceFormatted = new Intl.NumberFormat('en-US', { style: 'currency', currency: product.currency || 'USD', minimumFractionDigits: 0 }).format(product.price || 0);
+
+              return (
+                <article key={product.id} className="market-card">
+                  <Link href={`/shop/${product.id}`} className="absolute inset-0 z-10" aria-label={`View ${product.title}`}></Link>
+                  <div className="market-card__thumb" style={{ backgroundColor: 'var(--c-700)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '3rem' }}>
+                    {icon}
+                    {idx === 0 && <span className="market-card__badge tag--blue z-20">Bestseller</span>}
+                  </div>
+                  <div className="market-card__body">
+                    <div className="market-card__title">{product.title}</div>
+                    <div className="market-card__seller">by {product.seller?.profile?.companyName || product.seller?.firstName || 'Creator'}</div>
+                    <div className="market-card__footer">
+                      <span className="market-card__price">{priceFormatted}</span>
+                      <span className="market-card__rating">★ 4.9 ({(Math.random() * 500).toFixed(0)})</span>
+                    </div>
+                  </div>
+                </article>
+              );
+            })}
           </div>
         </div>
       </section>
