@@ -1,24 +1,17 @@
 'use client';
 
 import React, { useEffect, useState } from 'react';
-
+import { api } from '@/lib/api';
 export default function SidebarAd({ placement }: { placement: string }) {
   const [ad, setAd] = useState<any>(null);
 
   useEffect(() => {
     const fetchAd = async () => {
       try {
-        const res = await fetch(`/api/ads/active?placement=${placement}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.ad) {
-            setAd(data.ad);
-            await fetch('/api/ads/impression', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ campaignId: data.ad.id })
-            });
-          }
+        const res = await api.get(`/ads/active?placement=${placement}`);
+        if (res.data?.ad) {
+          setAd(res.data.ad);
+          await api.post('/ads/impression', { campaignId: res.data.ad.id });
         }
       } catch (err) {
         console.error(err);
@@ -31,11 +24,7 @@ export default function SidebarAd({ placement }: { placement: string }) {
 
   const handleClick = async () => {
     try {
-      await fetch('/api/ads/click', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ campaignId: ad.id })
-      });
+      await api.post('/ads/click', { campaignId: ad.id });
     } catch (err) {
       console.error(err);
     }

@@ -20,6 +20,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
   const pathname = usePathname();
   const [unreadCount, setUnreadCount] = useState(0);
   const [suggestedUsers, setSuggestedUsers] = useState<any[]>([]);
+  const [currentUser, setCurrentUser] = useState<any>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -39,15 +40,27 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
       try {
         const token = localStorage.getItem('access_token');
         if (!token) return;
-        const res = await apiAuth.withToken(token).get('/community/discover?limit=3');
+        const res = await apiAuth.withToken(token).get('/connect/discover?limit=3');
         if (isMounted) {
           setSuggestedUsers(res.data?.data || []);
         }
       } catch { /* ignore */ }
     };
 
+    const fetchUser = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+        const res = await apiAuth.withToken(token).get('/user/me');
+        if (isMounted) {
+          setCurrentUser(res.data?.data);
+        }
+      } catch { /* ignore */ }
+    };
+
     doFetch();
     fetchSuggested();
+    fetchUser();
     const interval = setInterval(doFetch, 30000); // poll every 30s
     return () => {
       isMounted = false;
@@ -63,118 +76,120 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
     { name: 'Network', href: '/community/network', icon: Users },
   ];
 
-  const sidebarLinks = [
-    { name: 'My Posts', href: '/community/my-posts', icon: PenSquare },
-    { name: 'Saved Posts', href: '/community/saved', icon: BookMarked },
-  ];
+  const getInitials = (user: any) => {
+    if (!user) return 'U';
+    if (user.firstName && user.lastName) return `${user.firstName[0]}${user.lastName[0]}`;
+    return (user.firstName || user.username || user.email || 'U')[0].toUpperCase();
+  };
+
+  const getAuthorName = (author: any) => {
+    if (!author) return 'Loading...';
+    if (author.firstName && author.lastName) return `${author.firstName} ${author.lastName}`;
+    return author.username || author.email?.split('@')[0] || 'User';
+  };
 
   return (
-    <div className="min-h-screen bg-c100">
-      {/* Desktop Top Bar */}
-      <div className="hidden lg:block border-b border-c200 bg-white sticky top-16 z-40">
-        <div className="max-w-7xl mx-auto px-4">
-          <nav className="flex items-center gap-1 h-12">
-            {navItems.map((item) => {
-              const isActive = pathname === item.href;
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  className={`relative flex items-center gap-2 px-4 py-2 text-sm font-medium rounded-lg transition-colors ${
-                    isActive
-                      ? 'text-green bg-green'
-                      : 'text-c600 hover:text-c900 hover:bg-c100'
-                  }`}
-                >
-                  <item.icon className="w-4 h-4" />
-                  {item.name}
-                  {item.badge ? (
-                    <span className="absolute -top-0.5 -right-0.5 bg-red text-white text-xs font-bold px-1.5 py-0.5 rounded-full min-w-4 text-center leading-none">
-                      {item.badge > 99 ? '99+' : item.badge}
-                    </span>
-                  ) : null}
-                </Link>
-              );
-            })}
-          </nav>
+    <div className="page-shell">
+      <header className="page-header" style={{ paddingTop: '64px' }}>
+        <div className="container">
+          <div className="page-header__eyebrow">Connect</div>
+          <h1 className="page-header__title">Build your professional network.</h1>
+          <p className="page-header__sub">Follow industry leaders, join communities, and stay visible to the people who matter.</p>
         </div>
-      </div>
+      </header>
 
-      {/* Page Content (3-column layout) */}
-      <div className="max-w-7xl mx-auto px-4 py-6 pb-20 lg:pb-6 grid grid-cols-1 lg:grid-cols-4 gap-6">
-        
-        {/* Left Sidebar */}
-        <div className="hidden lg:block lg:col-span-1 space-y-4">
-          <div className="bg-white rounded-2xl shadow-sm border border-c100 p-4">
-            <h3 className="text-xs font-bold text-c400 uppercase tracking-wider mb-3 px-3">Shortcuts</h3>
-            <div className="space-y-1">
-              {sidebarLinks.map((link) => {
-                const isActive = pathname === link.href;
-                return (
-                  <Link
-                    key={link.href}
-                    href={link.href}
-                    className={`flex items-center gap-3 px-3 py-2.5 rounded-xl transition-colors ${
-                      isActive ? 'bg-green text-green' : 'text-c700 hover:bg-c100 hover:text-c900'
-                    }`}
-                  >
-                    <link.icon className="w-5 h-5" />
-                    <span className="font-medium text-sm">{link.name}</span>
-                  </Link>
-                );
-              })}
+      <div className="container">
+        <div className="feed-layout">
+          
+          {/* LEFT: PROFILE */}
+          <aside aria-label="Your profile" className="hidden lg:block">
+            <div className="profile-card">
+              {currentUser?.avatar ? (
+                <div className="profile-card__avatar" style={{ background: 'transparent' }}>
+                  <img src={currentUser.avatar} alt="Avatar" className="w-full h-full object-cover rounded-full" />
+                </div>
+              ) : (
+                <div className="profile-card__avatar">{getInitials(currentUser)}</div>
+              )}
+              <div className="profile-card__name">{getAuthorName(currentUser)}</div>
+              <div className="profile-card__title">{currentUser?.title || 'Professional · Tutaly Member'}</div>
+              <div className="profile-card__stats">
+                <div className="profile-card__stat">
+                  <div className="profile-card__stat-num">0</div>
+                  <div className="profile-card__stat-label">Connections</div>
+                </div>
+                <div className="profile-card__stat">
+                  <div className="profile-card__stat-num">0</div>
+                  <div className="profile-card__stat-label">Posts</div>
+                </div>
+              </div>
             </div>
-          </div>
-        </div>
 
-        {/* Main Feed */}
-        <div className="lg:col-span-2">
-          {children}
-        </div>
+            <div className="suggest-card" style={{ marginTop: '16px' }}>
+              <div className="suggest-card__title">Shortcuts</div>
+              <Link href="/community/my-posts" className="suggest-row block hover:bg-c700 p-2 rounded-lg transition-colors">
+                <div className="flex items-center gap-2">
+                  <PenSquare className="w-4 h-4 text-c400" />
+                  <span className="text-sm font-medium text-c200">My Posts</span>
+                </div>
+              </Link>
+              <Link href="/community/saved" className="suggest-row block hover:bg-c700 p-2 rounded-lg transition-colors">
+                <div className="flex items-center gap-2">
+                  <BookMarked className="w-4 h-4 text-c400" />
+                  <span className="text-sm font-medium text-c200">Saved Posts</span>
+                </div>
+              </Link>
+            </div>
+          </aside>
 
-        {/* Right Sidebar */}
-        <div className="hidden lg:block lg:col-span-1 space-y-4">
-          {suggestedUsers.length > 0 && (
-            <div className="bg-white rounded-2xl shadow-sm border border-c100 p-4">
-              <h3 className="text-xs font-bold text-c400 uppercase tracking-wider mb-4 px-1">People You May Know</h3>
-              <div className="space-y-4">
-                {suggestedUsers.map((user) => (
-                  <div key={user.id} className="flex items-center gap-3 px-1">
-                    <Link href={`/community/profile/${user.username || user.id}`} className="shrink-0">
-                      <div className="w-10 h-10 rounded-full bg-green flex items-center justify-center text-white font-bold text-sm shrink-0 overflow-hidden">
-                        {user.avatar ? (
-                          <img src={user.avatar} alt={user.firstName} className="w-full h-full object-cover" />
-                        ) : (
-                          (user.firstName || user.email || 'U')[0].toUpperCase()
-                        )}
+          {/* CENTER: FEED */}
+          <main aria-label="Activity feed">
+            {children}
+          </main>
+
+          {/* RIGHT: SUGGESTIONS */}
+          <aside aria-label="Suggested connections" className="hidden lg:block">
+            {suggestedUsers.length > 0 && (
+              <div className="suggest-card">
+                <div className="suggest-card__title">People to follow</div>
+                {suggestedUsers.map(user => (
+                  <div key={user.id} className="suggest-row">
+                    {user.avatar ? (
+                      <img src={user.avatar} alt="Avatar" className="suggest-avatar object-cover" />
+                    ) : (
+                      <div className="suggest-avatar" style={{ background: 'var(--blue)' }}>{getInitials(user)}</div>
+                    )}
+                    <div className="suggest-info">
+                      <div className="suggest-name">
+                        <Link href={`/community/profile/${user.username || user.id}`}>{getAuthorName(user)}</Link>
                       </div>
-                    </Link>
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/community/profile/${user.username || user.id}`} className="block">
-                        <p className="text-sm font-semibold text-c900 truncate">
-                          {user.firstName} {user.lastName}
-                        </p>
-                        <p className="text-xs text-c500 truncate">@{user.username || user.email.split('@')[0]}</p>
-                      </Link>
+                      <div className="suggest-role">{user.title || 'Professional'}</div>
                     </div>
-                    <button className="text-green hover:bg-green p-1.5 rounded-lg transition-colors" title="Follow">
-                      <UserPlus className="w-4 h-4" />
-                    </button>
+                    <span className="suggest-follow">Follow</span>
                   </div>
                 ))}
               </div>
-              <Link href="/community/discover" className="block mt-4 text-center text-sm font-medium text-green hover:text-green transition-colors">
-                View more
-              </Link>
+            )}
+
+            <div className="suggest-card">
+              <div className="suggest-card__title">Trending topics</div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+                <a href="/community/discover?q=RemoteWork" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#RemoteWork</a>
+                <a href="/community/discover?q=SalaryTransparency" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#SalaryTransparency</a>
+                <a href="/community/discover?q=FintechHiring" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#FintechHiring</a>
+                <a href="/community/discover?q=CareerGrowth" style={{ fontSize: '12px', color: 'var(--c-300)' }}>#CareerGrowth</a>
+              </div>
             </div>
-          )}
-          
-          <SidebarAd placement="community_sidebar" />
+
+            <div className="mt-4">
+              <SidebarAd placement="community_sidebar" />
+            </div>
+          </aside>
         </div>
       </div>
 
       {/* Mobile Bottom Navigation */}
-      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-c200 z-50 shadow-lg pb-safe">
+      <nav className="lg:hidden fixed bottom-0 left-0 right-0 bg-c800 border-t border-c700 z-50 shadow-lg pb-safe">
         <div className="flex items-center justify-around h-16">
           {navItems.map((item) => {
             const isActive = pathname === item.href;
@@ -183,7 +198,7 @@ export default function ConnectLayout({ children }: { children: React.ReactNode 
                 key={item.href}
                 href={item.href}
                 className={`relative flex flex-col items-center justify-center gap-0.5 transition-colors ${
-                  isActive ? 'text-green' : 'text-c500 hover:text-c900'
+                  isActive ? 'text-blue-l' : 'text-c400 hover:text-c100'
                 }`}
               >
                 <item.icon className="w-5 h-5" strokeWidth={isActive ? 2.5 : 2} />

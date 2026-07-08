@@ -2,6 +2,7 @@
 
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
+import { api } from '@/lib/api';
 
 export default function FeaturedJobsCarousel({ placement = 'jobs_top' }: { placement?: string }) {
   const [ad, setAd] = useState<any>(null);
@@ -9,18 +10,11 @@ export default function FeaturedJobsCarousel({ placement = 'jobs_top' }: { place
   useEffect(() => {
     const fetchFeaturedJob = async () => {
       try {
-        const res = await fetch(`/api/ads/active?placement=${placement}`);
-        if (res.ok) {
-          const data = await res.json();
-          if (data.ad && data.ad.format === 'sponsored_job') {
-            setAd(data.ad);
-            // Log impression
-            await fetch('/api/ads/impression', {
-              method: 'POST',
-              headers: { 'Content-Type': 'application/json' },
-              body: JSON.stringify({ campaignId: data.ad.id })
-            });
-          }
+        const res = await api.get(`/ads/active?placement=${placement}`);
+        if (res.data?.ad && res.data.ad.format === 'sponsored_job') {
+          setAd(res.data.ad);
+          // Log impression
+          await api.post('/ads/impression', { campaignId: res.data.ad.id });
         }
       } catch (err) {
         console.error(err);
@@ -33,11 +27,7 @@ export default function FeaturedJobsCarousel({ placement = 'jobs_top' }: { place
 
   const handleClick = async () => {
     try {
-      await fetch('/api/ads/click', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ campaignId: ad.id })
-      });
+      await api.post('/ads/click', { campaignId: ad.id });
     } catch (err) {
       console.error(err);
     }

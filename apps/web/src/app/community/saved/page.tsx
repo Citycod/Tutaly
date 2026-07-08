@@ -27,7 +27,7 @@ export default function SavedPostsPage() {
       const token = localStorage.getItem('access_token');
       if (!token) return;
       // Note: we assume the backend returns saved posts populated correctly
-      const res = await apiAuth.withToken(token).get(`/community/posts/saved?page=${pageNum}&limit=10`);
+      const res = await apiAuth.withToken(token).get(`/connect/posts/saved?page=${pageNum}&limit=10`);
       const newPosts = res.data?.data || [];
       if (newPosts.length < 10) setHasMore(false);
       
@@ -53,7 +53,7 @@ export default function SavedPostsPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      await apiAuth.withToken(token).delete(`/community/posts/${postId}/save`);
+      await apiAuth.withToken(token).delete(`/connect/posts/${postId}/save`);
       setPosts(prev => prev.filter(p => p.id !== postId));
     } catch (err) {}
   };

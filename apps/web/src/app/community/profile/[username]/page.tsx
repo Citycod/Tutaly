@@ -17,7 +17,7 @@ export default function ProfilePage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      const res = await apiAuth.withToken(token).get(`/community/profiles/${username}`);
+      const res = await apiAuth.withToken(token).get(`/connect/profiles/${username}`);
       setProfile(res.data);
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -47,7 +47,7 @@ setError(err?.response?.data?.message || 'Failed to load profile');
   const handleFollow = async () => {
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token!).post(`/community/follow/${profile.id}`);
+      await apiAuth.withToken(token!).post(`/connect/follow/${profile.id}`);
       alert('Follow request sent');
     } catch (e) {
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
