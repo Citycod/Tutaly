@@ -78,41 +78,43 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
   const displayImage = post.imageUrls?.[0] || post.imageUrl;
 
   return (
-    <article className="feed-post reveal visible">
+    <article className="feed-post reveal visible" style={{ position: 'relative' }}>
       <div className="feed-post__head" style={{ justifyContent: 'space-between' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
           <Link href={authorProfileLink}>
             <div className="feed-post__avatar" style={{ background: 'var(--blue)' }}>
               {post.author.avatar ? (
-                <img src={post.author.avatar} alt="avatar" className="w-full h-full object-cover rounded-full" />
+                <img src={post.author.avatar} alt="avatar" style={{ width: '100%', height: '100%', objectFit: 'cover', borderRadius: '50%' }} />
               ) : (
                 getAuthorName(post.author).charAt(0).toUpperCase()
               )}
             </div>
           </Link>
           <div>
-            <Link href={authorProfileLink} className="feed-post__name hover:underline">
-              {getAuthorName(post.author)}
-            </Link>
+            <div className="feed-post__name">
+              <Link href={authorProfileLink} style={{ textDecoration: 'none', color: 'inherit' }}>
+                {getAuthorName(post.author)}
+              </Link>
+            </div>
             <div className="feed-post__meta">{new Date(post.createdAt).toLocaleDateString()}</div>
           </div>
         </div>
 
-        <div className="relative">
-          <button onClick={() => setShowMenu(!showMenu)} style={{ color: 'var(--c-400)', padding: '4px' }}>
+        <div style={{ position: 'relative' }}>
+          <button onClick={() => setShowMenu(!showMenu)} style={{ color: 'var(--c-400)', padding: '4px', background: 'transparent', border: 'none', cursor: 'pointer' }}>
             <MoreHorizontal className="w-5 h-5" />
           </button>
           {showMenu && (
-            <div className="absolute right-0 mt-2 w-48 bg-white rounded-xl shadow-lg border border-c100 py-1 z-10">
-              <button onClick={handleCopyLink} className="w-full text-left px-4 py-2 text-sm text-c700 hover:bg-c100 flex items-center gap-2">
+            <div style={{ position: 'absolute', right: 0, marginTop: '8px', width: '192px', background: 'var(--c-800)', borderRadius: 'var(--r-md)', border: '1px solid var(--c-700)', padding: '4px 0', zIndex: 10 }}>
+              <button onClick={handleCopyLink} style={{ width: '100%', textAlign: 'left', padding: '8px 16px', fontSize: '13px', color: 'var(--c-200)', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                 <LinkIcon className="w-4 h-4" /> Copy Link
               </button>
               {post.author.id === currentUserId ? (
-                <button onClick={() => { onDelete(post.id); setShowMenu(false); }} className="w-full text-left px-4 py-2 text-sm text-red hover:bg-red/10 flex items-center gap-2">
+                <button onClick={() => { onDelete(post.id); setShowMenu(false); }} style={{ width: '100%', textAlign: 'left', padding: '8px 16px', fontSize: '13px', color: '#F05050', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Trash2 className="w-4 h-4" /> Delete Post
                 </button>
               ) : (
-                <button onClick={handleReport} className="w-full text-left px-4 py-2 text-sm text-c700 hover:bg-c100 flex items-center gap-2">
+                <button onClick={handleReport} style={{ width: '100%', textAlign: 'left', padding: '8px 16px', fontSize: '13px', color: 'var(--c-200)', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '8px' }}>
                   <Flag className="w-4 h-4" /> Report Post
                 </button>
               )}
@@ -121,56 +123,56 @@ const PostItem = ({ post, currentUserId, onDelete, onLike }: { post: PostData, c
         </div>
       </div>
 
-      <p className="feed-post__body whitespace-pre-wrap">{post.content}</p>
+      <p className="feed-post__body" style={{ whiteSpace: 'pre-wrap' }}>{post.content}</p>
 
       {displayImage && (
-        <div className="rounded-xl overflow-hidden mb-4 bg-c100 flex justify-center">
-          <img src={displayImage} alt="Post content" className="max-w-full max-h-96 object-contain" />
+        <div style={{ borderRadius: 'var(--r-md)', overflow: 'hidden', marginBottom: '16px', background: 'var(--c-700)', display: 'flex', justifyContent: 'center' }}>
+          <img src={displayImage} alt="Post content" style={{ maxWidth: '100%', maxHeight: '384px', objectFit: 'contain' }} />
         </div>
       )}
 
       <div className="feed-post__actions">
         <span className="feed-post__action" onClick={() => onLike(post.id)}>
-          <Heart className="w-4 h-4" /> {post.likesCount || 0} Likes
+          👍 {post.likesCount || 0} Likes
         </span>
         <span className="feed-post__action" onClick={handleToggleComments}>
-          <MessageSquare className="w-4 h-4" /> {post.commentsCount || 0} Comments
+          💬 {post.commentsCount || 0} Comments
         </span>
         <span className="feed-post__action" onClick={handleCopyLink}>
-          <LinkIcon className="w-4 h-4" /> Share
+          ↗ Share
         </span>
       </div>
 
       {showComments && (
-        <div className="mt-4 pt-4 border-t border-c100">
-          <div className="flex gap-2 mb-4">
+        <div style={{ marginTop: '16px', paddingTop: '16px', borderTop: '1px solid var(--c-700)' }}>
+          <div style={{ display: 'flex', gap: '8px', marginBottom: '16px' }}>
             <input 
               type="text" 
               value={newComment} 
               onChange={e => setNewComment(e.target.value)} 
               placeholder="Write a comment..." 
-              className="flex-1 border border-c200 rounded-lg px-3 py-2 text-sm focus:outline-none focus:border-blue"
+              style={{ flex: 1, background: 'var(--c-700)', border: '1px solid var(--c-600)', borderRadius: 'var(--r-md)', padding: '8px 12px', fontSize: '13px', color: 'var(--c-100)', outline: 'none' }}
               onKeyDown={e => e.key === 'Enter' && handlePostComment()}
             />
-            <button onClick={handlePostComment} disabled={!newComment.trim()} className="btn btn--primary btn--sm disabled:opacity-50">
+            <button onClick={handlePostComment} disabled={!newComment.trim()} style={{ background: 'var(--blue)', color: '#fff', border: 'none', borderRadius: 'var(--r-md)', padding: '0 16px', fontSize: '13px', fontWeight: 600, cursor: newComment.trim() ? 'pointer' : 'not-allowed', opacity: newComment.trim() ? 1 : 0.5 }}>
               Post
             </button>
           </div>
           
-          <div className="space-y-3">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             {loadingComments ? (
-              <div className="text-center py-4"><Loader2 className="w-5 h-5 animate-spin text-c400 mx-auto" /></div>
+              <div style={{ textAlign: 'center', padding: '16px 0' }}><Loader2 style={{ width: '20px', height: '20px', animation: 'spin 1s linear infinite', color: 'var(--c-400)', margin: '0 auto' }} /></div>
             ) : comments.length === 0 ? (
-              <p className="text-sm text-c500 text-center py-2">No comments yet. Be the first!</p>
+              <p style={{ fontSize: '13px', color: 'var(--c-500)', textAlign: 'center', padding: '8px 0' }}>No comments yet. Be the first!</p>
             ) : (
               comments.map(c => (
-                <div key={c.id} className="flex gap-3">
-                  <div className="w-8 h-8 rounded-full bg-c200 shrink-0 overflow-hidden flex items-center justify-center font-bold text-c500 text-xs">
-                    {c.author?.avatar ? <img src={c.author.avatar} alt="a" className="w-full h-full object-cover"/> : getAuthorName(c.author)[0].toUpperCase()}
+                <div key={c.id} style={{ display: 'flex', gap: '12px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '50%', background: 'var(--c-600)', flexShrink: 0, overflow: 'hidden', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 700, color: 'var(--c-300)', fontSize: '12px' }}>
+                    {c.author?.avatar ? <img src={c.author.avatar} alt="a" style={{ width: '100%', height: '100%', objectFit: 'cover' }}/> : getAuthorName(c.author)[0].toUpperCase()}
                   </div>
-                  <div className="bg-c100 rounded-xl p-3 flex-1">
-                    <p className="text-xs font-semibold text-c900 mb-1">{getAuthorName(c.author)}</p>
-                    <p className="text-sm text-c800">{c.body}</p>
+                  <div style={{ background: 'var(--c-700)', borderRadius: 'var(--r-md)', padding: '10px 14px', flex: 1 }}>
+                    <p style={{ fontSize: '12px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '4px' }}>{getAuthorName(c.author)}</p>
+                    <p style={{ fontSize: '13px', color: 'var(--c-200)' }}>{c.body}</p>
                   </div>
                 </div>
               ))
@@ -359,7 +361,7 @@ export default function FeedPage() {
             <div className="composer">
               <div className="composer__row">
                 <div className="composer__avatar">{currentInitials}</div>
-                <div className="flex-1">
+                <div style={{ flex: 1, minWidth: 0 }}>
                   <textarea
                     value={newPost}
                     onChange={(e) => setNewPost(e.target.value)}
@@ -369,25 +371,25 @@ export default function FeedPage() {
                   />
                   
                   {imagePreview && (
-                    <div className="relative mt-3 inline-block rounded-xl overflow-hidden border border-c200">
-                      <img src={imagePreview} alt="Preview" className="max-h-48 object-cover" />
-                      <button onClick={removeImage} className="absolute top-2 right-2 bg-black/50 text-white p-1 rounded-full hover:bg-black/70">
+                    <div style={{ position: 'relative', marginTop: '12px', display: 'inline-block', borderRadius: 'var(--r-md)', overflow: 'hidden', border: '1px solid var(--c-600)' }}>
+                      <img src={imagePreview} alt="Preview" style={{ maxHeight: '192px', objectFit: 'cover' }} />
+                      <button onClick={removeImage} style={{ position: 'absolute', top: '8px', right: '8px', background: 'rgba(0,0,0,0.5)', color: '#fff', padding: '4px', borderRadius: '50%', border: 'none', cursor: 'pointer' }}>
                         <X className="w-4 h-4" />
                       </button>
                     </div>
                   )}
 
-                  <div className="flex justify-between items-center mt-3">
-                    <input type="file" accept="image/*" className="hidden" ref={fileInputRef} onChange={handleImageSelect} />
-                    <button onClick={() => fileInputRef.current?.click()} style={{ color: 'var(--c-400)' }} title="Attach Image">
+                  <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginTop: '12px' }}>
+                    <input type="file" accept="image/*" style={{ display: 'none' }} ref={fileInputRef} onChange={handleImageSelect} />
+                    <button onClick={() => fileInputRef.current?.click()} style={{ color: 'var(--c-400)', background: 'transparent', border: 'none', cursor: 'pointer', display: 'flex', alignItems: 'center' }} title="Attach Image">
                       <ImagePlus className="w-5 h-5" />
                     </button>
                     <button
                       onClick={handleCreatePost}
                       disabled={posting || (!newPost.trim() && !imageFile)}
-                      className="btn btn--primary btn--sm disabled:opacity-50 flex items-center gap-2"
+                      style={{ background: 'var(--blue)', color: '#fff', border: 'none', borderRadius: 'var(--r-md)', padding: '8px 16px', fontSize: '13px', fontWeight: 600, cursor: (posting || (!newPost.trim() && !imageFile)) ? 'not-allowed' : 'pointer', opacity: (posting || (!newPost.trim() && !imageFile)) ? 0.5 : 1, display: 'flex', alignItems: 'center', gap: '8px' }}
                     >
-                      {posting ? <Loader2 className="w-4 h-4 animate-spin" /> : <Send className="w-4 h-4" />}
+                      {posting ? <Loader2 className="w-4 h-4" style={{ animation: 'spin 1s linear infinite' }} /> : <Send className="w-4 h-4" />}
                       {posting ? 'Posting...' : 'Post'}
                     </button>
                   </div>
@@ -396,33 +398,33 @@ export default function FeedPage() {
             </div>
 
             {postError && (
-              <div className="field-error bg-red/10 border border-red/50 p-3 rounded-lg mb-4 text-sm">
+              <div style={{ background: 'rgba(204,43,43,0.1)', border: '1px solid rgba(204,43,43,0.5)', padding: '12px', borderRadius: 'var(--r-md)', marginBottom: '16px', fontSize: '13px', color: '#F05050' }}>
                 {postError}
               </div>
             )}
 
             {loading ? (
-              <div className="space-y-4">
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
                 {[1, 2, 3].map(i => (
-                  <div key={i} className="feed-post animate-pulse">
+                  <div key={i} className="feed-post" style={{ animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>
                     <div className="feed-post__head">
                       <div className="feed-post__avatar" style={{ background: 'var(--c-600)' }} />
-                      <div className="space-y-2 flex-1">
-                        <div className="h-4 bg-c600 rounded w-1/3" />
-                        <div className="h-3 bg-c700 rounded w-1/5" />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', flex: 1 }}>
+                        <div style={{ height: '16px', background: 'var(--c-600)', borderRadius: '4px', width: '33%' }} />
+                        <div style={{ height: '12px', background: 'var(--c-700)', borderRadius: '4px', width: '20%' }} />
                       </div>
                     </div>
-                    <div className="space-y-2 mt-4">
-                      <div className="h-4 bg-c700 rounded w-full" />
-                      <div className="h-4 bg-c700 rounded w-4/5" />
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
+                      <div style={{ height: '16px', background: 'var(--c-700)', borderRadius: '4px', width: '100%' }} />
+                      <div style={{ height: '16px', background: 'var(--c-700)', borderRadius: '4px', width: '80%' }} />
                     </div>
                   </div>
                 ))}
               </div>
             ) : posts.length === 0 ? (
-              <div className="feed-post text-center" style={{ padding: '48px 20px' }}>
+              <div className="feed-post" style={{ textAlign: 'center', padding: '48px 20px' }}>
                 <div style={{ width: '64px', height: '64px', background: 'var(--c-700)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 16px' }}>
-                  <MessageSquare className="w-8 h-8 text-c400" />
+                  <MessageSquare style={{ width: '32px', height: '32px', color: 'var(--c-400)' }} />
                 </div>
                 <h3 style={{ fontSize: '16px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '8px' }}>Your feed is empty</h3>
                 <p style={{ fontSize: '14px', color: 'var(--c-400)', maxWidth: '320px', margin: '0 auto' }}>
@@ -438,8 +440,8 @@ export default function FeedPage() {
             )}
 
             {hasMore && !loading && posts.length > 0 && (
-              <div className="text-center pt-4 pb-8">
-                <button onClick={loadMore} style={{ background: 'var(--c-800)', border: '1px solid var(--c-600)', color: 'var(--c-200)', padding: '8px 24px', borderRadius: 'var(--r-md)', fontSize: '13px', fontWeight: 600 }}>
+              <div style={{ textAlign: 'center', paddingTop: '16px', paddingBottom: '32px' }}>
+                <button onClick={loadMore} style={{ background: 'var(--c-800)', border: '1px solid var(--c-600)', color: 'var(--c-200)', padding: '8px 24px', borderRadius: 'var(--r-md)', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
                   Load More
                 </button>
               </div>
