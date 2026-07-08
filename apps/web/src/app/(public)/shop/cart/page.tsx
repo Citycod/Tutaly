@@ -1,27 +1,15 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { apiAuth, api } from '@/lib/api';
-import {
-  ShoppingCart, Trash2, ArrowLeft, Loader2, CreditCard,
-  ShieldCheck, Package, AlertCircle, CheckCircle2,
-} from 'lucide-react';
-
-const CURRENCY_CONFIG: Record<string, { locale: string; currency: string }> = {
-  NGN: { locale: 'en-NG', currency: 'NGN' },
-  USD: { locale: 'en-US', currency: 'USD' },
-  EUR: { locale: 'de-DE', currency: 'EUR' },
-};
+import { useRouter } from 'next/navigation';
+import { apiAuth } from '@/lib/api';
+import { Loader2, Trash2, ShoppingBag, ArrowRight } from 'lucide-react';
 
 export default function CartPage() {
   const router = useRouter();
   const [cartItems, setCartItems] = useState<any[]>([]);
-  const [products, setProducts] = useState<Record<string, any>>({});
   const [loading, setLoading] = useState(true);
-  const [checkingOut, setCheckingOut] = useState(false);
-  const [gateway, setGateway] = useState<'flutterwave' | 'paystack'>('flutterwave');
 
   useEffect(() => {
     fetchCart();
@@ -34,22 +22,9 @@ export default function CartPage() {
         router.push('/auth/signin');
         return;
       }
-
       const res = await apiAuth.withToken(token).get('/shop/cart');
-      const items = res.data?.data || [];
-      setCartItems(items);
-
-      // Fetch product details for each item
-      const productMap: Record<string, any> = {};
-      for (const item of items) {
-        try {
-          const pRes = await api.get(`/shop/products/${item.productId}`);
-          productMap[item.productId] = pRes.data?.data;
-        } catch {
-          // Product might have been removed
-        }
-      }
-      setProducts(productMap);
+      // The API returns the list of items in the cart
+      setCartItems(res.data?.items || res.data?.data || res.data || []);
     } catch (err) {
       console.error('Failed to fetch cart', err);
     } finally {
@@ -57,156 +32,146 @@ export default function CartPage() {
     }
   };
 
-  const removeItem = async (productId: string) => {
+  const handleRemove = async (productId: string) => {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
+      
+      // Optimistic update
+      setCartItems(prev => prev.filter(item => item.product?.id !== productId && item.productId !== productId && item.id !== productId));
+      
       await apiAuth.withToken(token).delete(`/shop/cart/${productId}`);
-      setCartItems(prev => prev.filter(item => item.productId !== productId));
+      // Re-fetch to ensure sync
+      fetchCart();
     } catch (err) {
-      console.error('Failed to remove item', err);
+      console.error('Failed to remove from cart', err);
+      // Re-fetch on error to revert optimistic update
+      fetchCart();
     }
-  };
-
-  const handleCheckout = () => {
-    router.push('/shop/checkout');
   };
 
   const formatPrice = (price: number, currency?: string) => {
     const cur = currency || 'NGN';
-    const config = CURRENCY_CONFIG[cur] || CURRENCY_CONFIG.NGN;
-    return new Intl.NumberFormat(config.locale, { style: 'currency', currency: config.currency }).format(price);
+    const locales: Record<string, string> = { NGN: 'en-NG', USD: 'en-US', EUR: 'de-DE' };
+    return new Intl.NumberFormat(locales[cur] || 'en-NG', { style: 'currency', currency: cur, minimumFractionDigits: 0 }).format(price);
   };
 
-  const calculateTotal = () => {
-    return cartItems.reduce((sum, item) => {
-      const product = products[item.productId];
-      if (!product) return sum;
-      return sum + Number(product.price) * item.quantity;
-    }, 0);
-  };
-
-  // Determine currency from cart items (use first product's currency)
-  const getCartCurrency = () => {
-    for (const item of cartItems) {
-      const product = products[item.productId];
-      if (product?.currency) return product.currency;
-    }
-    return 'NGN';
-  };
+  // Calculate totals
+  const subtotal = cartItems.reduce((sum, item) => {
+    const price = item.product?.price || item.price || 0;
+    const quantity = item.quantity || 1;
+    return sum + (price * quantity);
+  }, 0);
+  
+  const currency = cartItems.length > 0 ? (cartItems[0].product?.currency || cartItems[0].currency || 'NGN') : 'NGN';
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-c100 flex items-center justify-center">
-        <Loader2 className="w-10 h-10 animate-spin text-green" />
+      <div className="page-shell">
+        <div className="container flex justify-center items-center py-24">
+          <Loader2 className="w-10 h-10 animate-spin text-green" />
+        </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-c100 pt-20 pb-16">
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Link href="/shop" className="inline-flex items-center gap-2 text-sm text-c500 hover:text-green mb-8 font-medium">
-          <ArrowLeft className="w-4 h-4" /> Continue Shopping
-        </Link>
-
-        <h1 className="text-3xl font-bold text-c900 mb-8 flex items-center gap-3">
-          <ShoppingCart className="w-8 h-8 text-green" />
-          Your Cart
-          <span className="text-lg font-normal text-c400">({cartItems.length} items)</span>
-        </h1>
+    <div className="page-shell">
+      <div className="container" style={{ maxWidth: '1000px', margin: '0 auto', padding: '60px 20px' }}>
+        
+        <div className="page-header mb-8" style={{ borderBottom: 'none' }}>
+          <div className="page-header__eyebrow">Checkout Process</div>
+          <h1 className="page-header__title">Your Shopping Cart</h1>
+          <p className="page-header__sub">Review the items in your cart before proceeding to payment.</p>
+        </div>
 
         {cartItems.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-2xl border border-c100">
-            <ShoppingCart className="w-16 h-16 text-c300 mx-auto mb-4" />
-            <h3 className="text-xl font-bold text-c900 mb-2">Your cart is empty</h3>
-            <p className="text-c500 mb-6">Browse the shop to find templates, tools, and services.</p>
-            <Link href="/shop" className="bg-green hover:bg-green text-white px-6 py-3 rounded-xl font-semibold transition-colors inline-block">
-              Browse Shop
+          <div className="text-center py-20 rounded-2xl border" style={{ backgroundColor: 'var(--c-800)', borderColor: 'var(--c-700)' }}>
+            <div className="w-20 h-20 rounded-full flex items-center justify-center mx-auto mb-6" style={{ backgroundColor: 'var(--c-700)' }}>
+              <ShoppingBag className="w-8 h-8" style={{ color: 'var(--c-400)' }} />
+            </div>
+            <h2 className="text-2xl font-bold mb-3" style={{ color: 'var(--c-100)' }}>Your cart is empty</h2>
+            <p className="mb-8 max-w-sm mx-auto" style={{ color: 'var(--c-400)' }}>Looks like you haven't added any resources or templates to your cart yet.</p>
+            <Link href="/shop" className="btn btn--primary">
+              Browse Marketplace
             </Link>
           </div>
         ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
-            <div className="lg:col-span-2 space-y-4">
-              {cartItems.map((item) => {
-                const product = products[item.productId];
-                if (!product) return null;
-
-                return (
-                  <div key={item.productId} className="bg-white rounded-xl shadow-sm border border-c100 p-6 flex items-center gap-6">
-                    <div className="w-20 h-20 bg-c100 rounded-xl flex items-center justify-center shrink-0">
-                      {product.imageUrls?.[0] ? (
-                        <img src={product.imageUrls[0]} alt={product.title} className="w-full h-full object-cover rounded-xl" />
-                      ) : (
-                        <Package className="w-8 h-8 text-c300" />
-                      )}
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-10 lg:gap-14">
+            
+            {/* Cart Items List */}
+            <div className="lg:col-span-2">
+              <div className="flex flex-col gap-4">
+                {cartItems.map((item) => {
+                  const product = item.product || item;
+                  return (
+                    <div key={item.id} className="flex gap-6 p-6 rounded-2xl border" style={{ backgroundColor: 'var(--c-800)', borderColor: 'var(--c-700)' }}>
+                      <div className="w-20 h-20 rounded-xl flex-shrink-0 flex items-center justify-center text-3xl" style={{ backgroundColor: 'var(--c-700)' }}>
+                        {product.listingType === 'digital' ? '📄' : product.listingType === 'service' ? '💼' : '📦'}
+                      </div>
+                      
+                      <div className="flex-1 min-w-0">
+                        <div className="flex justify-between items-start gap-4">
+                          <div>
+                            <h3 className="text-lg font-bold mb-1 leading-tight" style={{ color: 'var(--c-100)' }}>{product.title}</h3>
+                            <div className="text-sm font-medium mb-3" style={{ color: 'var(--blue-l)' }}>by {product.seller?.profile?.companyName || product.seller?.firstName || 'Creator'}</div>
+                          </div>
+                          <div className="text-xl font-bold font-mono flex-shrink-0 text-right" style={{ color: 'var(--c-100)' }}>
+                            {formatPrice(product.price, product.currency)}
+                          </div>
+                        </div>
+                        
+                        <div className="flex justify-between items-center mt-2 pt-4 border-t" style={{ borderColor: 'var(--c-700)' }}>
+                          <div className="text-xs font-bold uppercase tracking-wider px-3 py-1 rounded-full" style={{ background: 'rgba(255,255,255,0.05)', color: 'var(--c-300)' }}>
+                            {product.listingType}
+                          </div>
+                          
+                          <button 
+                            onClick={() => handleRemove(product.id)}
+                            className="flex items-center gap-1.5 text-sm font-semibold hover:text-red transition-colors"
+                            style={{ color: 'var(--c-400)' }}
+                          >
+                            <Trash2 className="w-4 h-4" /> Remove
+                          </button>
+                        </div>
+                      </div>
                     </div>
-
-                    <div className="flex-1 min-w-0">
-                      <Link href={`/shop/${product.id}`} className="font-bold text-c900 hover:text-green transition-colors line-clamp-1">
-                        {product.title}
-                      </Link>
-                      <p className="text-sm text-c500 capitalize">{product.listingType}</p>
-                      <p className="text-sm text-c500">Qty: {item.quantity}</p>
-                    </div>
-
-                    <div className="text-right shrink-0">
-                      <p className="font-bold text-green text-lg">
-                        {formatPrice(Number(product.price) * item.quantity, product.currency)}
-                      </p>
-                      <button
-                        onClick={() => removeItem(item.productId)}
-                        className="text-red hover:text-red transition-colors mt-2 flex items-center gap-1 text-sm ml-auto"
-                      >
-                        <Trash2 className="w-4 h-4" /> Remove
-                      </button>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
+              </div>
             </div>
 
-            {/* Order Summary */}
+            {/* Order Summary Sidebar */}
             <div className="lg:col-span-1">
-              <div className="bg-white rounded-2xl shadow-sm border border-c200 p-6 sticky top-24">
-                <h3 className="text-lg font-bold text-c900 mb-6 pb-4 border-b">Order Summary</h3>
-
-                <div className="space-y-3 mb-6">
-                  <div className="flex justify-between text-sm">
-                    <span className="text-c500">Subtotal</span>
-                    <span className="font-medium text-c900">{formatPrice(calculateTotal(), getCartCurrency())}</span>
+              <div className="rounded-2xl p-6 lg:p-8 sticky top-28 border" style={{ backgroundColor: 'var(--c-800)', borderColor: 'var(--c-700)' }}>
+                <h3 className="text-lg font-bold mb-6 pb-4 border-b" style={{ color: 'var(--c-100)', borderColor: 'var(--c-700)' }}>Order Summary</h3>
+                
+                <div className="space-y-4 mb-6">
+                  <div className="flex justify-between items-center">
+                    <span style={{ color: 'var(--c-400)' }}>Subtotal ({cartItems.length} items)</span>
+                    <span className="font-mono" style={{ color: 'var(--c-100)' }}>{formatPrice(subtotal, currency)}</span>
                   </div>
-                  <div className="flex justify-between text-sm">
-                    <span className="text-c500">Platform fee</span>
-                    <span className="font-medium text-c500">Included</span>
-                  </div>
-                  <div className="border-t pt-3 flex justify-between">
-                    <span className="font-bold text-c900">Total</span>
-                    <span className="font-black text-xl text-green">{formatPrice(calculateTotal(), getCartCurrency())}</span>
+                  <div className="flex justify-between items-center">
+                    <span style={{ color: 'var(--c-400)' }}>Taxes</span>
+                    <span className="font-mono" style={{ color: 'var(--c-100)' }}>Calculated at checkout</span>
                   </div>
                 </div>
 
-                <button
-                  onClick={handleCheckout}
-                  disabled={cartItems.length === 0}
-                  className="w-full text-white px-6 py-4 rounded-xl font-bold text-lg shadow-lg transition-all flex items-center justify-center gap-2 bg-green hover:bg-green disabled:opacity-50"
-                >
-                  Proceed to Checkout
-                </button>
+                <div className="flex justify-between items-center border-t pt-6 mb-8" style={{ borderColor: 'var(--c-700)' }}>
+                  <span className="text-base font-bold" style={{ color: 'var(--c-100)' }}>Estimated Total</span>
+                  <span className="text-2xl font-bold font-mono" style={{ color: '#2DB85A' }}>{formatPrice(subtotal, currency)}</span>
+                </div>
 
-                <div className="mt-6 space-y-3">
-                  <div className="flex items-center gap-2 text-xs text-c500">
-                    <ShieldCheck className="w-4 h-4 text-green shrink-0" />
-                    <span>Escrow-protected. Funds released only after delivery confirmation.</span>
-                  </div>
-                  <div className="flex items-center gap-2 text-xs text-c500">
-                    <CheckCircle2 className="w-4 h-4 text-green shrink-0" />
-                    <span>Supports NGN, USD & EUR payments.</span>
-                  </div>
+                <Link href="/shop/checkout" className="btn btn--primary w-full text-center flex justify-center py-4 text-base">
+                  Proceed to Checkout <ArrowRight className="w-4 h-4 ml-2" />
+                </Link>
+                
+                <div className="mt-6 text-center text-xs" style={{ color: 'var(--c-500)' }}>
+                  Secure checkout processed by Paystack.
                 </div>
               </div>
             </div>
+
           </div>
         )}
       </div>

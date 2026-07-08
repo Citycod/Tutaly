@@ -1,27 +1,24 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { apiAuth } from '@/lib/api';
-import { ShoppingBag, Search, Package, Clock, CheckCircle, Truck, AlertCircle, RefreshCcw } from 'lucide-react';
+import { Loader2, Package, CheckCircle, Search, Download } from 'lucide-react';
 
-interface OrderItem {
-  id: string;
-  orderId: string;
-  productId: string;
-  quantity: number;
-  priceAtPurchase: number;
-  deliveryStatus: string;
-  product: {
-    title: string;
-    listingType: string;
-  };
-}
+const STATUS_MAP: Record<string, { label: string; class: string; icon: string }> = {
+  pending_payment: { label: 'Awaiting Payment', class: 'status--pending', icon: '⏳' },
+  paid: { label: 'Paid - Needs Delivery', class: 'status--offer', icon: '📦' },
+  delivered: { label: 'Delivered', class: 'status--offer', icon: '🚚' },
+  completed: { label: 'Completed', class: 'status--offer', icon: '✅' },
+  flagged: { label: 'Flagged', class: 'status--con', icon: '🚩' },
+  refunded: { label: 'Refunded', class: 'status--muted', icon: '↩️' },
+};
 
 export default function SellerOrdersPage() {
-  const [orders, setOrders] = useState<OrderItem[]>([]);
+  const [orders, setOrders] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-  const [filter, setFilter] = useState('all');
+  const [searchTerm, setSearchTerm] = useState('');
+  const [statusFilter, setStatusFilter] = useState('all');
 
   useEffect(() => {
     fetchOrders();
@@ -31,155 +28,158 @@ export default function SellerOrdersPage() {
     try {
       const token = localStorage.getItem('access_token');
       if (!token) return;
-      // Get all items sold by this seller
+
       const res = await apiAuth.withToken(token).get('/shop/seller/orders');
-      setOrders(res.data?.data || []);
+      setOrders(res.data?.data || res.data || []);
     } catch (err) {
-      console.error('Failed to fetch seller orders', err);
+      console.error('Failed to fetch orders', err);
     } finally {
       setLoading(false);
     }
   };
 
-  const updateDeliveryStatus = async (orderId: string, itemId: string, newStatus: string) => {
+  const handleMarkDelivered = async (orderId: string) => {
     try {
       const token = localStorage.getItem('access_token');
-      await apiAuth.withToken(token || undefined).patch(`/shop/seller/orders/${orderId}/items/${itemId}/status`, {
-        deliveryStatus: newStatus
-      });
-      fetchOrders(); // Refresh to get updated status
+      if (!token) return;
+      await apiAuth.withToken(token).post(`/shop/orders/${orderId}/deliver`);
+      await fetchOrders();
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = e as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = e as any;
-alert(err.response?.data?.message || 'Failed to update status');
+      alert(err.response?.data?.message || 'Failed to mark as delivered');
     }
   };
 
-  const filteredOrders = orders.filter(item => {
-    if (filter === 'all') return true;
-    if (filter === 'pending') return item.deliveryStatus === 'pending';
-    if (filter === 'processing') return item.deliveryStatus === 'processing';
-    if (filter === 'shipped') return item.deliveryStatus === 'shipped';
-    if (filter === 'delivered') return item.deliveryStatus === 'delivered';
+  const formatPrice = (price: number, currency?: string) => {
+    const cur = currency || 'NGN';
+    const locales: Record<string, string> = { NGN: 'en-NG', USD: 'en-US', EUR: 'de-DE' };
+    return new Intl.NumberFormat(locales[cur] || 'en-NG', { style: 'currency', currency: cur, minimumFractionDigits: 0 }).format(price);
+  };
+
+  const filteredOrders = orders.filter((o) => {
+    if (statusFilter !== 'all' && o.status !== statusFilter) return false;
+    if (searchTerm) {
+      const search = searchTerm.toLowerCase();
+      const title = o.product?.title?.toLowerCase() || '';
+      const buyerName = o.buyer?.firstName?.toLowerCase() || o.buyer?.lastName?.toLowerCase() || '';
+      const buyerEmail = o.buyer?.email?.toLowerCase() || '';
+      return title.includes(search) || buyerName.includes(search) || buyerEmail.includes(search);
+    }
     return true;
   });
 
+  if (loading) {
+    return (
+      <div className="dash-empty mt-8">
+        <Loader2 className="w-8 h-8 animate-spin mx-auto text-green" />
+      </div>
+    );
+  }
+
   return (
-    <>
-      <div className="page-header">
-        <div className="page-header__title">
-          <h1 className="text-2xl font-bold text-c900 mb-1 flex items-center gap-3">
-            <ShoppingBag className="w-6 h-6 text-green" />
-            Manage Orders
-          </h1>
-          <p className="text-c500 text-sm">Track incoming purchases and update delivery statuses.</p>
+    <div className="max-w-5xl mx-auto">
+      <div className="page-header flex flex-col md:flex-row md:items-center justify-between gap-4 mb-6" style={{ borderBottom: 'none', padding: '0 0 10px 0' }}>
+        <div>
+          <h1 className="text-2xl font-bold" style={{ color: 'var(--c-100)' }}>Orders Management</h1>
+          <p className="text-sm" style={{ color: 'var(--c-500)' }}>Track and fulfill purchases from your buyers.</p>
+        </div>
+        <div className="flex items-center gap-3">
+          <Link href="/seller/earnings" className="btn btn--ghost">View Earnings</Link>
+          <button className="btn btn--primary">
+            <Download className="w-4 h-4 mr-2" /> Export CSV
+          </button>
         </div>
       </div>
 
-      <div className="dcard !p-0 overflow-hidden">
-        {/* Filters */}
-        <div className="p-4 border-b border-c100 flex items-center gap-2 overflow-x-auto">
-          {[
-            { id: 'all', label: 'All Orders' },
-            { id: 'pending', label: 'Pending' },
-            { id: 'processing', label: 'Processing' },
-            { id: 'shipped', label: 'Shipped' },
-            { id: 'delivered', label: 'Delivered' }
-          ].map(tab => (
-            <button
-              key={tab.id}
-              onClick={() => setFilter(tab.id)}
-              className={`px-4 py-2 rounded-lg text-sm font-bold whitespace-nowrap transition-colors ${
-                filter === tab.id
-                  ? 'bg-green text-white border border-green'
-                  : 'text-c500 hover:bg-c100 border border-transparent'
-              }`}
-            >
-              {tab.label}
-            </button>
-          ))}
-          
-          <button onClick={fetchOrders} className="ml-auto p-2 text-c400 hover:text-green transition-colors" title="Refresh">
-            <RefreshCcw className="w-5 h-5" />
-          </button>
-        </div>
-
-        {/* Content */}
-        {loading ? (
-          <div className="p-16 text-center text-c500 italic flex flex-col items-center">
-            <RefreshCcw className="w-8 h-8 animate-spin text-green mb-4" />
-            Loading orders...
+      <div className="dcard mb-6 p-4">
+        <div className="flex flex-col sm:flex-row gap-4">
+          <div className="flex-1 relative">
+            <Search className="w-4 h-4 absolute left-3 top-3 text-c500" style={{ color: 'var(--c-500)' }} />
+            <input 
+              type="text" 
+              placeholder="Search by buyer name, email, or product..." 
+              className="input pl-9 w-full"
+              value={searchTerm}
+              onChange={(e) => setSearchTerm(e.target.value)}
+            />
           </div>
-        ) : filteredOrders.length === 0 ? (
-          <div className="p-20 text-center flex flex-col items-center">
-            <Package className="w-16 h-16 text-c300 mb-4" />
-            <h3 className="text-xl font-bold text-c900 mb-2">No orders found</h3>
-            <p className="text-c500">You don't have any orders matching the current filter.</p>
+          <select 
+            className="input sm:w-48"
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+          >
+            <option value="all">All Statuses</option>
+            <option value="paid">Needs Delivery (Paid)</option>
+            <option value="delivered">Delivered</option>
+            <option value="completed">Completed</option>
+            <option value="refunded">Refunded</option>
+          </select>
+        </div>
+      </div>
+
+      <div className="dcard">
+        {filteredOrders.length === 0 ? (
+          <div className="dash-empty py-16">
+            <div className="dash-empty__icon" style={{ background: 'var(--c-700)' }}>📦</div>
+            <div className="dash-empty__title text-c100">No orders found</div>
+            <div className="dash-empty__desc text-c500">
+              {searchTerm || statusFilter !== 'all' 
+                ? "No orders match your search criteria." 
+                : "When customers buy your listings, their orders will appear here."}
+            </div>
           </div>
         ) : (
-          <div className="overflow-x-auto">
-            <table className="w-full text-left text-sm">
-              <thead className="bg-c100 text-c500 border-b border-c100">
-                <tr>
-                  <th className="p-4 font-bold">Product</th>
-                  <th className="p-4 font-bold">Type</th>
-                  <th className="p-4 font-bold">Price / Qty</th>
-                  <th className="p-4 font-bold">Status</th>
-                  <th className="p-4 font-bold text-right">Actions</th>
-                </tr>
-              </thead>
-              <tbody className="divide-y divide-c100">
-                {filteredOrders.map(item => (
-                  <tr key={item.id} className="hover:bg-c100 transition-colors">
-                    <td className="p-4">
-                      <p className="font-bold text-c900">{item.product?.title || 'Unknown Product'}</p>
-                      <p className="text-xs text-c500 font-mono mt-1">Order #{item.orderId.split('-')[0].toUpperCase()}</p>
-                    </td>
-                    <td className="p-4 capitalize text-c600">{item.product?.listingType || 'N/A'}</td>
-                    <td className="p-4">
-                      <p className="font-bold text-green">₦{Number(item.priceAtPurchase).toLocaleString()}</p>
-                      <p className="text-xs text-c500">Qty: {item.quantity}</p>
-                    </td>
-                    <td className="p-4">
-                      <span className={`inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-bold ${
-                        item.deliveryStatus === 'delivered' ? 'bg-green text-green' :
-                        item.deliveryStatus === 'shipped' ? 'bg-blueL text-blueH' :
-                        item.deliveryStatus === 'processing' ? 'bg-purple-100 text-purple-700' :
-                        'bg-gold text-goldH'
-                      }`}>
-                        {item.deliveryStatus === 'delivered' ? <CheckCircle className="w-3 h-3" /> :
-                         item.deliveryStatus === 'shipped' ? <Truck className="w-3 h-3" /> :
-                         item.deliveryStatus === 'processing' ? <RefreshCcw className="w-3 h-3" /> :
-                         <Clock className="w-3 h-3" />}
-                        {item.deliveryStatus.toUpperCase()}
-                      </span>
-                    </td>
-                    <td className="p-4 text-right">
-                      {item.product?.listingType !== 'digital' && item.deliveryStatus !== 'delivered' && (
-                        <select 
-                          className="text-sm border border-c200 rounded-lg px-3 py-1.5 bg-white text-c700 focus:outline-none focus:ring-2 focus:ring-green cursor-pointer"
-                          value={item.deliveryStatus}
-                          onChange={(e) => updateDeliveryStatus(item.orderId, item.id, e.target.value)}
-                        >
-                          <option value="pending" disabled>Update Status</option>
-                          <option value="processing">Mark as Processing</option>
-                          <option value="shipped">Mark as Shipped</option>
-                          <option value="delivered">Mark as Delivered</option>
-                        </select>
-                      )}
-                      {item.product?.listingType === 'digital' && (
-                        <span className="text-xs text-c400 italic">Auto-delivered</span>
-                      )}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+          <div className="space-y-3">
+            {filteredOrders.map((order) => {
+              const statusInfo = STATUS_MAP[order.status] || STATUS_MAP.pending_payment;
+              return (
+                <div key={order.id} className="order-row">
+                  <div className="order-row__thumb" style={{ background: 'rgba(27,79,158,0.15)' }}>{statusInfo.icon}</div>
+                  
+                  <div className="order-row__body">
+                    <div className="order-row__title">{order.product?.title || 'Unknown Product'}</div>
+                    <div className="order-row__meta mt-1">
+                      <span className="font-semibold" style={{ color: 'var(--c-300)' }}>Buyer:</span> {order.buyer?.firstName} {order.buyer?.lastName} ({order.buyer?.email || 'Guest'})
+                    </div>
+                    <div className="order-row__meta">
+                      <span className="font-semibold" style={{ color: 'var(--c-300)' }}>Order ID:</span> #{order.id.slice(0, 8)} · {new Date(order.createdAt).toLocaleString()}
+                    </div>
+                  </div>
+                  
+                  <div className="order-row__price mx-4 text-left">
+                    <div style={{ color: 'var(--c-100)', fontWeight: 700, fontSize: '15px' }}>{formatPrice(order.amountPaid || order.total, order.currency)}</div>
+                    <div style={{ color: 'var(--c-500)', fontSize: '11px', fontWeight: 500 }}>Total Paid</div>
+                  </div>
+
+                  <div className="flex flex-col items-end gap-2 flex-shrink-0 w-40 text-right">
+                    <span style={{ 
+                      background: order.status === 'paid' ? 'rgba(201,162,39,0.15)' : 'rgba(29,122,58,0.18)', 
+                      color: order.status === 'paid' ? 'var(--gold)' : '#2DB85A', 
+                      padding: '4px 10px', 
+                      borderRadius: 'var(--r-pill)', 
+                      fontSize: '11px', 
+                      fontWeight: 700, 
+                      textTransform: 'uppercase' 
+                    }}>
+                      {statusInfo.label}
+                    </span>
+                    
+                    {order.status === 'paid' && (
+                      <button 
+                        onClick={() => handleMarkDelivered(order.id)}
+                        className="btn btn--sm"
+                        style={{ background: 'var(--c-700)', color: 'var(--c-100)', padding: '6px 12px' }}
+                      >
+                        <CheckCircle className="w-3.5 h-3.5 mr-1.5" /> Mark Delivered
+                      </button>
+                    )}
+                  </div>
+                </div>
+              );
+            })}
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }
