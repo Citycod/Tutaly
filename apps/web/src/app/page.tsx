@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import Image from 'next/image';
 import { Search } from 'lucide-react';
+import HeroSearch from '@/components/home/HeroSearch';
 import { serverFetch } from '@/lib/server-fetch';
 import AdBanner from '@/components/layout/AdBanner';
 interface Job {
@@ -60,13 +61,23 @@ async function fetchFeaturedProducts() {
 
 async function fetchStats() {
   try {
-    const data = await serverFetch<any>('jobs?limit=1', {
+    const res = await serverFetch<any>('stats/platform', {
       next: { revalidate: 300 }
     });
-    return { total: data?.meta?.total || 48000 };
+    return res?.data || {
+      activeJobs: 48000,
+      companiesReviewed: 12000,
+      countriesRepresented: 35,
+      professionals: 190000
+    };
   } catch (error) {
     console.error('Failed to fetch stats:', error);
-    return { total: 48000 };
+    return {
+      activeJobs: 48000,
+      companiesReviewed: 12000,
+      countriesRepresented: 35,
+      professionals: 190000
+    };
   }
 }
 
@@ -102,13 +113,7 @@ export default async function Home() {
               </p>
 
               {/* Search */}
-              <form action="/jobs" className="hero__search" role="search" aria-label="Job search">
-                <div className="hero__search-field">
-                  <Search className="w-4 h-4" aria-hidden="true" />
-                  <input type="text" name="keyword" placeholder="Job title, skills, or company..." aria-label="Search jobs by title, skills, or company" />
-                </div>
-                <button type="submit" className="hero__search-btn">Search Jobs</button>
-              </form>
+              <HeroSearch />
 
               <div className="hero__trending" aria-label="Trending job searches">
                 <strong>Trending:</strong>
@@ -121,22 +126,22 @@ export default async function Home() {
               {/* Stats */}
               <div className="hero__proof" role="list" aria-label="Platform statistics">
                 <div className="hero__proof-item" role="listitem">
-                  <span className="hero__proof-num">{stats.total.toLocaleString()}+</span>
+                  <span className="hero__proof-num">{stats.activeJobs.toLocaleString()}+</span>
                   <span className="hero__proof-label">Active jobs</span>
                 </div>
                 <div className="hero__proof-divider" aria-hidden="true"></div>
                 <div className="hero__proof-item" role="listitem">
-                  <span className="hero__proof-num">12,000+</span>
+                  <span className="hero__proof-num">{stats.companiesReviewed.toLocaleString()}+</span>
                   <span className="hero__proof-label">Companies reviewed</span>
                 </div>
                 <div className="hero__proof-divider" aria-hidden="true"></div>
                 <div className="hero__proof-item" role="listitem">
-                  <span className="hero__proof-num">35+</span>
+                  <span className="hero__proof-num">{stats.countriesRepresented.toLocaleString()}+</span>
                   <span className="hero__proof-label">Countries represented</span>
                 </div>
                 <div className="hero__proof-divider" aria-hidden="true"></div>
                 <div className="hero__proof-item" role="listitem">
-                  <span className="hero__proof-num">190,000+</span>
+                  <span className="hero__proof-num">{stats.professionals.toLocaleString()}+</span>
                   <span className="hero__proof-label">Professionals</span>
                 </div>
               </div>

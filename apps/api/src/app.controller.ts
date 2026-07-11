@@ -9,4 +9,12 @@ export class AppController {
   getHello(): string {
     return this.appService.getHello();
   }
+
+  @Get('stats/platform')
+  async getPlatformStats() {
+    return {
+      success: true,
+      data: await this.appService.getPlatformStats()
+    };
+  }
 }
