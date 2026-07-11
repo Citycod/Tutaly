@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
+import { Country, State, City } from 'country-state-city';
 
 
 
@@ -35,17 +36,20 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
   const [isOpen, setIsOpen] = useState(false);
 
   // Cascading location data
-  const locations = React.useMemo(() => filterMeta?.locations || {}, [filterMeta?.locations]);
   const industriesList = React.useMemo(() => filterMeta?.industries || [], [filterMeta?.industries]);
-  const countries = React.useMemo(() => Object.keys(locations), [locations]);
+  const countries = React.useMemo(() => Country.getAllCountries().map(c => c.name), []);
   const states = React.useMemo(() => {
-    if (country && locations[country]) return Object.keys(locations[country]);
-    return [];
-  }, [country, locations]);
+    if (!country) return [];
+    const c = Country.getAllCountries().find(c => c.name === country);
+    return c ? State.getStatesOfCountry(c.isoCode).map(s => s.name) : [];
+  }, [country]);
   const areas = React.useMemo(() => {
-    if (country && state && locations[country]?.[state]) return locations[country][state];
-    return [];
-  }, [country, state, locations]);
+    if (!country || !state) return [];
+    const c = Country.getAllCountries().find(c => c.name === country);
+    if (!c) return [];
+    const s = State.getStatesOfCountry(c.isoCode).find(s => s.name === state);
+    return s ? City.getCitiesOfState(c.isoCode, s.isoCode).map(city => city.name) : [];
+  }, [country, state]);
 
   const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setCountry(e.target.value);
