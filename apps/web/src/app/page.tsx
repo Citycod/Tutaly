@@ -107,11 +107,6 @@ export default async function Home() {
                   <Search className="w-4 h-4" aria-hidden="true" />
                   <input type="text" name="keyword" placeholder="Job title, skills, or company..." aria-label="Search jobs by title, skills, or company" />
                 </div>
-                <div className="hero__search-loc" aria-label="Location: Lagos, Nigeria">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                  Lagos, NG
-                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
-                </div>
                 <button type="submit" className="hero__search-btn">Search Jobs</button>
               </form>
 
