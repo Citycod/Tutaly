@@ -1,6 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { serverFetch } from "@/lib/server-fetch";
+import ApplyJobAction from "@/components/jobs/ApplyJobAction";
 
 function formatTimeAgo(dateStr: string): string {
   const now = new Date();
@@ -116,7 +117,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
                 <span className="apply-box__stat-value">{job.experienceLevel}</span>
               </div>
 
-              <button className="btn btn--primary btn--lg btn--full">Apply Now</button>
+              <ApplyJobAction job={{ id: params.id, title: job.title }} />
               <button className="btn btn--ghost btn--full" style={{ marginTop: '10px' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }}>
                   <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
