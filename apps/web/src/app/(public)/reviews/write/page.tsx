@@ -122,12 +122,12 @@ export default function WriteReviewPage() {
     return (
       <div className="page-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px', maxWidth: '440px', width: '100%', textAlign: 'center', boxShadow: 'var(--shadow-lg)' }}>
-          <div style={{ width: '64px', height: '64px', background: 'rgba(var(--success-rgb), 0.2)', color: 'var(--success)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+          <div style={{ width: '64px', height: '64px', background: 'var(--green-10)', color: 'var(--green)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
             <ShieldCheck style={{ width: '32px', height: '32px' }} />
           </div>
           <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '8px' }}>Review Submitted!</h2>
           <p style={{ fontSize: '14px', color: 'var(--c-400)', marginBottom: '24px', lineHeight: 1.6 }}>Thank you for your anonymous contribution. Your review is pending moderation and will be published shortly.</p>
-          <div style={{ color: 'var(--success)', fontSize: '14px', fontWeight: 600, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Redirecting...</div>
+          <div style={{ color: 'var(--green)', fontSize: '14px', fontWeight: 600, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Redirecting...</div>
         </div>
       </div>
     );
@@ -162,7 +162,7 @@ export default function WriteReviewPage() {
               </div>
               {formData.companyName && (
                 <div className="company-chip">
-                  <div className="company-chip__logo" style={{ background: 'rgba(var(--success-rgb), 0.18)', color: 'var(--success)' }}>
+                  <div className="company-chip__logo" style={{ background: 'var(--green-10)', color: 'var(--green)' }}>
                     {formData.companyName.charAt(0).toUpperCase()}
                   </div>
                   <span className="company-chip__name">{formData.companyName}</span>

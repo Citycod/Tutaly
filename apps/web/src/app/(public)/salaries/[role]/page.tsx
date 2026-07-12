@@ -139,7 +139,7 @@ export default async function SalaryRolePage(props: { params: Promise<{ role: st
           </>
         ) : (
           <div className="salary-card" style={{ textAlign: 'center', padding: '48px 24px', marginBottom: '64px' }}>
-            <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#fff', marginBottom: '8px' }}>Not enough data</h3>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--c-100)', marginBottom: '8px' }}>Not enough data</h3>
             <p style={{ color: 'var(--c-400)', fontSize: '14px', marginBottom: '24px', maxWidth: '400px', margin: '0 auto 24px' }}>
               We don't have enough salary reports for <strong>{roleName}</strong> yet. Contribute your anonymous salary to help others understand the market!
             </p>
