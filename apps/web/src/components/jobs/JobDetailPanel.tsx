@@ -13,6 +13,7 @@ import {
   Flag,
   CheckCircle2,
 } from 'lucide-react';
+import { motion } from 'framer-motion';
 import { apiAuth } from '@/lib/api';
 import ApplyModal from './ApplyModal';
 
@@ -122,96 +123,103 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
 
   return (
     <>
-      <div className="bg-c800 rounded-xl border border-c700 overflow-hidden">
+      <motion.div 
+        key={job.id}
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+        className="bg-white rounded-2xl border border-c200 overflow-hidden shadow-sm"
+      >
         {/* Header */}
-        <div className="p-6 border-b border-c700">
-          <h2 className="text-xl font-extrabold text-c100 mb-1">{job.title}</h2>
-          <p className="text-sm text-c400">{job.employer?.email || 'Confidential Company'}</p>
+        <div className="p-8 border-b border-c200 bg-c50/50 backdrop-blur-sm">
+          <h2 className="text-2xl font-extrabold text-c900 mb-1">{job.title}</h2>
+          <p className="text-sm font-medium text-c500">{job.employer?.email || 'Confidential Company'}</p>
 
-          <div className="mt-4 flex flex-wrap gap-2">
-            <span className="tag tag--blue">
-              <Briefcase className="w-3 h-3" /> {job.jobType}
+          <div className="mt-6 flex flex-wrap gap-2">
+            <span className="tag bg-blue/10 text-blue font-semibold">
+              <Briefcase className="w-3.5 h-3.5" /> {job.jobType}
             </span>
-            <span className="tag tag--green">
+            <span className="tag bg-green/10 text-green font-semibold">
               {job.workMode}
             </span>
-            <span className="tag bg-c700 text-c200">
+            <span className="tag bg-c100 text-c700 font-semibold">
               {job.experienceLevel}
             </span>
             {job.isFeatured && (
-              <span className="tag tag--gold">
+              <span className="tag bg-gold/10 text-gold font-semibold">
                 Featured
               </span>
             )}
             {job.isUrgent && (
-              <span className="tag bg-red/10 text-red">
+              <span className="tag bg-red/10 text-red font-semibold">
                 Urgent
               </span>
             )}
           </div>
 
-          <div className="mt-6 space-y-3 text-sm text-c300">
-            <div className="flex items-center gap-2">
-              <MapPin className="w-4 h-4 text-c500" />
-              {job.area ? `${job.area}, ` : ''}
-              {job.state}, {job.country}
+          <div className="mt-8 grid grid-cols-1 sm:grid-cols-2 gap-4 text-sm text-c600">
+            <div className="flex items-center gap-2.5">
+              <MapPin className="w-4 h-4 text-c400" />
+              <span>
+                {job.area ? `${job.area}, ` : ''}
+                {job.state}, {job.country}
+              </span>
             </div>
             {job.minSalary && (
-              <div className="flex items-center gap-2">
-                <DollarSign className="w-4 h-4 text-c500" />
-                <span className="font-medium text-green font-mono">
-                  {sym}
-                  {job.minSalary.toLocaleString()}
+              <div className="flex items-center gap-2.5">
+                <DollarSign className="w-4 h-4 text-c400" />
+                <span className="font-mono font-medium text-green">
+                  {sym}{job.minSalary.toLocaleString()}
                   {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : '+'}
+                  <span className="text-xs text-c400 ml-1">/ month</span>
                 </span>
-                <span className="text-xs text-c500">/ month</span>
               </div>
             )}
             {job.deadline && (
-              <div className="flex items-center gap-2">
-                <Calendar className="w-4 h-4 text-c500" />
-                Deadline: {new Date(job.deadline).toLocaleDateString()}
+              <div className="flex items-center gap-2.5">
+                <Calendar className="w-4 h-4 text-c400" />
+                <span>Deadline: {new Date(job.deadline).toLocaleDateString()}</span>
               </div>
             )}
-            <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-c500" />
-              Posted {new Date(job.createdAt).toLocaleDateString()}
+            <div className="flex items-center gap-2.5">
+              <Clock className="w-4 h-4 text-c400" />
+              <span>Posted {new Date(job.createdAt).toLocaleDateString()}</span>
             </div>
           </div>
         </div>
 
         {/* Description */}
-        <div className="p-6 border-b border-c700">
-          <h3 className="text-xs font-bold text-c100 uppercase tracking-widest mb-3">
+        <div className="p-8 border-b border-c200">
+          <h3 className="text-sm font-bold text-c900 uppercase tracking-widest mb-4">
             Description
           </h3>
-          <div className="text-sm text-c300 leading-relaxed whitespace-pre-wrap">
+          <div className="text-base text-c600 leading-relaxed whitespace-pre-wrap">
             {job.description}
           </div>
         </div>
 
         {/* Actions */}
-        <div className="p-6">
+        <div className="p-8 bg-c50">
           {applied ? (
-            <div className="w-full bg-green/20 text-green font-bold p-3.5 rounded-md text-center border border-green/30 flex items-center justify-center gap-2">
+            <div className="w-full bg-green/10 text-green font-bold p-4 rounded-xl text-center border border-green/20 flex items-center justify-center gap-2">
               <CheckCircle2 className="w-5 h-5" />
               Application Submitted
             </div>
           ) : (
             <button
               onClick={handleApplyClick}
-              className="btn btn--primary btn--lg w-full"
+              className="btn btn--primary btn--lg w-full premium-hover"
             >
               <Send className="w-4 h-4" />
               Apply Now
             </button>
           )}
 
-          <div className="flex gap-3 mt-3">
+          <div className="flex gap-4 mt-4">
             <button
               onClick={handleSave}
               disabled={saved}
-              className={`btn flex-1 ${saved ? 'bg-blue/20 text-blueL border-blue' : 'btn--ghost'}`}
+              className={`btn flex-1 premium-hover ${saved ? 'bg-blue/10 text-blue border-blue/20 pointer-events-none' : 'btn--secondary'}`}
             >
               {saved ? (
                 <>
@@ -225,14 +233,14 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
             </button>
             <button
               onClick={handleReport}
-              className="btn btn--ghost shrink-0 p-3"
+              className="btn btn--ghost shrink-0 p-4 premium-hover"
               title="Report listing"
             >
               <Flag className="w-4 h-4" />
             </button>
           </div>
         </div>
-      </div>
+      </motion.div>
 
       {/* Apply Modal */}
       {showApplyModal && (
