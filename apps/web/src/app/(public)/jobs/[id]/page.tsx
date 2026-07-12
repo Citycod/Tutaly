@@ -31,37 +31,36 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
 
   const companyInitial = job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C';
   const companyName = job.employer?.email || "Confidential Company";
+  
+  // Format description into paragraphs
+  const descriptionParagraphs = job.description 
+    ? job.description.split('\n').filter((p: string) => p.trim() !== '') 
+    : [];
 
   return (
-    <div className="pt-10 pb-20">
-      <div className="max-w-layout-xl mx-auto px-6 pt-7">
-        <nav className="flex items-center gap-2 text-sm text-c500 mb-6" aria-label="Breadcrumb">
-          <Link href="/jobs" className="text-c400 hover:text-c200 transition-colors duration-150">
-            Jobs
-          </Link>
+    <div className="page-shell">
+      <div className="container" style={{ paddingTop: '28px' }}>
+        <nav className="breadcrumb" aria-label="Breadcrumb">
+          <Link href="/jobs">Jobs</Link>
           <span>/</span>
-          <Link href={`/jobs?keyword=${encodeURIComponent(job.industry || 'Tech')}`} className="text-c400 hover:text-c200 transition-colors duration-150">
+          <Link href={`/jobs?keyword=${encodeURIComponent(job.industry || 'Tech')}`}>
             {job.industry || 'Tech'}
           </Link>
           <span>/</span>
-          <span className="text-c200">{job.title} at {companyName}</span>
+          <span className="current">{job.title} at {companyName}</span>
         </nav>
 
-        <div className="flex flex-col md:flex-row gap-8 items-start">
+        <div className="job-detail-layout">
           {/* LEFT: JOB CONTENT */}
-          <main className="flex-1">
-            <div className="flex gap-5 items-start mb-10">
-              <div className="w-16 h-16 rounded-md shrink-0 flex items-center justify-center text-2xl font-bold bg-blue bg-opacity-20 text-blue">
+          <main>
+            <div className="job-header">
+              <div className="job-header__logo" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>
                 {companyInitial}
               </div>
               <div>
-                <h1 className="text-3xl font-bold text-white leading-tight mb-2 tracking-tight">
-                  {job.title}
-                </h1>
-                <div className="text-lg text-c200 mb-4 font-medium">
-                  {companyName}
-                </div>
-                <div className="flex flex-wrap gap-4 text-sm text-c400">
+                <h1 className="job-header__title">{job.title}</h1>
+                <div className="job-header__company">{companyName}</div>
+                <div className="job-header__meta">
                   <span>📍 {job.area ? `${job.area}, ` : ''}{job.state}, {job.country}</span>
                   <span>🏢 {job.workMode}</span>
                   <span>👤 {job.experienceLevel}</span>
@@ -70,76 +69,75 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
               </div>
             </div>
 
-            <div className="mb-8">
-              <div className="text-lg font-semibold text-white mb-4">About the role</div>
-              <div className="text-sm text-c300 leading-relaxed space-y-4 whitespace-pre-line">
-                {job.description}
+            <div className="job-section">
+              <div className="job-section__title">About the role</div>
+              <div className="job-section__body">
+                {descriptionParagraphs.length > 0 ? (
+                  descriptionParagraphs.map((p: string, idx: number) => (
+                    <p key={idx}>{p}</p>
+                  ))
+                ) : (
+                  <p>No description provided.</p>
+                )}
               </div>
             </div>
           </main>
 
-          {/* RIGHT: FLOATING CARD */}
-          <aside className="w-full md:w-80 shrink-0 sticky top-24">
-            <div className="bg-c800 border border-c700 p-6 rounded-xl shadow-lg relative overflow-hidden">
-              <div className="absolute top-0 right-0 p-4 opacity-10">
-                <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1">
-                  <rect x="2" y="7" width="20" height="14" rx="2" ry="2" />
-                  <path d="M16 21V5a2 2 0 00-2-2h-4a2 2 0 00-2 2v16" />
-                </svg>
-              </div>
-
-              <div className="text-2xl font-bold text-green font-mono mb-1">
+          {/* RIGHT: APPLY BOX */}
+          <aside>
+            <div className="apply-box">
+              <div className="apply-box__salary">
                 {sym}{job.minSalary ? job.minSalary.toLocaleString() : 'Negotiable'}
                 {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : ''}
               </div>
-              <div className="text-sm text-c400 mb-6">
+              <div className="apply-box__salary-note">
                 per month &middot;{" "}
-                {job.role && (
-                  <Link href={`/salaries/${job.role.toLowerCase().replace(/\s+/g, '-')}`} className="text-blueL hover:text-blueH transition-colors">
+                {job.role ? (
+                  <Link href={`/salaries/${job.role.toLowerCase().replace(/\s+/g, '-')}`} style={{ color: 'var(--blue-l)' }}>
                     See full salary breakdown &rarr;
+                  </Link>
+                ) : (
+                  <Link href={`/salaries`} style={{ color: 'var(--blue-l)' }}>
+                    See salaries &rarr;
                   </Link>
                 )}
               </div>
 
-              <div className="flex justify-between text-sm mb-3 border-b border-c700 pb-3">
-                <span className="text-c400">Applicants</span>
-                <span className="text-c100 font-medium">{job.applicantsCount || 0}</span>
+              <div className="apply-box__stat-row">
+                <span className="apply-box__stat-label">Applicants</span>
+                <span className="apply-box__stat-value">{job.applicantsCount || 0}</span>
               </div>
-              <div className="flex justify-between text-sm mb-3 border-b border-c700 pb-3">
-                <span className="text-c400">Job type</span>
-                <span className="text-c100 font-medium">{job.jobType}</span>
+              <div className="apply-box__stat-row">
+                <span className="apply-box__stat-label">Job type</span>
+                <span className="apply-box__stat-value">{job.jobType}</span>
               </div>
-              <div className="flex justify-between text-sm mb-6">
-                <span className="text-c400">Experience</span>
-                <span className="text-c100 font-medium">{job.experienceLevel}</span>
+              <div className="apply-box__stat-row">
+                <span className="apply-box__stat-label">Experience</span>
+                <span className="apply-box__stat-value">{job.experienceLevel}</span>
               </div>
-              <button className="w-full bg-blue text-white font-medium py-3 px-4 rounded-md hover:bg-blueH transition-colors duration-200 shadow-glow-blue flex justify-center items-center">
-                Apply Now
-              </button>
-              <button className="w-full bg-transparent text-c300 font-medium py-3 px-4 rounded-md border border-c600 hover:bg-c700 hover:text-white transition-colors duration-200 mt-2 flex justify-center items-center gap-2">
-                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
+
+              <button className="btn btn--primary btn--lg btn--full">Apply Now</button>
+              <button className="btn btn--ghost btn--full" style={{ marginTop: '10px' }}>
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }}>
                   <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
                 </svg>
                 Save Job
               </button>
 
-              <div className="flex gap-3 mt-6 pt-6 border-t border-c700">
-                <div className="w-10 h-10 rounded-md shrink-0 flex items-center justify-center text-base font-bold bg-blue bg-opacity-20 text-blue">
+              <div className="company-mini-card">
+                <div className="company-mini-card__logo" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>
                   {companyInitial}
                 </div>
                 <div>
-                  <div className="text-sm font-semibold text-c100 mb-1">{companyName}</div>
-                  <div className="text-sm text-c400">
-                    {job.employer?.reviewScore || 'No reviews yet'}
+                  <div className="company-mini-card__name">{companyName}</div>
+                  <div className="company-mini-card__meta">
+                    {job.employer?.reviewScore ? `${job.employer.reviewScore} ★ · ` : ''}
+                    {job.employer?.reviewCount ? `${job.employer.reviewCount} reviews` : 'No reviews yet'}
                   </div>
                 </div>
               </div>
-              
               {job.employer?.email && (
-                <Link 
-                  href={`/reviews/company/${job.employer.email.split('@')[0]}`} 
-                  className="w-full bg-transparent text-c300 font-medium py-2 px-4 rounded-md border border-c600 hover:bg-c700 hover:text-white transition-colors duration-200 mt-2 flex justify-center items-center text-sm"
-                >
+                <Link href={`/reviews/company/${job.employer.email.split('@')[0]}`} className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '10px' }}>
                   Read company reviews
                 </Link>
               )}
