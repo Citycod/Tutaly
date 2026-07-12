@@ -25,6 +25,10 @@
   --green-light: #2DB85A;
   --color-success-light: rgba(29, 122, 58, 0.18);
   --color-success-dark: #2DB85A;
+  
+  --success: #2DB85A;
+  --success-rgb: 29, 122, 58;
+  --blue-rgb: 27, 79, 158;
 
   --c-900: #1A1C1E;
   --c-800: #22252A;

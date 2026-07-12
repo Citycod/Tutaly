@@ -21,6 +21,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
   try {
     job = await serverFetch<any>(`jobs/${params.id}`, { cache: 'no-store' });
   } catch (err) {
+    console.error(`[JobDetailPage] Failed to fetch job with ID ${params.id}:`, err);
     return notFound();
   }
 
@@ -28,14 +29,19 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
     return notFound();
   }
 
+  // Handle case where global interceptor wraps data in { success: true, data: { ... } }
+  if (job.success !== undefined && job.data) {
+    job = job.data;
+  }
+
   const sym = job.currency === 'NGN' ? '₦' : job.currency === 'USD' ? '$' : job.currency === 'GBP' ? '£' : job.currency === 'EUR' ? '€' : job.currency;
 
   const companyInitial = job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C';
   const companyName = job.employer?.email || "Confidential Company";
   
-  // Format description into paragraphs
-  const descriptionParagraphs = job.description 
-    ? job.description.split('\n').filter((p: string) => p.trim() !== '') 
+  // Format description into paragraphs/lists based on hyphens
+  const descriptionLines = job.description 
+    ? job.description.split('\n').map((l: string) => l.trim()).filter(Boolean)
     : [];
 
   return (
@@ -55,7 +61,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
           {/* LEFT: JOB CONTENT */}
           <main>
             <div className="job-header">
-              <div className="job-header__logo" style={{ background: 'var(--color-success-light)', color: 'var(--color-success-dark)' }}>
+              <div className="job-header__logo" style={{ background: 'var(--success-rgb)', color: 'var(--success)' }}>
                 {companyInitial}
               </div>
               <div>
@@ -73,10 +79,17 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
             <div className="job-section">
               <div className="job-section__title">About the role</div>
               <div className="job-section__body">
-                {descriptionParagraphs.length > 0 ? (
-                  descriptionParagraphs.map((p: string, idx: number) => (
-                    <p key={idx}>{p}</p>
-                  ))
+                {descriptionLines.length > 0 ? (
+                  descriptionLines.map((line: string, idx: number) => {
+                    if (line.startsWith('-')) {
+                      return (
+                        <ul key={idx} style={{ margin: '0 0 14px 20px' }}>
+                          <li style={{ marginBottom: '8px' }}>{line.substring(1).trim()}</li>
+                        </ul>
+                      );
+                    }
+                    return <p key={idx} style={{ marginBottom: '14px' }}>{line}</p>;
+                  })
                 ) : (
                   <p>No description provided.</p>
                 )}
@@ -118,6 +131,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
               </div>
 
               <ApplyJobAction job={{ id: params.id, title: job.title }} />
+              
               <button className="btn btn--ghost btn--full" style={{ marginTop: '10px' }}>
                 <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" style={{ marginRight: '6px', verticalAlign: 'text-bottom', display: 'inline-block' }}>
                   <path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z" />
@@ -126,7 +140,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
               </button>
 
               <div className="company-mini-card">
-                <div className="company-mini-card__logo" style={{ background: 'var(--color-success-light)', color: 'var(--color-success-dark)' }}>
+                <div className="company-mini-card__logo" style={{ background: 'var(--success-rgb)', color: 'var(--success)' }}>
                   {companyInitial}
                 </div>
                 <div>

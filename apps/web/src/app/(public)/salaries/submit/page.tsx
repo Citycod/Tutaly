@@ -77,12 +77,12 @@ export default function SubmitSalaryPage() {
     return (
       <div className="page-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
         <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px', maxWidth: '440px', width: '100%', textAlign: 'center', boxShadow: 'var(--shadow-lg)' }}>
-          <div style={{ width: '64px', height: '64px', background: 'rgba(29,122,58,0.2)', color: '#2DB85A', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+          <div style={{ width: '64px', height: '64px', background: 'rgba(var(--success-rgb), 0.2)', color: 'var(--success)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
             <ShieldCheck style={{ width: '32px', height: '32px' }} />
           </div>
           <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '8px' }}>Submitted Anonymously!</h2>
           <p style={{ fontSize: '14px', color: 'var(--c-400)', marginBottom: '24px', lineHeight: 1.6 }}>Your salary data helps increase transparency for all Nigerian professionals. Thank you!</p>
-          <div style={{ color: '#2DB85A', fontSize: '14px', fontWeight: 600, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Redirecting...</div>
+          <div style={{ color: 'var(--success)', fontSize: '14px', fontWeight: 600, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Redirecting...</div>
         </div>
       </div>
     );
@@ -226,7 +226,7 @@ export default function SubmitSalaryPage() {
           </div>
         </form>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '24px', padding: '16px 18px', background: 'rgba(27,79,158,0.06)', border: '1px solid rgba(27,79,158,0.2)', borderRadius: 'var(--r-md)' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginTop: '24px', padding: '16px 18px', background: 'rgba(var(--blue-rgb), 0.06)', border: '1px solid rgba(var(--blue-rgb), 0.2)', borderRadius: 'var(--r-md)' }}>
           <ShieldCheck style={{ color: 'var(--blue-l)', flexShrink: 0, width: '18px', height: '18px' }} />
           <p style={{ fontSize: '12.5px', color: 'var(--c-400)', margin: 0 }}>Your identity is never stored with your salary data. Tutaly aggregates submissions to build accurate, anonymous market benchmarks.</p>
         </div>

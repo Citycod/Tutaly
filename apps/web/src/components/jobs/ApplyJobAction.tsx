@@ -55,8 +55,9 @@ export default function ApplyJobAction({ job }: ApplyJobActionProps) {
       });
 
       setSubmitted(true);
-    } catch (err: any) {
-      const msg = err.response?.data?.message || err.message || 'Application failed';
+    } catch (err: unknown) {
+      const errorObj = err as any;
+      const msg = errorObj?.response?.data?.message || errorObj?.message || 'Application failed';
       if (typeof msg === 'string' && msg.toLowerCase().includes('already applied')) {
         setSubmitted(true);
       } else {
@@ -136,11 +137,11 @@ export default function ApplyJobAction({ job }: ApplyJobActionProps) {
                   <div className="form-group mb-5">
                     <div className="form-label text-white text-sm mb-2 font-medium">Cover Letter (Optional)</div>
                     <textarea 
-                      className="input w-full min-h-[120px]" 
+                      className="input w-full" 
                       placeholder="Why are you a good fit for this role?"
                       value={coverLetter}
                       onChange={(e) => setCoverLetter(e.target.value)}
-                      style={{ resize: 'vertical' }}
+                      style={{ minHeight: '120px', resize: 'vertical' }}
                     ></textarea>
                   </div>
 

@@ -4,7 +4,7 @@ import { serverFetch } from "@/lib/server-fetch";
 function formatMoney(num: number) {
   if (num >= 1000000) return (num / 1000000).toFixed(1) + 'M';
   if (num >= 1000) return (num / 1000).toFixed(0) + 'K';
-  return num.toString();
+  return num.toLocaleString();
 }
 
 export default async function SalaryRolePage(props: { params: Promise<{ role: string }> }) {
@@ -37,81 +37,93 @@ export default async function SalaryRolePage(props: { params: Promise<{ role: st
   const currency = agg?.currency === 'NGN' ? '₦' : agg?.currency === 'USD' ? '$' : agg?.currency === 'GBP' ? '£' : agg?.currency === 'EUR' ? '€' : (agg?.currency || '₦');
   const salaryPeriod = agg?.salaryPeriod || 'monthly';
 
+  // Estimate percentiles for UI purposes
+  const p25 = minSalary + (avgSalary - minSalary) / 2;
+  const p75 = avgSalary + (maxSalary - avgSalary) / 2;
+
   return (
-    <div className="pt-10 pb-20">
-      <div className="max-w-layout-xl mx-auto px-6 pt-7">
+    <div className="page-shell">
+      <div className="container" style={{ paddingTop: '28px' }}>
         
-        <nav className="flex items-center gap-2 text-sm text-c500 mb-6" aria-label="Breadcrumb">
-          <Link href="/salaries" className="text-c400 hover:text-c200 transition-colors duration-150">
-            Salaries
-          </Link>
+        <nav className="breadcrumb" aria-label="Breadcrumb">
+          <Link href="/salaries">Salaries</Link>
           <span>/</span>
-          <span className="text-c200">{roleName}</span>
+          <span className="current">{roleName}</span>
         </nav>
 
-        <div className="flex items-end justify-between flex-wrap gap-5 mb-6">
+        <div className="salary-detail-header">
           <div>
-            <h1 className="text-3xl font-bold text-c100 tracking-tight">{roleName} salary</h1>
-            <div className="text-sm text-c500 mt-1">📍 Nigeria &middot; {totalSubmissions} reports</div>
+            <h1 className="salary-detail-header__title">{roleName} salary</h1>
+            <div className="salary-detail-header__sub">
+              📍 Nigeria &middot; {totalSubmissions} reports &middot; Updated recently
+            </div>
           </div>
-          <Link href="/salaries/submit" className="bg-blue hover:bg-blueH text-white font-medium py-2 px-6 rounded-md shadow-glow-blue transition-all duration-200">
+          <Link href="/salaries/submit" className="btn btn--primary">
             Add Your Salary
           </Link>
         </div>
 
         {totalSubmissions > 0 ? (
           <>
-            <div className="bg-c800 border border-c700 rounded-lg p-6 mb-6">
-              <div className="flex justify-between items-start flex-wrap gap-4">
+            <div className="salary-card" style={{ maxWidth: '100%', marginBottom: '24px' }}>
+              <div className="salary-card__header">
                 <div>
-                  <div className="text-base font-bold text-white mb-1">Average {salaryPeriod} salary</div>
-                  <div className="text-sm text-c400">All experience levels &middot; Nigeria</div>
+                  <div className="salary-card__role">Average {salaryPeriod} salary</div>
+                  <div className="salary-card__loc">All experience levels &middot; Nigeria</div>
                 </div>
-                <div className="text-right">
-                  <div className="text-4xl font-bold text-c100 tracking-tight leading-none">{currency}{formatMoney(avgSalary)}</div>
-                  <div className="text-xs font-medium text-c500 mt-1 uppercase tracking-wider">per {salaryPeriod.replace('ly', '')}</div>
-                </div>
-              </div>
-
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-3 my-6">
-                <div className="bg-c700 rounded-md p-3 text-center">
-                  <div className="text-xs text-c500 uppercase tracking-wider mb-1">Minimum</div>
-                  <div className="font-mono text-base font-semibold text-c100">{currency}{formatMoney(minSalary)}</div>
-                </div>
-                <div className="bg-green bg-opacity-20 border border-green border-opacity-40 rounded-md p-3 text-center">
-                  <div className="text-xs text-green uppercase tracking-wider mb-1">Average</div>
-                  <div className="font-mono text-base font-semibold text-green">{currency}{formatMoney(avgSalary)}</div>
-                </div>
-                <div className="bg-c700 rounded-md p-3 text-center">
-                  <div className="text-xs text-c500 uppercase tracking-wider mb-1">Maximum</div>
-                  <div className="font-mono text-base font-semibold text-c100">{currency}{formatMoney(maxSalary)}</div>
+                <div>
+                  <div className="salary-card__avg">{currency}{formatMoney(avgSalary)}</div>
+                  <div className="salary-card__avg-label">per {salaryPeriod.replace('ly', '')}</div>
                 </div>
               </div>
 
-              <div className="flex gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1 bg-c700 border border-c600 text-c200 text-xs font-medium px-2 py-1 rounded-full">
-                  {totalSubmissions} data points
-                </span>
+              <div className="percentile-grid">
+                <div className="percentile-tile">
+                  <div className="percentile-tile__label">Minimum</div>
+                  <div className="percentile-tile__value">{currency}{formatMoney(minSalary)}</div>
+                </div>
+                <div className="percentile-tile">
+                  <div className="percentile-tile__label">Lower</div>
+                  <div className="percentile-tile__value">{currency}{formatMoney(p25)}</div>
+                </div>
+                <div className="percentile-tile median">
+                  <div className="percentile-tile__label">Average</div>
+                  <div className="percentile-tile__value">{currency}{formatMoney(avgSalary)}</div>
+                </div>
+                <div className="percentile-tile">
+                  <div className="percentile-tile__label">Upper</div>
+                  <div className="percentile-tile__value">{currency}{formatMoney(p75)}</div>
+                </div>
+                <div className="percentile-tile">
+                  <div className="percentile-tile__label">Maximum</div>
+                  <div className="percentile-tile__value">{currency}{formatMoney(maxSalary)}</div>
+                </div>
+              </div>
+
+              <div style={{ display: 'flex', gap: '10px', flexWrap: 'wrap' }}>
+                <span className="badge badge--new">{totalSubmissions} data points</span>
               </div>
             </div>
 
-            <div className="text-lg font-bold text-c100 mt-8 mb-4">Recent Submissions</div>
-            <div className="bg-c800 border border-c700 rounded-lg overflow-hidden mb-16">
+            <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--c-100)', margin: '32px 0 16px' }}>
+              Recent Submissions
+            </div>
+            <div className="salary-card" style={{ padding: '0', overflow: 'hidden', marginBottom: '64px' }}>
               {recentSubmissions.length > 0 ? (
-                <table className="w-full border-collapse">
+                <table className="breakdown-table" style={{ margin: 0 }}>
                   <thead>
-                    <tr className="bg-c900 border-b border-c700 text-left">
-                      <th className="py-3 px-4 text-xs font-semibold text-c400 uppercase tracking-wider">Role</th>
-                      <th className="py-3 px-4 text-xs font-semibold text-c400 uppercase tracking-wider">Experience</th>
-                      <th className="py-3 px-4 text-xs font-semibold text-c400 uppercase tracking-wider text-right">Base Salary</th>
+                    <tr>
+                      <th style={{ padding: '16px 20px' }}>Role</th>
+                      <th style={{ padding: '16px 20px' }}>Experience</th>
+                      <th style={{ padding: '16px 20px', textAlign: 'right' }}>Base Salary</th>
                     </tr>
                   </thead>
                   <tbody>
                     {recentSubmissions.map((sub: any, i: number) => (
-                      <tr key={i} className="border-b border-c700 last:border-b-0 hover:bg-c700/30 transition-colors">
-                        <td className="py-3 px-4 text-sm text-c100 font-medium">{sub.role}</td>
-                        <td className="py-3 px-4 text-sm text-c400">{sub.yearsOfExperience || 'N/A'} yrs</td>
-                        <td className="py-3 px-4 font-mono text-right text-green font-semibold text-sm">
+                      <tr key={i}>
+                        <td style={{ padding: '16px 20px' }}>{sub.role}</td>
+                        <td style={{ padding: '16px 20px' }}>{sub.yearsOfExperience || 'N/A'} yrs</td>
+                        <td className="num" style={{ padding: '16px 20px', color: 'var(--success)' }}>
                           {sub.currency}{formatMoney(Number(sub.salaryAmount))}
                         </td>
                       </tr>
@@ -119,17 +131,19 @@ export default async function SalaryRolePage(props: { params: Promise<{ role: st
                   </tbody>
                 </table>
               ) : (
-                <div className="p-6 text-center text-c400 text-sm">No recent submissions found.</div>
+                <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-400)', fontSize: '14px' }}>
+                  No recent submissions found.
+                </div>
               )}
             </div>
           </>
         ) : (
-          <div className="bg-c800 border border-c700 rounded-lg p-12 text-center mb-16">
-            <h3 className="text-lg font-semibold text-white mb-2">Not enough data</h3>
-            <p className="text-c400 text-sm mb-6 max-w-md mx-auto">
+          <div className="salary-card" style={{ textAlign: 'center', padding: '48px 24px', marginBottom: '64px' }}>
+            <h3 style={{ fontSize: '18px', fontWeight: 600, color: '#fff', marginBottom: '8px' }}>Not enough data</h3>
+            <p style={{ color: 'var(--c-400)', fontSize: '14px', marginBottom: '24px', maxWidth: '400px', margin: '0 auto 24px' }}>
               We don't have enough salary reports for <strong>{roleName}</strong> yet. Contribute your anonymous salary to help others understand the market!
             </p>
-            <Link href="/salaries/submit" className="inline-block bg-blue hover:bg-blueH text-white font-medium py-2 px-6 rounded-md shadow-glow-blue transition-all duration-200">
+            <Link href="/salaries/submit" className="btn btn--primary">
               Submit Salary Anonymously
             </Link>
           </div>
