@@ -25,7 +25,7 @@ interface Job {
   isUrgent: boolean;
   deadline?: string;
   createdAt: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 export async function generateMetadata(props: {

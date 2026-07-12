@@ -43,7 +43,7 @@ interface Job {
   isUrgent: boolean;
   deadline?: string;
   createdAt: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 export default function JobDetailPanel({ job }: { job: Job | null }) {
@@ -133,7 +133,7 @@ export default function JobDetailPanel({ job }: { job: Job | null }) {
         {/* Header */}
         <div className="p-8 border-b border-c200 bg-c50/50 backdrop-blur-sm">
           <h2 className="text-2xl font-extrabold text-c900 mb-1">{job.title}</h2>
-          <p className="text-sm font-medium text-c500">{job.employer?.email || 'Confidential Company'}</p>
+          <p className="text-sm font-medium text-c500">{job.employer?.companyName || 'Confidential Company'}</p>
 
           <div className="mt-6 flex flex-wrap gap-2">
             <span className="tag bg-blue/10 text-blue font-semibold">

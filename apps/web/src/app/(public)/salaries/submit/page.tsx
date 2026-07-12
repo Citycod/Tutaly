@@ -1,9 +1,10 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { ShieldCheck, Loader2 } from 'lucide-react';
+import { Country, State } from 'country-state-city';
 
 export default function SubmitSalaryPage() {
   const router = useRouter();
@@ -24,6 +25,29 @@ export default function SubmitSalaryPage() {
     submissionYear: new Date().getFullYear(),
     confirmed: true,
   });
+
+  const [country, setCountry] = useState('Nigeria');
+  const [state, setState] = useState('');
+
+  const countries = useMemo(() => Country.getAllCountries().map(c => c.name), []);
+  const states = useMemo(() => {
+    if (!country) return [];
+    const c = Country.getAllCountries().find(c => c.name === country);
+    return c ? State.getStatesOfCountry(c.isoCode).map(s => s.name) : [];
+  }, [country]);
+
+  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setCountry(val);
+    setState('');
+    setFormData(prev => ({ ...prev, location: val }));
+  };
+
+  const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setState(val);
+    setFormData(prev => ({ ...prev, location: val ? `${val}, ${country}` : country }));
+  };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
     const { name, value, type } = e.target;
@@ -137,16 +161,20 @@ export default function SubmitSalaryPage() {
               <div className="form-section__title">Location &amp; experience</div>
               <div className="form-grid-2">
                 <div className="form-field">
-                  <label className="form-label" htmlFor="s-location">Location<span className="required">*</span></label>
-                  <select className="input" id="s-location" name="location" value={formData.location} onChange={handleChange}>
-                    <option value="Lagos, Nigeria">Lagos, Nigeria</option>
-                    <option value="Abuja, Nigeria">Abuja, Nigeria</option>
-                    <option value="Port Harcourt, Nigeria">Port Harcourt, Nigeria</option>
-                    <option value="Remote, Global">Remote, Global</option>
-                    <option value="London, UK">London, UK</option>
-                    <option value="Other">Other</option>
+                  <label className="form-label" htmlFor="s-country">Country<span className="required">*</span></label>
+                  <select className="input" id="s-country" value={country} onChange={handleCountryChange} required>
+                    {countries.map(c => <option key={c} value={c}>{c}</option>)}
                   </select>
                 </div>
+                <div className="form-field">
+                  <label className="form-label" htmlFor="s-state">State/Region</label>
+                  <select className="input" id="s-state" value={state} onChange={handleStateChange}>
+                    <option value="">Select State</option>
+                    {states.map(s => <option key={s} value={s}>{s}</option>)}
+                  </select>
+                </div>
+              </div>
+              <div className="form-grid-2" style={{ marginBottom: 0 }}>
                 <div className="form-field">
                   <label className="form-label" htmlFor="s-exp">Years of experience<span className="required">*</span></label>
                   <select className="input" id="s-exp" name="yearsOfExperience" value={formData.yearsOfExperience} onChange={handleChange}>
@@ -156,14 +184,14 @@ export default function SubmitSalaryPage() {
                     <option value="10+ years">10+ years</option>
                   </select>
                 </div>
-              </div>
-              <div className="form-field" style={{ marginBottom: 0 }}>
-                <label className="form-label" htmlFor="s-size">Company size</label>
-                <select className="input" id="s-size" name="companySize" value={formData.companySize} onChange={handleChange} style={{ maxWidth: '280px' }}>
-                  <option value="Startup (1–50)">Startup (1–50)</option>
-                  <option value="Mid-size (51–500)">Mid-size (51–500)</option>
-                  <option value="Enterprise (500+)">Enterprise (500+)</option>
-                </select>
+                <div className="form-field">
+                  <label className="form-label" htmlFor="s-size">Company size</label>
+                  <select className="input" id="s-size" name="companySize" value={formData.companySize} onChange={handleChange}>
+                    <option value="Startup (1–50)">Startup (1–50)</option>
+                    <option value="Mid-size (51–500)">Mid-size (51–500)</option>
+                    <option value="Enterprise (500+)">Enterprise (500+)</option>
+                  </select>
+                </div>
               </div>
             </div>
 

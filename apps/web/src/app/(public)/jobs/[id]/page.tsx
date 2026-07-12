@@ -36,8 +36,8 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
 
   const sym = job.currency === 'NGN' ? '₦' : job.currency === 'USD' ? '$' : job.currency === 'GBP' ? '£' : job.currency === 'EUR' ? '€' : job.currency;
 
-  const companyInitial = job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C';
-  const companyName = job.employer?.email || "Confidential Company";
+  const companyInitial = job.employer?.companyName ? job.employer.companyName.substring(0, 1).toUpperCase() : 'C';
+  const companyName = job.employer?.companyName || "Confidential Company";
   
   // Format description into paragraphs/lists based on hyphens
   const descriptionLines = job.description 

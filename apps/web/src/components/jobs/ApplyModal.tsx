@@ -32,7 +32,7 @@ import { apiAuth } from '@/lib/api';
 interface Job {
   id: string;
   title: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 interface ProfileSnapshot {

@@ -29,7 +29,7 @@ interface Job {
   isUrgent: boolean;
   deadline?: string;
   createdAt: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 function formatTimeAgo(dateStr: string): string {
@@ -95,14 +95,14 @@ export default function JobResultsWithDetail({
               >
                 <article className="jobcard premium-hover">
                   <div className="jobcard__logo bg-blue/10 text-blue font-bold">
-                    {job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C'}
+                    {job.employer?.companyName ? job.employer.companyName.substring(0, 1).toUpperCase() : 'C'}
                   </div>
                   <div className="jobcard__body">
                     <div className="jobcard__top">
                       <div>
                         <div className="jobcard__title">{job.title}</div>
                         <div className="jobcard__company">
-                          {job.employer?.email || 'Confidential Company'}
+                          {job.employer?.companyName || 'Confidential Company'}
                         </div>
                       </div>
                       <button className="jobcard__save premium-hover hover:text-blue hover:bg-blue/10 p-2 rounded-full transition-colors" aria-label="Save job" onClick={(e) => e.preventDefault()}>

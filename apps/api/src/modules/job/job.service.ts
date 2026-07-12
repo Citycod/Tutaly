@@ -102,6 +102,7 @@ export class JobService {
     const qb = this.jobRepo
       .createQueryBuilder('job')
       .leftJoinAndSelect('job.employer', 'employer')
+      .leftJoinAndSelect('employer.employerProfile', 'employerProfile')
       .where('job.status = :status', { status });
 
     if (country) qb.andWhere('job.country ILIKE :country', { country });
@@ -230,7 +231,7 @@ export class JobService {
   async findOne(id: string) {
     const job = await this.jobRepo.findOne({
       where: { id },
-      relations: ['employer'],
+      relations: ['employer', 'employer.employerProfile'],
     });
 
     if (!job) throw new NotFoundException('Job not found');
@@ -494,7 +495,11 @@ export class JobService {
     const { employer, ...jobData } = job;
     return {
       ...jobData,
-      employer: employer ? { id: employer.id, email: employer.email } : null,
+      employer: employer ? { 
+        id: employer.id, 
+        email: employer.email,
+        companyName: employer.employerProfile?.companyName
+      } : null,
     };
   }
 
@@ -532,7 +537,7 @@ export class JobService {
   async getSavedJobs(userId: string) {
     const savedJobs = await this.savedJobRepo.find({
       where: { seeker: { id: userId } },
-      relations: ['job', 'job.employer'],
+      relations: ['job', 'job.employer', 'job.employer.employerProfile'],
       order: { createdAt: 'DESC' },
     });
     return savedJobs.map((sj) => ({
