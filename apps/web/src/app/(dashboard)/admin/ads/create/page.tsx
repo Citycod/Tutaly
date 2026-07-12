@@ -35,14 +35,14 @@ export default function CreateAdPage() {
       await apiAuth.withToken(token || undefined).post('/admin/ads', formData);
       router.push('/admin/ads');
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 setError(err.response?.data?.message || err.message || 'Failed to create ad');
       setLoading(false);
     }

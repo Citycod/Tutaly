@@ -35,14 +35,14 @@ export default function AdminAnnouncementsPage() {
       const res = await apiAuth.withToken(token || undefined).get('/admin/announcements');
       setAnnouncements(res.data.items || []);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 if (err.response?.status === 401 || err.response?.status === 403) {
         router.push('/auth/signin');
       }
@@ -74,14 +74,14 @@ if (err.response?.status === 401 || err.response?.status === 403) {
       setExpiresAt('');
       fetchAnnouncements();
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 alert(err.response?.data?.message || err.message);
     } finally {
       setCreating(false);
@@ -95,14 +95,14 @@ alert(err.response?.data?.message || err.message);
       await apiAuth.withToken(token || undefined).patch(`/admin/announcements/${id}/deactivate`);
       fetchAnnouncements();
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 alert(err.response?.data?.message || err.message);
     }
   };

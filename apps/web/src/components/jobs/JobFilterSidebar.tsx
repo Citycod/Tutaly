@@ -27,14 +27,13 @@ export default function JobFilterSidebar({ filterMeta }: { filterMeta?: FilterMe
   const [maxSalary, setMaxSalary] = useState(searchParams.get('maxSalary') || '');
   const [datePosted, setDatePosted] = useState(searchParams.get('datePosted') || '');
 
-  // Filter visibility state (open by default, closed on mobile via effect)
-  const [isOpen, setIsOpen] = useState(true);
-
-  useEffect(() => {
-    if (window.innerWidth < 768) {
-      setIsOpen(false);
+  // Filter visibility state (open by default, closed on mobile via lazy init)
+  const [isOpen, setIsOpen] = useState(() => {
+    if (typeof window !== 'undefined' && window.innerWidth < 768) {
+      return false;
     }
-  }, []);
+    return true;
+  });
 
   // Cascading location data
   const industriesList = useMemo(() => filterMeta?.industries || [], [filterMeta?.industries]);
