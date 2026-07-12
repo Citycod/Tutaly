@@ -54,7 +54,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
           {/* LEFT: JOB CONTENT */}
           <main>
             <div className="job-header">
-              <div className="job-header__logo" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>
+              <div className="job-header__logo" style={{ background: 'var(--color-success-light)', color: 'var(--color-success-dark)' }}>
                 {companyInitial}
               </div>
               <div>
@@ -125,7 +125,7 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
               </button>
 
               <div className="company-mini-card">
-                <div className="company-mini-card__logo" style={{ background: 'rgba(29,122,58,0.18)', color: '#2DB85A' }}>
+                <div className="company-mini-card__logo" style={{ background: 'var(--color-success-light)', color: 'var(--color-success-dark)' }}>
                   {companyInitial}
                 </div>
                 <div>
