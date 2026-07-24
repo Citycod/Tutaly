@@ -64,6 +64,14 @@ export class JobController {
     return this.jobService.getEmployerDashboardStats(userId);
   }
 
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Roles(UserRole.SEEKER)
+  @Get('seeker/stats')
+  async getSeekerStats(@NestRequest() req: AuthenticatedRequest) {
+    const userId = req.user.sub;
+    return this.jobService.getSeekerDashboardStats(userId);
+  }
+
   @UseGuards(JwtAuthGuard)
   @Get('saved')
   async getSavedJobs(@NestRequest() req: AuthenticatedRequest) {

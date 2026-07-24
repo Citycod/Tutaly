@@ -443,6 +443,51 @@ export class JobService {
     };
   }
 
+  // ─── SEEKER DASHBOARD STATS ────────────────────────────
+  async getSeekerDashboardStats(seekerId: string) {
+    const applicationsCount = await this.applicationRepo.count({
+      where: { seeker: { id: seekerId } },
+    });
+
+    const savedJobsCount = await this.savedJobRepo.count({
+      where: { seeker: { id: seekerId } },
+    });
+
+    const recentApplications = await this.applicationRepo.find({
+      where: { seeker: { id: seekerId } },
+      order: { createdAt: 'DESC' },
+      take: 3,
+      relations: ['job', 'job.employer', 'job.employer.employerProfile'],
+    });
+
+    const profile = await this.seekerProfileRepo.findOne({
+      where: { user: { id: seekerId } },
+    });
+
+    let profileStrength = 20; // base score for signing up
+    if (profile) {
+      if (profile.firstName && profile.lastName) profileStrength += 20;
+      if (profile.headline) profileStrength += 20;
+      if (profile.bio) profileStrength += 20;
+      if (profile.resumeUrl) profileStrength += 20;
+    }
+
+    return {
+      applicationsCount,
+      savedJobsCount,
+      profileViews: 0,
+      profileStrength,
+      recentApplications: recentApplications.map(app => ({
+        id: app.id,
+        status: app.status,
+        appliedAt: app.createdAt,
+        jobTitle: app.job?.title,
+        jobLocation: app.job?.state ? `${app.job.state}, Nigeria` : 'Remote',
+        companyName: app.job?.employer?.employerProfile?.companyName || 'Unknown Company',
+      }))
+    };
+  }
+
   // ─── SINGLE APPLICATION DETAIL ──────────────────────────
   async getApplicationDetail(appId: string, jobId: string, employerId: string) {
     const job = await this.jobRepo.findOne({

@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import MainLayout from "@/components/layout/MainLayout";
 import { CartProvider } from "@/components/providers/CartProvider";
 
 const inter = Inter({
@@ -51,9 +50,7 @@ export default function RootLayout({
       <body className="flex flex-col min-h-screen bg-c900 text-c200">
         <SmoothScroll>
           <CartProvider>
-            <Navbar />
-            <main className="flex-grow">{children}</main>
-            <Footer />
+            <MainLayout>{children}</MainLayout>
           </CartProvider>
         </SmoothScroll>
       </body>
