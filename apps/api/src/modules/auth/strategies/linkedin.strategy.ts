@@ -14,12 +14,12 @@ export class LinkedInStrategy extends PassportStrategy(Strategy, 'linkedin') {
     });
   }
 
-  async validate(
+  validate(
     accessToken: string,
     refreshToken: string,
     profile: any,
     done: any,
-  ): Promise<any> {
+  ): any {
     const { id, name, emails, photos } = profile;
     
     const user = {
