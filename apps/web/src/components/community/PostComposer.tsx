@@ -125,7 +125,7 @@ export function PostComposer({ onPostCreated, currentUser }: PostComposerProps) 
             value={content}
             onChange={(e) => setContent(e.target.value)}
             placeholder="Share your thoughts, ask a question, or post an update..."
-            className="w-full resize-none overflow-hidden bg-transparent pt-2 text-gray-800 placeholder-gray-400 focus:outline-none min-h-[60px]"
+            className="w-full resize-none overflow-hidden bg-transparent pt-2 text-gray-800 placeholder-gray-400 focus:outline-none min-h-24"
             onInput={(e) => {
               const target = e.target as HTMLTextAreaElement;
               target.style.height = 'auto';

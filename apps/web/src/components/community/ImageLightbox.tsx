@@ -38,13 +38,13 @@ export function ImageLightbox({ isOpen, onClose, imageUrl }: ImageLightboxProps)
             initial={{ scale: 0.95 }}
             animate={{ scale: 1 }}
             exit={{ scale: 0.95 }}
-            className="relative max-h-screen max-w-screen overflow-hidden rounded-lg"
+            className="relative max-h-screen max-w-4xl overflow-hidden rounded-lg"
             onClick={(e) => e.stopPropagation()}
           >
             <img
               src={imageUrl}
               alt="Expanded view"
-              className="max-h-screen w-auto max-w-full object-contain"
+              className="max-h-screen w-auto object-contain"
             />
           </motion.div>
         </motion.div>
