@@ -11,7 +11,7 @@ import { Repository } from 'typeorm';
 import { ConfigService } from '@nestjs/config';
 import * as bcrypt from 'bcrypt';
 import * as crypto from 'crypto';
-import { User, UserRole } from '../user/entities/user.entity';
+import { User, UserRole, AuthProvider } from '../user/entities/user.entity';
 import { SeekerProfile } from '../user/entities/seeker-profile.entity';
 import { EmployerProfile } from '../user/entities/employer-profile.entity';
 import { MailService } from './mail.service';
@@ -24,6 +24,7 @@ import {
   VerifyMfaDto,
   ChangePasswordDto,
   DeleteAccountDto,
+  OnboardingDto,
 } from './dto/auth.dto';
 
 @Injectable()
@@ -168,6 +169,7 @@ export class AuthService {
         'isActive',
         'isMfaEnabled',
         'tokenVersion',
+        'isOnboardingComplete',
       ],
     });
 
@@ -183,6 +185,10 @@ export class AuthService {
       throw new UnauthorizedException(
         'Please verify your email before logging in. Check your inbox for the verification link.',
       );
+    }
+
+    if (!user.password) {
+      throw new UnauthorizedException('Please login with your social account.');
     }
 
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
@@ -221,6 +227,7 @@ export class AuthService {
         email: user.email,
         role: user.role,
         isEmailVerified: user.isEmailVerified,
+        isOnboardingComplete: user.isOnboardingComplete,
       },
     };
   }
@@ -484,7 +491,7 @@ export class AuthService {
     );
   }
 
-  private generateRefreshToken(user: User): string {
+  public generateRefreshToken(user: User): string {
     return this.jwtService.sign(
       { sub: user.id },
       {
@@ -502,5 +509,78 @@ export class AuthService {
         expiresIn: '24h',
       },
     );
+  }
+
+  // ─── OAUTH ──────────────────────────────────────────
+  async validateOAuthUser(profile: any) {
+    const existing = await this.userRepo.findOne({
+      where: { email: profile.email },
+    });
+
+    if (existing) {
+      // If found by email, link the provider if it's their first time using this OAuth
+      if (!existing.providerId && existing.authProvider === AuthProvider.LOCAL) {
+        existing.authProvider = profile.provider as AuthProvider;
+        existing.providerId = profile.providerId;
+        await this.userRepo.save(existing);
+      }
+      return existing;
+    }
+
+    // New user via OAuth
+    const newUser = this.userRepo.create({
+      email: profile.email,
+      isEmailVerified: true, // Trusted from OAuth provider
+      authProvider: profile.provider as AuthProvider,
+      providerId: profile.providerId,
+      isOnboardingComplete: false,
+      tosAgreedAt: new Date(),
+    });
+
+    const savedUser = await this.userRepo.save(newUser);
+    return savedUser;
+  }
+
+  async completeOnboarding(userId: string, dto: OnboardingDto) {
+    const user = await this.userRepo.findOne({ where: { id: userId } });
+    if (!user) {
+      throw new BadRequestException('User not found.');
+    }
+
+    if (user.isOnboardingComplete) {
+      throw new BadRequestException('Onboarding is already complete.');
+    }
+
+    const dob = new Date(dto.dateOfBirth);
+    const age = Math.floor((Date.now() - dob.getTime()) / (365.25 * 24 * 60 * 60 * 1000));
+    if (age < 18) {
+      throw new BadRequestException('You must be at least 18 years old to register.');
+    }
+
+    user.role = dto.role;
+    user.dateOfBirth = dob;
+    user.isOnboardingComplete = true;
+    await this.userRepo.save(user);
+
+    // Create role-specific profile
+    if (dto.role === UserRole.SEEKER) {
+      const profile = this.seekerProfileRepo.create({
+        user,
+        // Wait, OAuth profile passed email. Profile usually needs first/last name.
+        // We will just create an empty profile, user can edit it later.
+        firstName: 'New',
+        lastName: 'User',
+      });
+      await this.seekerProfileRepo.save(profile);
+    } else if (dto.role === UserRole.EMPLOYER) {
+      const profile = this.employerProfileRepo.create({
+        user,
+        companyName: dto.companyName || 'My Company',
+        industry: dto.industry || 'Other',
+      });
+      await this.employerProfileRepo.save(profile);
+    }
+
+    return { message: 'Onboarding complete.' };
   }
 }

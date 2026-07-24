@@ -16,6 +16,12 @@ export enum SellerStatus {
   REJECTED = 'rejected',
 }
 
+export enum AuthProvider {
+  LOCAL = 'local',
+  GOOGLE = 'google',
+  LINKEDIN = 'linkedin',
+}
+
 @Entity('users')
 export class User extends BaseEntity {
   @Column({ unique: true })
@@ -24,7 +30,7 @@ export class User extends BaseEntity {
   @Column({ unique: true, nullable: true })
   username: string; // @username format: name_slug_XXXX (4 random digits)
 
-  @Column({ select: false }) // Hide password by default
+  @Column({ select: false, nullable: true }) // Hide password by default; nullable for OAuth users
   password: string;
 
   @Column({
@@ -37,7 +43,7 @@ export class User extends BaseEntity {
   @Column({ default: false })
   isEmailVerified: boolean;
 
-  @Column({ type: 'date' })
+  @Column({ type: 'date', nullable: true }) // Nullable for OAuth users until onboarding
   dateOfBirth: Date;
 
   @Column({ type: 'timestamp', nullable: true })
@@ -57,6 +63,15 @@ export class User extends BaseEntity {
 
   @Column({ type: 'enum', enum: SellerStatus, default: SellerStatus.NONE })
   sellerStatus: SellerStatus;
+
+  @Column({ type: 'enum', enum: AuthProvider, default: AuthProvider.LOCAL })
+  authProvider: AuthProvider;
+
+  @Column({ nullable: true })
+  providerId: string;
+
+  @Column({ default: true })
+  isOnboardingComplete: boolean;
 
   @Column({ type: 'varchar', nullable: true })
   pendingEmail: string | null;
