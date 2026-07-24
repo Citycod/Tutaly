@@ -80,9 +80,9 @@ export default function SignIn() {
       <main className="auth-form-side reveal visible">
         <div className="auth-form-wrap">
 
-          <Link href="/" className="auth-mobile-logo">
+          {/* <Link href="/" className="auth-mobile-logo">
             <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
-          </Link>
+          </Link> */}
 
           <h1 className="auth-heading">Welcome back</h1>
           <p className="auth-subheading">
