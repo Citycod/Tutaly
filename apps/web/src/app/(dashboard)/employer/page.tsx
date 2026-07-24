@@ -3,9 +3,7 @@
 import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { apiAuth } from '@/lib/api';
-import { Loader2, ArrowRight, X, Sparkles, Building2 } from 'lucide-react';
-import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardDescription, CardHeader, CardTitle, CardFooter } from '@/components/ui/card';
+import { Loader2, ArrowRight, X, Sparkles, Building2, Users, Star, Plus } from 'lucide-react';
 
 export default function EmployerOverviewPage() {
   const [stats, setStats] = useState({
@@ -17,6 +15,7 @@ export default function EmployerOverviewPage() {
   const [loading, setLoading] = useState(true);
   const [showAd, setShowAd] = useState(true);
 
+  // We can fetch user profile to get company name
   const [companyName, setCompanyName] = useState('Employer');
 
   useEffect(() => {
@@ -28,6 +27,7 @@ export default function EmployerOverviewPage() {
         const resStats = await apiAuth.withToken(token).get('/jobs/employer/stats');
         setStats(resStats.data);
 
+        // Try to fetch profile for company name
         try {
            const profileRes = await apiAuth.withToken(token).get('/user/employer/profile');
            if (profileRes.data?.companyName) {
@@ -46,144 +46,100 @@ export default function EmployerOverviewPage() {
   }, []);
 
   return (
-    <div className="space-y-6">
+    <>
       {showAd && (
-        <Card className="bg-zinc-900 border-zinc-800 flex flex-col sm:flex-row sm:items-center justify-between p-4 relative overflow-hidden">
-          <div className="flex items-start sm:items-center gap-4">
-            <div className="h-10 w-10 rounded-full bg-zinc-800 flex items-center justify-center flex-shrink-0">
-              <Sparkles className="w-5 h-5 text-zinc-300" />
+        <div className="ad-banner">
+          <div className="ad-banner__left">
+            <div className="ad-banner__icon">
+              <Sparkles className="w-5 h-5" />
             </div>
             <div>
-              <h3 className="text-sm font-semibold text-zinc-100">Get more qualified applicants</h3>
-              <p className="text-xs text-zinc-400 mt-1">Boost your job posts to the top of search results — starts at ₦15,000.</p>
+              <div className="ad-banner__title">Get more qualified applicants</div>
+              <div className="ad-banner__desc">Boost your job posts to the top of search results — starts at ₦15,000.</div>
             </div>
           </div>
-          <div className="mt-4 sm:mt-0 sm:ml-4 flex items-center gap-4">
-            <Button variant="outline" size="sm" asChild>
-              <Link href="/employer/advertise">
-                Create a campaign <ArrowRight className="w-4 h-4 ml-2" />
-              </Link>
-            </Button>
-            <button className="text-zinc-500 hover:text-zinc-300 transition-colors" onClick={() => setShowAd(false)}>
-              <X className="w-4 h-4" />
-            </button>
-          </div>
-        </Card>
+          <Link href="/employer/advertise" className="ad-banner__cta" style={{ textDecoration: 'none' }}>
+            <span style={{ fontSize: '12.5px', fontWeight: 700, color: 'var(--gold-h)' }}>Create a campaign</span>
+            <ArrowRight className="w-4 h-4 ad-banner__arrow" />
+          </Link>
+          <button className="ad-banner__dismiss" onClick={(e) => { e.preventDefault(); setShowAd(false); }}>
+            <X className="w-4 h-4" />
+          </button>
+        </div>
       )}
 
-      <Card>
-        <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-6">
+      <div className="dcard" style={{ borderColor: 'var(--c-700)', marginBottom: '16px' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
-            <CardTitle className="text-xl">Welcome back, {companyName} 👋</CardTitle>
-            <CardDescription className="mt-2">You have {stats.totalApplicants} total applicants across {stats.activeJobs} active job posts.</CardDescription>
+            <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '4px' }}>Welcome back, {companyName} 👋</div>
+            <div style={{ fontSize: '13px', color: 'var(--c-400)' }}>You have {stats.totalApplicants} total applicants across {stats.activeJobs} active job posts.</div>
           </div>
-          <Button asChild>
-            <Link href="/employer/jobs/create">Post a new job</Link>
-          </Button>
-        </CardHeader>
-      </Card>
-
-      <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-zinc-500">Active job posts</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-mono">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.activeJobs}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total applicants</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-mono">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.totalApplicants}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-zinc-500">Pending Review</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-mono">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.pendingJobs}</div>
-          </CardContent>
-        </Card>
-        <Card>
-          <CardHeader className="flex flex-row items-center justify-between space-y-0 pb-2">
-            <CardTitle className="text-xs font-medium uppercase tracking-wider text-zinc-500">Total Jobs</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <div className="text-2xl font-bold font-mono">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.totalJobs}</div>
-          </CardContent>
-        </Card>
-      </div>
-
-      <div className="grid gap-4 md:grid-cols-3">
-        <Card className="col-span-2">
-          <CardHeader className="border-b border-zinc-800 pb-4">
-            <div className="flex items-center justify-between">
-              <div>
-                <CardTitle>Your job posts</CardTitle>
-                <CardDescription className="mt-1">Recent listings and performance</CardDescription>
-              </div>
-              <Button variant="link" asChild className="text-zinc-400 hover:text-zinc-50">
-                <Link href="/employer/jobs">View all</Link>
-              </Button>
-            </div>
-          </CardHeader>
-          <CardContent className="pt-6">
-            <div className="flex flex-col items-center justify-center text-center py-8 text-zinc-500">
-              <Building2 className="w-12 h-12 mb-4 opacity-20" />
-              <p className="text-sm mb-4">View and manage all your active listings.</p>
-              <Button variant="outline" asChild>
-                <Link href="/employer/jobs">Manage Jobs</Link>
-              </Button>
-            </div>
-          </CardContent>
-        </Card>
-
-        <div className="space-y-4">
-          <Card>
-            <CardHeader>
-              <CardTitle>Hiring pipeline</CardTitle>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-yellow-500" />
-                  <span className="text-sm text-zinc-400">Pending Review</span>
-                </div>
-                <span className="font-mono text-sm font-medium">{loading ? '-' : stats.pendingJobs}</span>
-              </div>
-              <div className="flex items-center justify-between border-b border-zinc-800 pb-2">
-                <div className="flex items-center gap-2">
-                  <div className="w-2 h-2 rounded-full bg-blue-500" />
-                  <span className="text-sm text-zinc-400">Total Applicants</span>
-                </div>
-                <span className="font-mono text-sm font-medium">{loading ? '-' : stats.totalApplicants}</span>
-              </div>
-            </CardContent>
-            <CardFooter>
-              <Button variant="secondary" className="w-full" asChild>
-                <Link href="/employer/jobs">View applicants</Link>
-              </Button>
-            </CardFooter>
-          </Card>
-
-          <Card>
-            <CardHeader>
-              <CardTitle>Current plan</CardTitle>
-              <CardDescription className="pt-2 text-zinc-100 font-semibold">Growth Plan</CardDescription>
-              <CardDescription>Unlimited job posts</CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button variant="outline" className="w-full" asChild>
-                <Link href="/employer/billing">Manage plan</Link>
-              </Button>
-            </CardContent>
-          </Card>
+          <Link href="/employer/jobs/create" className="btn btn--primary btn--sm">Post a new job</Link>
         </div>
       </div>
-    </div>
+
+      <div className="stat-grid">
+        <div className="stat-card">
+          <div className="stat-card__label">Active job posts</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.activeJobs}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-card__label">Total applicants</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.totalApplicants}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-card__label">Pending Review</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.pendingJobs}</div>
+        </div>
+        <div className="stat-card">
+          <div className="stat-card__label">Total Jobs</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.totalJobs}</div>
+        </div>
+      </div>
+
+      <div className="overview-grid mt-6">
+        <div>
+          <div className="dcard" style={{ padding: '0', overflow: 'hidden' }}>
+            <div className="dcard__header" style={{ padding: '20px 24px', borderBottom: '1px solid var(--c-700)' }}>
+              <div>
+                <div className="dcard__title">Your job posts</div>
+                <div className="dcard__sub">Recent listings and performance</div>
+              </div>
+              <Link href="/employer/jobs" style={{ fontSize: '12px', fontWeight: 600, color: 'var(--blue-l)' }}>View all</Link>
+            </div>
+            
+            <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-400)' }}>
+              <Building2 className="w-10 h-10 mx-auto mb-3 opacity-20" />
+              <p className="text-sm">View and manage all your active listings.</p>
+              <Link href="/employer/jobs" className="btn btn--ghost btn--sm mt-4">Manage Jobs</Link>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div className="dcard" style={{ marginBottom: '16px' }}>
+            <div className="dcard__title" style={{ marginBottom: '14px' }}>Hiring pipeline</div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 0', borderBottom: '1px solid var(--c-700)' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--gold)' }}></span>
+              <span style={{ fontSize: '12.5px', color: 'var(--c-300)', flex: 1 }}>Pending Review</span>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: '12.5px', color: 'var(--c-100)', fontWeight: 600 }}>{loading ? '-' : stats.pendingJobs}</span>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '9px 0', borderBottom: '1px solid var(--c-700)' }}>
+              <span style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--blue-l)' }}></span>
+              <span style={{ fontSize: '12.5px', color: 'var(--c-300)', flex: 1 }}>Total Applicants</span>
+              <span style={{ fontFamily: 'var(--mono)', fontSize: '12.5px', color: 'var(--c-100)', fontWeight: 600 }}>{loading ? '-' : stats.totalApplicants}</span>
+            </div>
+            <Link href="/employer/jobs" className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '14px' }}>View applicants</Link>
+          </div>
+
+          <div className="dcard">
+            <div className="dcard__title" style={{ marginBottom: '14px' }}>Current plan</div>
+            <div style={{ fontSize: '15px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '2px' }}>Growth Plan</div>
+            <div style={{ fontSize: '12px', color: 'var(--c-500)', marginBottom: '14px' }}>Unlimited job posts</div>
+            <Link href="/employer/billing" className="btn btn--ghost btn--sm btn--full">Manage plan</Link>
+          </div>
+        </div>
+      </div>
+    </>
   );
 }
