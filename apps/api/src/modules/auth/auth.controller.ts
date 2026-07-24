@@ -14,6 +14,8 @@ import {
 import type { Response, Request } from 'express';
 import { AuthService } from './auth.service';
 import { JwtAuthGuard } from '../../common/guards/jwt-auth.guard';
+import { AuthGuard } from '@nestjs/passport';
+import { ConfigService } from '@nestjs/config';
 import {
   RegisterDto,
   LoginDto,
@@ -22,6 +24,7 @@ import {
   VerifyMfaDto,
   ChangePasswordDto,
   DeleteAccountDto,
+  OnboardingDto,
 } from './dto/auth.dto';
 import { Throttle } from '@nestjs/throttler';
 import { UserRole } from '../user/entities/user.entity';
@@ -36,7 +39,10 @@ interface AuthorizedRequest extends Request {
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly configService: ConfigService,
+  ) {}
 
   @Post('register')
   @Throttle({ short: { limit: 2, ttl: 60000 } }) // Extra strict for registration
@@ -163,7 +169,7 @@ export class AuthController {
     @Res({ passthrough: true }) res: Response,
   ) {
     const result = await this.authService.deleteAccount(req.user.sub, dto);
-    
+
     // Clear cookies upon deletion
     res.clearCookie('refreshToken', {
       path: '/',
@@ -172,5 +178,70 @@ export class AuthController {
     });
 
     return result;
+  }
+
+  // ─── OAUTH ──────────────────────────────────────────
+  
+  @Get('google')
+  @UseGuards(AuthGuard('google'))
+  async googleAuth() {
+    // Initiates Google OAuth
+  }
+
+  @Get('google/callback')
+  @UseGuards(AuthGuard('google'))
+  async googleAuthRedirect(@Req() req: Request & { user: any }, @Res() res: Response) {
+    const user = await this.authService.validateOAuthUser(req.user);
+    const refreshToken = this.authService.generateRefreshToken(user);
+    
+    // Store refresh token
+    await (this.authService as any).tokenService.storeRefreshToken(user.id, refreshToken);
+    
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+    
+    const webUrl = this.configService.get('WEB_URL') || 'http://localhost:3000';
+    res.redirect(`${webUrl}/auth/oauth-success`);
+  }
+
+  @Get('linkedin')
+  @UseGuards(AuthGuard('linkedin'))
+  async linkedinAuth() {
+    // Initiates LinkedIn OAuth
+  }
+
+  @Get('linkedin/callback')
+  @UseGuards(AuthGuard('linkedin'))
+  async linkedinAuthRedirect(@Req() req: Request & { user: any }, @Res() res: Response) {
+    const user = await this.authService.validateOAuthUser(req.user);
+    const refreshToken = this.authService.generateRefreshToken(user);
+    
+    // Store refresh token
+    await (this.authService as any).tokenService.storeRefreshToken(user.id, refreshToken);
+    
+    res.cookie('refreshToken', refreshToken, {
+      httpOnly: true,
+      secure: true,
+      sameSite: 'strict',
+      maxAge: 7 * 24 * 60 * 60 * 1000,
+      path: '/',
+    });
+    
+    const webUrl = this.configService.get('WEB_URL') || 'http://localhost:3000';
+    res.redirect(`${webUrl}/auth/oauth-success`);
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Put('onboarding')
+  async completeOnboarding(
+    @NestRequest() req: AuthorizedRequest,
+    @Body() dto: OnboardingDto,
+  ) {
+    return this.authService.completeOnboarding(req.user.sub, dto);
   }
 }

@@ -92,12 +92,17 @@ export class JobService {
     const cacheKey = `jobs:public:${JSON.stringify(query)}`;
     if (status === JobStatus.ACTIVE) {
       const cached = await this.tokenService.getJobCache(cacheKey);
-      if (cached) return JSON.parse(cached);
+      if (cached)
+        return JSON.parse(cached) as {
+          items: Record<string, unknown>[];
+          meta: Record<string, unknown>;
+        };
     }
 
     const qb = this.jobRepo
       .createQueryBuilder('job')
       .leftJoinAndSelect('job.employer', 'employer')
+      .leftJoinAndSelect('employer.employerProfile', 'employerProfile')
       .where('job.status = :status', { status });
 
     if (country) qb.andWhere('job.country ILIKE :country', { country });
@@ -175,7 +180,10 @@ export class JobService {
       .andWhere("job.industry != ''")
       .getRawMany();
 
-    const industries = industriesRaw.map((r) => r.industry).sort();
+    const typedIndustries = industriesRaw as unknown as Array<{
+      industry: string;
+    }>;
+    const industries = typedIndustries.map((r) => r.industry).sort();
 
     // Get cascading locations (country -> state -> area)
     const locationsRaw = await this.jobRepo
@@ -190,9 +198,14 @@ export class JobService {
       .addGroupBy('job.area')
       .getRawMany();
 
+    const typedLocations = locationsRaw as unknown as Array<{
+      country: string;
+      state: string;
+      area: string;
+    }>;
     const locations: Record<string, Record<string, string[]>> = {};
 
-    locationsRaw.forEach(({ country, state, area }) => {
+    typedLocations.forEach(({ country, state, area }) => {
       if (!country) return;
       if (!locations[country]) locations[country] = {};
 
@@ -218,7 +231,7 @@ export class JobService {
   async findOne(id: string) {
     const job = await this.jobRepo.findOne({
       where: { id },
-      relations: ['employer'],
+      relations: ['employer', 'employer.employerProfile'],
     });
 
     if (!job) throw new NotFoundException('Job not found');
@@ -430,6 +443,51 @@ export class JobService {
     };
   }
 
+  // ─── SEEKER DASHBOARD STATS ────────────────────────────
+  async getSeekerDashboardStats(seekerId: string) {
+    const applicationsCount = await this.applicationRepo.count({
+      where: { seeker: { id: seekerId } },
+    });
+
+    const savedJobsCount = await this.savedJobRepo.count({
+      where: { seeker: { id: seekerId } },
+    });
+
+    const recentApplications = await this.applicationRepo.find({
+      where: { seeker: { id: seekerId } },
+      order: { createdAt: 'DESC' },
+      take: 3,
+      relations: ['job', 'job.employer', 'job.employer.employerProfile'],
+    });
+
+    const profile = await this.seekerProfileRepo.findOne({
+      where: { user: { id: seekerId } },
+    });
+
+    let profileStrength = 20; // base score for signing up
+    if (profile) {
+      if (profile.firstName && profile.lastName) profileStrength += 20;
+      if (profile.headline) profileStrength += 20;
+      if (profile.bio) profileStrength += 20;
+      if (profile.resumeUrl) profileStrength += 20;
+    }
+
+    return {
+      applicationsCount,
+      savedJobsCount,
+      profileViews: 0,
+      profileStrength,
+      recentApplications: recentApplications.map(app => ({
+        id: app.id,
+        status: app.status,
+        appliedAt: app.createdAt,
+        jobTitle: app.job?.title,
+        jobLocation: app.job?.state ? `${app.job.state}, Nigeria` : 'Remote',
+        companyName: app.job?.employer?.employerProfile?.companyName || 'Unknown Company',
+      }))
+    };
+  }
+
   // ─── SINGLE APPLICATION DETAIL ──────────────────────────
   async getApplicationDetail(appId: string, jobId: string, employerId: string) {
     const job = await this.jobRepo.findOne({
@@ -482,7 +540,13 @@ export class JobService {
     const { employer, ...jobData } = job;
     return {
       ...jobData,
-      employer: employer ? { id: employer.id, email: employer.email } : null,
+      employer: employer
+        ? {
+            id: employer.id,
+            email: employer.email,
+            companyName: employer.employerProfile?.companyName,
+          }
+        : null,
     };
   }
 
@@ -520,7 +584,7 @@ export class JobService {
   async getSavedJobs(userId: string) {
     const savedJobs = await this.savedJobRepo.find({
       where: { seeker: { id: userId } },
-      relations: ['job', 'job.employer'],
+      relations: ['job', 'job.employer', 'job.employer.employerProfile'],
       order: { createdAt: 'DESC' },
     });
     return savedJobs.map((sj) => ({

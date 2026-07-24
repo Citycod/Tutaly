@@ -59,10 +59,11 @@ export default function CreateListing() {
     const fetchCategories = async () => {
       try {
         const res = await api.get('/shop/categories');
-        setCategories(res.data || []);
+        const cats = res.data?.data || [];
+        setCategories(cats);
         // Automatically select the first subcategory if available
-        if (res.data?.length > 0 && res.data[0].subcategories?.length > 0) {
-          updateForm({ subcategoryId: res.data[0].subcategories[0].id });
+        if (cats.length > 0 && cats[0].subcategories?.length > 0) {
+          updateForm({ subcategoryId: cats[0].subcategories[0].id });
         }
       } catch (err) {
         console.error('Failed to fetch categories', err);

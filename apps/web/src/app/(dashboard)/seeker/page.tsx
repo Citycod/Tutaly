@@ -1,16 +1,45 @@
 'use client';
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import Link from 'next/link';
 import { 
   Megaphone,
   ChevronRight,
   Bookmark,
   Check,
-  Circle
+  Circle,
+  Loader2
 } from 'lucide-react';
+import { apiAuth } from '@/lib/api';
+import { formatDistanceToNow } from 'date-fns';
 
 export default function SeekerOverviewPage() {
+  const [stats, setStats] = useState({
+    applicationsCount: 0,
+    savedJobsCount: 0,
+    profileViews: 0,
+    profileStrength: 0,
+    recentApplications: [] as any[],
+  });
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    async function fetchStats() {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+
+        const res = await apiAuth.withToken(token).get('/jobs/seeker/stats');
+        setStats(res.data);
+      } catch (err) {
+        console.error('Failed to load seeker stats', err);
+      } finally {
+        setLoading(false);
+      }
+    }
+    fetchStats();
+  }, []);
+
   return (
     <>
       <Link href="/advertise" className="ad-banner" aria-label="Run an ad — promote your profile or listings to employers and buyers">
@@ -33,7 +62,9 @@ export default function SeekerOverviewPage() {
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
           <div>
             <div style={{ fontSize: '18px', fontWeight: 700, color: 'var(--c-100)', marginBottom: '4px' }}>Welcome back 👋</div>
-            <div style={{ fontSize: '13px', color: 'var(--c-400)' }}>You have 3 active applications and 12 new job matches this week.</div>
+            <div style={{ fontSize: '13px', color: 'var(--c-400)' }}>
+              You have {loading ? '...' : stats.applicationsCount} active applications and {loading ? '...' : stats.savedJobsCount} saved jobs.
+            </div>
           </div>
           <Link href="/jobs" className="btn btn--primary btn--sm">Browse new matches</Link>
         </div>
@@ -42,25 +73,23 @@ export default function SeekerOverviewPage() {
       <div className="stat-grid">
         <div className="stat-card">
           <div className="stat-card__label">Applications</div>
-          <div className="stat-card__value">24</div>
-          <div className="stat-card__delta up">↑ 6 this month</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.applicationsCount}</div>
         </div>
         <div className="stat-card">
           <div className="stat-card__label">Profile views</div>
-          <div className="stat-card__value">312</div>
-          <div className="stat-card__delta up">↑ 18% this week</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.profileViews}</div>
         </div>
         <div className="stat-card">
           <div className="stat-card__label">Saved jobs</div>
-          <div className="stat-card__value">9</div>
+          <div className="stat-card__value">{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : stats.savedJobsCount}</div>
         </div>
         <div className="stat-card">
           <div className="stat-card__label">Profile strength</div>
-          <div className="stat-card__value" style={{ color: 'var(--gold-h)' }}>82%</div>
+          <div className="stat-card__value" style={{ color: 'var(--gold-h)' }}>{loading ? <Loader2 className="w-5 h-5 animate-spin" /> : `${stats.profileStrength}%`}</div>
         </div>
       </div>
 
-      <div className="overview-grid">
+      <div className="overview-grid mt-6">
         {/* LEFT COLUMN */}
         <div>
           <div className="dcard">
@@ -72,60 +101,31 @@ export default function SeekerOverviewPage() {
               <Link href="/seeker/applications" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--blue-l)' }}>View all →</Link>
             </div>
 
-            <div className="app-row">
-              <div className="app-row__logo" style={{ background: 'var(--green-l)', color: 'var(--green)' }}>P</div>
-              <div className="app-row__body">
-                <div className="app-row__title">Senior Product Manager</div>
-                <div className="app-row__meta">Paystack · Lagos, Nigeria</div>
+            {loading ? (
+              <div style={{ padding: '24px', textAlign: 'center' }}><Loader2 className="w-6 h-6 animate-spin mx-auto text-c500" /></div>
+            ) : stats.recentApplications.length === 0 ? (
+              <div style={{ padding: '24px', textAlign: 'center', color: 'var(--c-500)', fontSize: '13px' }}>
+                No recent applications found.
               </div>
-              <div className="app-row__status"><span className="status--offer" style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>Offer</span></div>
-            </div>
-            <div className="app-row">
-              <div className="app-row__logo" style={{ background: 'var(--blue-l)', color: 'var(--blue-h)' }}>F</div>
-              <div className="app-row__body">
-                <div className="app-row__title">Backend Engineer (Node.js)</div>
-                <div className="app-row__meta">Flutterwave · Lagos, Nigeria</div>
-              </div>
-              <div className="app-row__status"><span className="status--interview" style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>Interview</span></div>
-            </div>
-            <div className="app-row" style={{ marginBottom: 0 }}>
-              <div className="app-row__logo" style={{ background: 'var(--gold-l)', color: 'var(--gold-h)' }}>A</div>
-              <div className="app-row__body">
-                <div className="app-row__title">Data Scientist</div>
-                <div className="app-row__meta">Andela · Remote, Global</div>
-              </div>
-              <div className="app-row__status"><span className="status--review" style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>In review</span></div>
-            </div>
-          </div>
-
-          <div className="dcard">
-            <div className="dcard__header">
-              <div>
-                <div className="dcard__title">Recommended for you</div>
-                <div className="dcard__sub">Based on your profile and skills</div>
-              </div>
-              <Link href="/jobs" style={{ fontSize: '12.5px', fontWeight: 600, color: 'var(--blue-l)' }}>See more →</Link>
-            </div>
-            <div className="joblist">
-              <article className="jobcard" style={{ padding: '16px' }}>
-                <div className="jobcard__logo" style={{ width: '40px', height: '40px', fontSize: '15px', background: 'var(--red-l)', color: 'var(--red)' }}>N</div>
-                <div className="jobcard__body">
-                  <div className="jobcard__top">
-                    <div>
-                      <div className="jobcard__title" style={{ fontSize: '14px' }}>Staff Software Engineer</div>
-                      <div className="jobcard__company">Novalink</div>
+            ) : (
+              stats.recentApplications.map((app: any, idx: number) => {
+                const initial = app.companyName ? app.companyName.charAt(0).toUpperCase() : 'C';
+                return (
+                  <div className="app-row" key={app.id} style={{ marginBottom: idx === stats.recentApplications.length - 1 ? 0 : undefined }}>
+                    <div className="app-row__logo" style={{ background: 'var(--blue-l)', color: 'var(--blue-h)' }}>{initial}</div>
+                    <div className="app-row__body">
+                      <div className="app-row__title">{app.jobTitle}</div>
+                      <div className="app-row__meta">{app.companyName} · {app.jobLocation}</div>
                     </div>
-                    <button className="jobcard__save" aria-label="Save job" style={{ width: '28px', height: '28px' }}>
-                      <Bookmark className="w-3.5 h-3.5" />
-                    </button>
+                    <div className="app-row__status">
+                      <span className={`status--${app.status}`} style={{ padding: '4px 10px', borderRadius: 'var(--r-pill)', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase' }}>
+                        {app.status.replace('_', ' ')}
+                      </span>
+                    </div>
                   </div>
-                  <div className="jobcard__meta">
-                    <span>📍 Remote, Global</span>
-                    <span className="jobcard__salary">$95,000 – $135,000</span>
-                  </div>
-                </div>
-              </article>
-            </div>
+                );
+              })
+            )}
           </div>
         </div>
 
@@ -134,22 +134,24 @@ export default function SeekerOverviewPage() {
           <div className="dcard">
             <div className="dcard__title" style={{ marginBottom: '14px' }}>Profile strength</div>
             <div className="salary-bar-track" style={{ marginBottom: '8px' }}>
-              <div className="salary-bar-fill" style={{ width: '82%', background: 'linear-gradient(90deg, var(--gold-l), var(--gold))' }}></div>
+              <div className="salary-bar-fill" style={{ width: `${stats.profileStrength}%`, background: 'linear-gradient(90deg, var(--gold-l), var(--gold))', transition: 'width 0.5s ease' }}></div>
             </div>
-            <p style={{ fontSize: '12px', color: 'var(--c-500)', marginBottom: '16px' }}>Add your work experience to reach 100%.</p>
+            <p style={{ fontSize: '12px', color: 'var(--c-500)', marginBottom: '16px' }}>
+              {stats.profileStrength >= 100 ? 'Your profile is fully complete!' : 'Complete your profile to stand out.'}
+            </p>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0', borderTop: '1px solid var(--c-700)' }}>
-              <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} />
-              <span style={{ fontSize: '12.5px', color: 'var(--c-300)' }}>Resume uploaded</span>
+              {stats.profileStrength >= 40 ? <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} /> : <Circle className="w-3.5 h-3.5" stroke="var(--c-500)" />}
+              <span style={{ fontSize: '12.5px', color: stats.profileStrength >= 40 ? 'var(--c-300)' : 'var(--c-500)' }}>Basic Info</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0' }}>
-              <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} />
-              <span style={{ fontSize: '12.5px', color: 'var(--c-300)' }}>Skills added</span>
+              {stats.profileStrength >= 60 ? <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} /> : <Circle className="w-3.5 h-3.5" stroke="var(--c-500)" />}
+              <span style={{ fontSize: '12.5px', color: stats.profileStrength >= 60 ? 'var(--c-300)' : 'var(--c-500)' }}>Headline & Bio</span>
             </div>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '8px 0' }}>
-              <Circle className="w-3.5 h-3.5" stroke="var(--c-500)" />
-              <span style={{ fontSize: '12.5px', color: 'var(--c-500)' }}>Work experience missing</span>
+              {stats.profileStrength >= 80 ? <Check className="w-3.5 h-3.5" stroke="var(--green)" strokeWidth={3} /> : <Circle className="w-3.5 h-3.5" stroke="var(--c-500)" />}
+              <span style={{ fontSize: '12.5px', color: stats.profileStrength >= 80 ? 'var(--c-300)' : 'var(--c-500)' }}>Resume uploaded</span>
             </div>
-            <Link href="/seeker/profile" className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '14px' }}>Complete profile</Link>
+            <Link href="/seeker/profile" className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '14px' }}>Edit Profile</Link>
           </div>
 
           <div className="dcard">

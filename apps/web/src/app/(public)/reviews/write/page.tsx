@@ -2,28 +2,42 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { ShieldCheck, Loader2 } from 'lucide-react';
 import { api } from '@/lib/api';
+import { ShieldCheck, Loader2 } from 'lucide-react';
 
-const RatingSelect = ({ name, label, value, onChange }: { name: string, label: string, value: number, onChange: React.ChangeEventHandler<HTMLSelectElement> }) => (
-  <div>
-    <label className="block text-sm font-medium text-black-700 mb-1">{label}</label>
-    <select
-      name={name}
-      value={value}
-      onChange={onChange}
-      className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-      required={name === 'ratingOverall'}
-    >
-      <option value={0} disabled>Select Rating</option>
-      <option value={5}>5 - Excellent</option>
-      <option value={4}>4 - Good</option>
-      <option value={3}>3 - Average</option>
-      <option value={2}>2 - Poor</option>
-      <option value={1}>1 - Terrible</option>
-    </select>
-  </div>
-);
+const StarRating = ({ value, onChange }: { value: number, onChange: (val: number) => void }) => {
+  const [hoverValue, setHoverValue] = useState(0);
+
+  const getLabel = (val: number) => {
+    switch (val) {
+      case 5: return "5 out of 5 — Excellent";
+      case 4: return "4 out of 5 — Very good";
+      case 3: return "3 out of 5 — Average";
+      case 2: return "2 out of 5 — Poor";
+      case 1: return "1 out of 5 — Terrible";
+      default: return "Select Rating";
+    }
+  };
+
+  return (
+    <div>
+      <div className="star-input">
+        {[1, 2, 3, 4, 5].map((star) => (
+          <span
+            key={star}
+            className={`star-input__star ${star <= (hoverValue || value) ? 'filled' : ''}`}
+            onMouseEnter={() => setHoverValue(star)}
+            onMouseLeave={() => setHoverValue(0)}
+            onClick={() => onChange(star)}
+          >
+            ★
+          </span>
+        ))}
+      </div>
+      <div className="star-input__label">{getLabel(hoverValue || value)}</div>
+    </div>
+  );
+};
 
 export default function WriteReviewPage() {
   const router = useRouter();
@@ -31,17 +45,15 @@ export default function WriteReviewPage() {
   const [success, setSuccess] = useState(false);
   const [formData, setFormData] = useState({
     companyName: '',
-    sector: '',
-    position: '',
     ratingOverall: 0,
-    ratingWorkLife: 0,
-    ratingPay: 0,
-    ratingManagement: 0,
-    ratingCulture: 0,
+    position: '',
+    tenure: 'Less than 1 year',
+    employmentStatus: 'Current employee',
+    reviewTitle: '',
     pros: '',
     cons: '',
     recommend: true,
-    displayName: 'Anonymous Ninja',
+    confirmed: true,
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
@@ -49,203 +61,201 @@ export default function WriteReviewPage() {
     if (type === 'checkbox') {
       const checked = (e.target as HTMLInputElement).checked;
       setFormData(prev => ({ ...prev, [name]: checked }));
-    } else if (name.startsWith('rating')) {
-      setFormData(prev => ({ ...prev, [name]: parseInt(value) }));
     } else {
       setFormData(prev => ({ ...prev, [name]: value }));
     }
   };
 
+  const handleToggleRecommend = () => {
+    setFormData(prev => ({ ...prev, recommend: !prev.recommend }));
+  };
+
+  const handleCheckboxToggle = () => {
+    setFormData(prev => ({ ...prev, confirmed: !prev.confirmed }));
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!formData.confirmed) {
+      alert("Please confirm the information is accurate.");
+      return;
+    }
+    if (formData.ratingOverall === 0) {
+      alert('Please provide an overall rating');
+      return;
+    }
+    if (formData.pros.length < 10 || formData.cons.length < 10) {
+      alert('Pros and Cons must be at least 10 characters long');
+      return;
+    }
+
     setLoading(true);
 
     try {
-      // Basic validation
-      if (formData.ratingOverall === 0) {
-        alert('Please provide an overall rating');
-        setLoading(false);
-        return;
-      }
-      if (formData.pros.length < 10 || formData.cons.length < 10) {
-        alert('Pros and Cons must be at least 10 characters long');
-        setLoading(false);
-        return;
-      }
-
-      // Try with token if available (to link to user if they choose, though backend currently doesn't require it)
       const token = localStorage.getItem('access_token');
       const config = token ? { headers: { Authorization: `Bearer ${token}` } } : {};
 
-      await api.post('/reviews/companies', formData, config);
+      const payload = {
+        companyName: formData.companyName,
+        ratingOverall: formData.ratingOverall,
+        position: formData.position,
+        pros: formData.pros,
+        cons: formData.cons,
+        recommend: formData.recommend,
+        displayName: formData.reviewTitle || 'Anonymous Review',
+      };
+
+      await api.post('/reviews/companies', payload, config);
 
       setSuccess(true);
       setTimeout(() => {
         router.push('/reviews');
       }, 3000);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      const error = e as any;
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const err = e as any;
-alert(err.response?.data?.message || 'Failed to submit review');
+      alert(err.response?.data?.message || 'Failed to submit review');
       setLoading(false);
     }
   };
 
-
-
   if (success) {
     return (
-      <div className="min-h-screen bg-c100 flex items-center justify-center p-4">
-        <div className="bg-white rounded-2xl shadow-xl p-8 max-w-md w-full text-center border border-green">
-          <div className="w-16 h-16 bg-green text-green rounded-full flex items-center justify-center mx-auto mb-6">
-            <ShieldCheck className="w-8 h-8" />
+      <div className="page-shell" style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '32px', maxWidth: '440px', width: '100%', textAlign: 'center', boxShadow: 'var(--shadow-lg)' }}>
+          <div style={{ width: '64px', height: '64px', background: 'var(--green-10)', color: 'var(--green)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', margin: '0 auto 24px' }}>
+            <ShieldCheck style={{ width: '32px', height: '32px' }} />
           </div>
-          <h2 className="text-2xl font-bold text-c900 mb-2">Review Submitted!</h2>
-          <p className="text-c600 mb-6">Thank you for your anonymous contribution. Your review is pending moderation and will be published shortly.</p>
-          <div className="animate-pulse text-green font-medium">Redirecting...</div>
+          <h2 style={{ fontSize: '24px', fontWeight: 800, color: 'var(--c-100)', marginBottom: '8px' }}>Review Submitted!</h2>
+          <p style={{ fontSize: '14px', color: 'var(--c-400)', marginBottom: '24px', lineHeight: 1.6 }}>Thank you for your anonymous contribution. Your review is pending moderation and will be published shortly.</p>
+          <div style={{ color: 'var(--green)', fontSize: '14px', fontWeight: 600, animation: 'pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite' }}>Redirecting...</div>
         </div>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-c100 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-3xl mx-auto">
-        <div className="text-center mb-10">
-          <h1 className="text-3xl font-bold text-c900">Write an Anonymous Review</h1>
-          <p className="mt-2 text-c600 flex items-center justify-center gap-2">
-            <ShieldCheck className="w-5 h-5 text-green" /> Your identity is 100% protected
+    <div className="page-shell">
+      <header className="page-header" style={{ textAlign: 'center', borderBottom: 'none' }}>
+        <div className="container container--narrow">
+          <div style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', fontSize: '11px', fontWeight: 700, textTransform: 'uppercase', letterSpacing: '0.1em', color: 'var(--gold)', marginBottom: '16px' }}>
+            <div style={{ width: '20px', height: '2px', background: 'var(--gold)' }}></div>
+            Company reviews
+          </div>
+          <h1 className="page-header__title" style={{ marginBottom: '16px' }}>Share your experience</h1>
+          <p className="page-header__sub" style={{ fontSize: '16px', maxWidth: '540px', margin: '0 auto', lineHeight: 1.6 }}>
+            Help other professionals make informed decisions. Your review is anonymous by default.
           </p>
         </div>
+      </header>
 
-        <form onSubmit={handleSubmit} className="bg-white shadow-sm rounded-2xl p-8 border border-c100">
+      <div className="container" style={{ maxWidth: '680px', padding: '32px 24px 80px' }}>
+        <form onSubmit={handleSubmit}>
+          <div style={{ background: 'var(--c-800)', border: '1px solid var(--c-700)', borderRadius: 'var(--r-xl)', padding: '28px' }}>
+            
+            <div className="form-section">
+              <div className="form-section__title">Which company?</div>
+              <div className="form-field" style={{ marginBottom: formData.companyName ? '10px' : '0' }}>
+                <label className="form-label" htmlFor="r-company">Company name<span className="required">*</span></label>
+                <div className="company-search-select">
+                  <input type="text" id="r-company" name="companyName" value={formData.companyName} onChange={handleChange} placeholder="Search for a company..." required />
+                </div>
+              </div>
+              {formData.companyName && (
+                <div className="company-chip">
+                  <div className="company-chip__logo" style={{ background: 'var(--green-10)', color: 'var(--green)' }}>
+                    {formData.companyName.charAt(0).toUpperCase()}
+                  </div>
+                  <span className="company-chip__name">{formData.companyName}</span>
+                </div>
+              )}
+            </div>
 
-          <div className="space-y-8">
-            {/* Section 1: Basic Info */}
-            <div>
-              <h3 className="text-lg font-semibold text-c900 border-b pb-2 mb-4">Company Details</h3>
-              <div className="grid grid-cols-1 gap-6 sm:grid-cols-2">
-                <div>
-                  <label className="block text-sm font-medium text-c700 mb-1">Company Name *</label>
-                  <input
-                    type="text"
-                    name="companyName"
-                    value={formData.companyName}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    required
-                    placeholder="e.g. Paystack"
-                  />
+            <div className="form-section">
+              <div className="form-section__title">Overall rating<span className="required">*</span></div>
+              <StarRating 
+                value={formData.ratingOverall} 
+                onChange={(val) => setFormData(prev => ({ ...prev, ratingOverall: val }))} 
+              />
+            </div>
+
+            <div className="form-section">
+              <div className="form-section__title">Your role</div>
+              <div className="form-grid-2">
+                <div className="form-field">
+                  <label className="form-label" htmlFor="r-jobtitle">Job title</label>
+                  <input className="input" type="text" id="r-jobtitle" name="position" value={formData.position} onChange={handleChange} placeholder="e.g. Product Manager" />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium text-c700 mb-1">Sector</label>
-                  <input
-                    type="text"
-                    name="sector"
-                    value={formData.sector}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    placeholder="e.g. Fintech"
-                  />
+                <div className="form-field">
+                  <label className="form-label" htmlFor="r-tenure">Time at company</label>
+                  <select className="input" id="r-tenure" name="tenure" value={formData.tenure} onChange={handleChange}>
+                    <option>Less than 1 year</option>
+                    <option>1–2 years</option>
+                    <option>3–5 years</option>
+                    <option>5+ years</option>
+                  </select>
                 </div>
-                <div className="sm:col-span-2">
-                  <label className="block text-sm font-medium text-c700 mb-1">Your Position / Role</label>
-                  <input
-                    type="text"
-                    name="position"
-                    value={formData.position}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    placeholder="e.g. Frontend Engineer"
-                  />
-                </div>
+              </div>
+              <div className="form-field" style={{ marginBottom: 0 }}>
+                <label className="form-label" htmlFor="r-status">Employment status</label>
+                <select className="input" id="r-status" name="employmentStatus" value={formData.employmentStatus} onChange={handleChange} style={{ maxWidth: '280px' }}>
+                  <option>Current employee</option>
+                  <option>Former employee</option>
+                </select>
               </div>
             </div>
 
-            {/* Section 2: Ratings */}
-            <div>
-              <h3 className="text-lg font-semibold text-black border-b pb-2 mb-4">Ratings</h3>
-              <div className="grid grid-cols-1 text-black gap-6 sm:grid-cols-2">
-                <RatingSelect name="ratingOverall" label="Overall Rating *" value={formData.ratingOverall} onChange={handleChange} />
-                <RatingSelect name="ratingWorkLife" label="Work-Life Balance" value={formData.ratingWorkLife} onChange={handleChange} />
-                <RatingSelect name="ratingPay" label="Pay & Benefits" value={formData.ratingPay} onChange={handleChange} />
-                <RatingSelect name="ratingManagement" label="Management" value={formData.ratingManagement} onChange={handleChange} />
-                <RatingSelect name="ratingCulture" label="Culture & Values" value={formData.ratingCulture} onChange={handleChange} />
+            <div className="form-section">
+              <div className="form-section__title">Review title<span className="required">*</span></div>
+              <div className="form-field" style={{ marginBottom: 0 }}>
+                <input className="input" type="text" name="reviewTitle" value={formData.reviewTitle} onChange={handleChange} placeholder="Sum up your experience in one line" required />
               </div>
             </div>
 
-            {/* Section 3: Detailed Review */}
-            <div>
-              <h3 className="text-lg font-semibold text-black border-b pb-2 mb-4">Your Review</h3>
-              <div className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium text-c700 mb-1">Pros * (What do you like?)</label>
-                  <textarea
-                    name="pros"
-                    value={formData.pros}
-                    onChange={handleChange}
-                    rows={4}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    required
-                    placeholder="Minimum 10 characters..."
-                  />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-c700 mb-1">Cons * (What needs improvement?)</label>
-                  <textarea
-                    name="cons"
-                    value={formData.cons}
-                    onChange={handleChange}
-                    rows={4}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    required
-                    placeholder="Minimum 10 characters..."
-                  />
-                </div>
+            <div className="form-section">
+              <div className="form-section__title">Pros<span className="required">*</span></div>
+              <div className="form-field" style={{ marginBottom: 0 }}>
+                <textarea className="input w-full" name="pros" value={formData.pros} onChange={handleChange} placeholder="What did you like about working here?" maxLength={600} required style={{ minHeight: '120px', resize: 'vertical' }}></textarea>
+                <div style={{ fontSize: '11px', color: 'var(--c-500)', marginTop: '8px', textAlign: 'right' }}>{formData.pros.length} / 600</div>
+              </div>
+            </div>
 
-                <div className="flex items-center gap-3 bg-c100 p-4 rounded-xl border border-c200">
-                  <input
-                    type="checkbox"
-                    name="recommend"
-                    id="recommend"
-                    checked={formData.recommend}
-                    onChange={handleChange}
-                    className="h-5 w-5 rounded border-c300 text-green focus:ring-green"
-                  />
-                  <label htmlFor="recommend" className="text-sm font-medium text-c900">
-                    I would recommend this company to a friend
-                  </label>
-                </div>
+            <div className="form-section">
+              <div className="form-section__title">Cons<span className="required">*</span></div>
+              <div className="form-field" style={{ marginBottom: 0 }}>
+                <textarea className="input w-full" name="cons" value={formData.cons} onChange={handleChange} placeholder="What could be improved?" maxLength={600} required style={{ minHeight: '120px', resize: 'vertical' }}></textarea>
+                <div style={{ fontSize: '11px', color: 'var(--c-500)', marginTop: '8px', textAlign: 'right' }}>{formData.cons.length} / 600</div>
+              </div>
+            </div>
 
+            <div className="form-section" style={{ borderBottom: 'none', paddingBottom: 0, marginBottom: 0 }}>
+              <div className="toggle-row" style={{ borderBottom: 'none', paddingTop: 0, paddingBottom: 0, cursor: 'pointer' }} onClick={handleToggleRecommend}>
                 <div>
-                  <label className="block text-sm font-medium text-c700 mb-1">Display Name (Nickname)</label>
-                  <input
-                    type="text"
-                    name="displayName"
-                    value={formData.displayName}
-                    onChange={handleChange}
-                    className="w-full rounded-lg border-c300 focus:border-green focus:ring-green shadow-sm text-c900"
-                    required
-                  />
-                  <p className="text-xs text-c500 mt-1">This is what other users will see. Keep it anonymous.</p>
+                  <div className="toggle-row__title">Would you recommend this company?</div>
+                  <div className="toggle-row__desc">Shown as a badge on your review</div>
                 </div>
+                <div className={`toggle-switch ${formData.recommend ? 'on' : ''}`}></div>
+              </div>
+              <div className="check-row" style={{ marginTop: '16px', marginBottom: 0, cursor: 'pointer' }} onClick={handleCheckboxToggle}>
+                <span className={`filter-checkbox ${formData.confirmed ? 'checked' : ''}`} style={{ marginTop: '2px' }}></span>
+                <span>I understand this review is public and will be posted anonymously, without my name or job title's exact wording revealed.</span>
               </div>
             </div>
 
           </div>
 
-          <div className="mt-10 border-t pt-6 flex justify-end">
-            <button
-              type="submit"
-              disabled={loading}
-              className="bg-green hover:bg-green text-white px-8 py-3 rounded-xl font-bold shadow-md transition-all flex items-center justify-center min-w-layout-md"
-            >
-              {loading ? <Loader2 className="w-5 h-5 animate-spin" /> : 'Submit Anonymous Review'}
+          <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '20px' }}>
+            <button type="button" onClick={() => router.back()} className="btn btn--ghost" disabled={loading}>Save Draft</button>
+            <button type="submit" className="btn btn--primary" disabled={loading}>
+              {loading ? (
+                <>
+                  <Loader2 className="w-4 h-4 mr-2 animate-spin inline" />
+                  Posting...
+                </>
+              ) : 'Post Review'}
             </button>
           </div>
         </form>
+
       </div>
     </div>
   );

@@ -1834,7 +1834,8 @@
     position: relative;
     overflow: hidden;
     display: flex; flex-direction: column;
-    justify-content: space-between;
+    justify-content: center;
+    gap: 80px;
     padding: 48px;
     border-right: 1px solid var(--c-700);
   }

@@ -25,7 +25,7 @@ interface Job {
   isUrgent: boolean;
   deadline?: string;
   createdAt: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 export async function generateMetadata(props: {
@@ -60,14 +60,6 @@ async function fetchJobs(searchParams: { [key: string]: string | string[] | unde
   }
 }
 
-async function fetchJobDetail(jobId: string): Promise<Job | null> {
-  try {
-    return await serverFetch<Job>(`jobs/${jobId}`, { cache: 'no-store' });
-  } catch (err) {
-    return null;
-  }
-}
-
 export default async function JobsPage(props: {
   searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
@@ -80,13 +72,6 @@ export default async function JobsPage(props: {
   ]);
   
   const filterMeta = filterMetaRes || { industries: [], locations: {} };
-  const selectedJobId = searchParams.jobId ? String(searchParams.jobId) : null;
-
-  // Fetch full detail for selected job
-  let selectedJob: Job | null = null;
-  if (selectedJobId) {
-    selectedJob = jobs.find((j: Job) => j.id === selectedJobId) || await fetchJobDetail(selectedJobId);
-  }
 
   // Build clean searchParams object for child component
   const cleanParams: Record<string, string> = {};
@@ -109,11 +94,6 @@ export default async function JobsPage(props: {
             <div className="hero__search-field">
               <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
               <input type="text" placeholder="Job title, skills, or company..." aria-label="Search jobs" defaultValue={searchParams.keyword as string || ''} />
-            </div>
-            <div className="hero__search-loc" aria-label={`Location: ${searchParams.location || 'All locations'}`}>
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0118 0z"/><circle cx="12" cy="10" r="3"/></svg>
-              {searchParams.location || 'All locations'}
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><polyline points="6 9 12 15 18 9"/></svg>
             </div>
             <button className="hero__search-btn">Search</button>
           </div>
@@ -143,7 +123,6 @@ export default async function JobsPage(props: {
             <JobResultsWithDetail
               jobs={jobs}
               meta={meta}
-              selectedJob={selectedJob}
               searchParams={cleanParams}
             />
           </Suspense>

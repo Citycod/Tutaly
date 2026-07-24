@@ -1,10 +1,7 @@
 'use client';
 
-import React, { useState, useEffect, useMemo, useCallback } from 'react';
+import React from 'react';
 import Link from 'next/link';
-import { useSearchParams } from 'next/navigation';
-import { ArrowLeft } from 'lucide-react';
-import JobDetailPanel from '@/components/jobs/JobDetailPanel';
 
 const CURRENCY_SYMBOLS: Record<string, string> = {
   NGN: '₦',
@@ -32,7 +29,7 @@ interface Job {
   isUrgent: boolean;
   deadline?: string;
   createdAt: string;
-  employer?: { id: string; email: string };
+  employer?: { id: string; email: string; companyName?: string };
 }
 
 function formatTimeAgo(dateStr: string): string {
@@ -50,61 +47,12 @@ function formatTimeAgo(dateStr: string): string {
 export default function JobResultsWithDetail({
   jobs,
   meta,
-  selectedJob: initialSelectedJob,
   searchParams: initialSearchParams,
 }: {
   jobs: Job[];
   meta: { total: number; page: number; limit: number; totalPages: number };
-  selectedJob: Job | null;
   searchParams: Record<string, string>;
 }) {
-  const urlSearchParams = useSearchParams();
-  const [fetchedJob, setFetchedJob] = useState<Job | null>(null);
-  const [manualMobileOpen, setManualMobileOpen] = useState(false);
-
-  // Derive selected job from URL without setState in effect
-  const jobId = urlSearchParams.get('jobId');
-  const selectedJob = useMemo(() => {
-    if (!jobId) return null;
-    const found = jobs.find((j) => j.id === jobId);
-    if (found) return found;
-    if (fetchedJob?.id === jobId) return fetchedJob;
-    return initialSelectedJob?.id === jobId ? initialSelectedJob : null;
-  }, [jobId, jobs, fetchedJob, initialSelectedJob]);
-
-  // Derive mobile detail open from URL or manual override
-  const mobileDetailOpen = !!jobId || manualMobileOpen;
-
-  // Only use effect for async API fetch when job not in local list
-  const fetchJob = useCallback((id: string) => {
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000/api'}/jobs/${id}`)
-      .then((res) => res.json())
-      .then((data: Job) => {
-        setFetchedJob(data);
-      })
-      .catch(() => {});
-  }, []);
-
-  useEffect(() => {
-    if (jobId) {
-      const found = jobs.find((j) => j.id === jobId);
-      if (!found && fetchedJob?.id !== jobId) {
-        fetchJob(jobId);
-      }
-    }
-  }, [jobId, jobs, fetchedJob, fetchJob]);
-
-  const handleJobClick = (job: Job) => {
-    setFetchedJob(job);
-    setManualMobileOpen(true);
-  };
-
-  const buildJobUrl = (jobId: string) => {
-    const params = new URLSearchParams(initialSearchParams);
-    params.set('jobId', jobId);
-    return `/jobs?${params.toString()}`;
-  };
-
   const buildPageUrl = (page: number) => {
     const params = new URLSearchParams(initialSearchParams);
     params.delete('page');
@@ -114,38 +62,9 @@ export default function JobResultsWithDetail({
   };
 
   return (
-    <>
-      {/* ─── Mobile: Job Detail Full-Screen Overlay ─── */}
-      {mobileDetailOpen && selectedJob && (
-        <div className="fixed inset-0 bg-c100 z-40 lg:hidden overflow-y-auto">
-          <div className="sticky top-0 bg-white border-b border-c200 px-4 py-3 flex items-center gap-3 z-10">
-            <button
-              onClick={() => {
-                setManualMobileOpen(false);
-                // Update URL to remove jobId
-                const params = new URLSearchParams(initialSearchParams);
-                params.delete('jobId');
-                window.history.replaceState(null, '', `/jobs?${params.toString()}`);
-              }}
-              className="p-1.5 rounded-lg hover:bg-c100 transition"
-            >
-              <ArrowLeft className="w-5 h-5 text-c700" />
-            </button>
-            <div className="min-w-0">
-              <h2 className="text-sm font-bold text-c900 truncate">{selectedJob.title}</h2>
-              <p className="text-xs text-c500 truncate">
-                {selectedJob.employer?.email || 'Confidential Company'}
-              </p>
-            </div>
-          </div>
-          <div className="p-4">
-            <JobDetailPanel job={selectedJob} />
-          </div>
-        </div>
-      )}
-
+    <div className="flex flex-col gap-6 items-start w-full">
       {/* ─── Job List ─── */}
-      <main aria-label="Job results">
+      <main aria-label="Job results" className="flex-1 min-w-0 w-full">
         <div className="results-bar">
           <p className="results-count"><strong>{meta?.total || 0}</strong> jobs found</p>
           <div className="results-sort">
@@ -169,33 +88,24 @@ export default function JobResultsWithDetail({
         ) : (
           jobs.map((job: Job) => {
             const sym = CURRENCY_SYMBOLS[job.currency] || job.currency;
-            const isSelected = selectedJob?.id === job.id;
             return (
               <Link
-                href={buildJobUrl(job.id)}
+                href={`/jobs/${job.id}`}
                 key={job.id}
-                scroll={false}
-                onClick={(e) => {
-                  if (window.innerWidth < 1024) {
-                    e.preventDefault();
-                    handleJobClick(job);
-                    window.history.pushState(null, '', buildJobUrl(job.id));
-                  }
-                }}
               >
-                <article className={`jobcard ${isSelected ? 'border-blueL -translate-x-1' : ''}`}>
-                  <div className="jobcard__logo bg-blue/20 text-blueL">
-                    {job.employer?.email ? job.employer.email.substring(0, 1).toUpperCase() : 'C'}
+                <article className="jobcard premium-hover">
+                  <div className="jobcard__logo bg-blue/10 text-blue font-bold">
+                    {job.employer?.companyName ? job.employer.companyName.substring(0, 1).toUpperCase() : 'C'}
                   </div>
                   <div className="jobcard__body">
                     <div className="jobcard__top">
                       <div>
                         <div className="jobcard__title">{job.title}</div>
                         <div className="jobcard__company">
-                          {job.employer?.email || 'Confidential Company'}
+                          {job.employer?.companyName || 'Confidential Company'}
                         </div>
                       </div>
-                      <button className="jobcard__save" aria-label="Save job" onClick={(e) => e.preventDefault()}>
+                      <button className="jobcard__save premium-hover hover:text-blue hover:bg-blue/10 p-2 rounded-full transition-colors" aria-label="Save job" onClick={(e) => e.preventDefault()}>
                         <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M19 21l-7-5-7 5V5a2 2 0 012-2h10a2 2 0 012 2z"/></svg>
                       </button>
                     </div>
@@ -207,7 +117,7 @@ export default function JobResultsWithDetail({
                     </div>
 
                     {job.minSalary && (
-                      <div className="jobcard__salary">
+                      <div className="jobcard__salary font-mono text-green font-medium">
                         {sym}{job.minSalary.toLocaleString()}
                         {job.maxSalary ? ` – ${sym}${job.maxSalary.toLocaleString()}` : '+'} / month
                       </div>
@@ -217,12 +127,12 @@ export default function JobResultsWithDetail({
                       <span className="badge badge--new">{job.industry || 'Tech'}</span>
                       <span className="badge badge--new">{job.jobType}</span>
                       {job.isFeatured && <span className="tag tag--gold">Featured</span>}
-                      {job.isUrgent && <span className="tag tag--red">Urgent</span>}
+                      {job.isUrgent && <span className="tag bg-red/10 text-red">Urgent</span>}
                     </div>
                     
                     <div className="jobcard__footer">
-                      <span className="jobcard__posted">Posted {formatTimeAgo(job.createdAt)}</span>
-                      <button className="btn btn--primary btn--sm" onClick={(e) => e.preventDefault()}>Apply Now</button>
+                      <span className="jobcard__posted text-c400">Posted {formatTimeAgo(job.createdAt)}</span>
+                      <button className="btn btn--primary btn--sm premium-hover" onClick={(e) => e.preventDefault()}>Apply Now</button>
                     </div>
                   </div>
                 </article>
@@ -276,6 +186,6 @@ export default function JobResultsWithDetail({
           </nav>
         )}
       </main>
-    </>
+    </div>
   );
 }

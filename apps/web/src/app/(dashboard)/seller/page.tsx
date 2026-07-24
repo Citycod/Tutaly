@@ -21,40 +21,40 @@ export default function SellerShopPage() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    const fetchSellerData = async (token: string) => {
+      try {
+        const [productsRes, ordersRes] = await Promise.all([
+          apiAuth.withToken(token).get('/shop/seller/products'),
+          apiAuth.withToken(token).get('/shop/seller/orders'),
+        ]);
+        setProducts(productsRes.data?.data || productsRes.data || []);
+        setOrders(ordersRes.data?.data || ordersRes.data || []);
+      } catch (err) {
+        console.error('Failed to fetch seller data', err);
+      }
+    };
+
+    const checkSellerStatus = async () => {
+      try {
+        const token = localStorage.getItem('access_token');
+        if (!token) return;
+
+        const res = await apiAuth.withToken(token).get('/shop/seller/status');
+        const status = res.data?.sellerStatus || 'none';
+        setSellerStatus(status);
+
+        if (status === 'approved') {
+          await fetchSellerData(token);
+        }
+      } catch (err) {
+        console.error('Failed to check seller status', err);
+      } finally {
+        setLoading(false);
+      }
+    };
+
     checkSellerStatus();
   }, []);
-
-  const checkSellerStatus = async () => {
-    try {
-      const token = localStorage.getItem('access_token');
-      if (!token) return;
-
-      const res = await apiAuth.withToken(token).get('/shop/seller/status');
-      const status = res.data?.sellerStatus || 'none';
-      setSellerStatus(status);
-
-      if (status === 'approved') {
-        await fetchSellerData(token);
-      }
-    } catch (err) {
-      console.error('Failed to check seller status', err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchSellerData = async (token: string) => {
-    try {
-      const [productsRes, ordersRes] = await Promise.all([
-        apiAuth.withToken(token).get('/shop/seller/products'),
-        apiAuth.withToken(token).get('/shop/seller/orders'),
-      ]);
-      setProducts(productsRes.data?.data || productsRes.data || []);
-      setOrders(ordersRes.data?.data || ordersRes.data || []);
-    } catch (err) {
-      console.error('Failed to fetch seller data', err);
-    }
-  };
 
   const formatPrice = (price: number, currency?: string) => {
     const cur = currency || 'NGN';

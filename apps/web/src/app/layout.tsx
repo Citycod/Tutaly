@@ -1,8 +1,7 @@
 import type { Metadata } from "next";
 import { Inter, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
-import Footer from "@/components/layout/Footer";
+import MainLayout from "@/components/layout/MainLayout";
 import { CartProvider } from "@/components/providers/CartProvider";
 
 const inter = Inter({
@@ -39,6 +38,8 @@ export const metadata: Metadata = {
   },
 };
 
+import SmoothScroll from "@/components/motion/SmoothScroll";
+
 export default function RootLayout({
   children,
 }: Readonly<{
@@ -47,11 +48,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${inter.variable} ${jetbrains.variable}`}>
       <body className="flex flex-col min-h-screen bg-c900 text-c200">
-        <CartProvider>
-          <Navbar />
-          <main className="flex-grow">{children}</main>
-          <Footer />
-        </CartProvider>
+        <SmoothScroll>
+          <CartProvider>
+            <MainLayout>{children}</MainLayout>
+          </CartProvider>
+        </SmoothScroll>
       </body>
     </html>
   );

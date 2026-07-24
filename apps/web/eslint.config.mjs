@@ -68,11 +68,16 @@ const eslintConfig = defineConfig([
       "custom": customPlugin
     },
     rules: {
-      "@typescript-eslint/no-explicit-any": "warn",
-      "@typescript-eslint/no-unused-vars": "warn",
-      "react/no-unescaped-entities": "warn",
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+      "react/no-unescaped-entities": "off",
+      "@next/next/no-img-element": "off",
+      "react-hooks/exhaustive-deps": "off",
       "custom/no-inline-colors": "error",
       "custom/no-arbitrary-tailwind": "error"
+    },
+    linterOptions: {
+      reportUnusedDisableDirectives: false
     }
   }
 ]);

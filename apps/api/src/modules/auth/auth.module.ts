@@ -8,6 +8,8 @@ import { TokenService } from './token.service';
 import { User } from '../user/entities/user.entity';
 import { SeekerProfile } from '../user/entities/seeker-profile.entity';
 import { EmployerProfile } from '../user/entities/employer-profile.entity';
+import { GoogleStrategy } from './strategies/google.strategy';
+import { LinkedInStrategy } from './strategies/linkedin.strategy';
 
 @Module({
   imports: [
@@ -15,7 +17,7 @@ import { EmployerProfile } from '../user/entities/employer-profile.entity';
     JwtModule.register({}), // Secrets are passed per-sign call
   ],
   controllers: [AuthController],
-  providers: [AuthService, MailService, TokenService],
+  providers: [AuthService, MailService, TokenService, GoogleStrategy, LinkedInStrategy],
   exports: [AuthService, JwtModule, MailService, TokenService],
 })
 export class AuthModule {}

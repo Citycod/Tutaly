@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { apiAuth } from '@/lib/api';
-import locationsData from '@/data/locations.json';
+import { Country, State, City } from 'country-state-city';
 import { X } from 'lucide-react';
 import { clsx, type ClassValue } from 'clsx';
 import { twMerge } from 'tailwind-merge';
@@ -71,17 +71,19 @@ export default function PostJobWizard() {
   const [errorMsg, setErrorMsg] = useState('');
 
   // Location logic
-  const locations: Record<string, Record<string, string[]>> = locationsData;
-  const countries = useMemo(() => Object.keys(locations), [locations]);
+  const countries = useMemo(() => Country.getAllCountries().map(c => c.name), []);
   const states = useMemo(() => {
-    if (formData.country && locations[formData.country]) return Object.keys(locations[formData.country]);
-    return [];
-  }, [formData.country, locations]);
+    if (!formData.country) return [];
+    const c = Country.getAllCountries().find(c => c.name === formData.country);
+    return c ? State.getStatesOfCountry(c.isoCode).map(s => s.name) : [];
+  }, [formData.country]);
   const areas = useMemo(() => {
-    if (formData.country && formData.state && locations[formData.country]?.[formData.state])
-      return locations[formData.country][formData.state];
-    return [];
-  }, [formData.country, formData.state, locations]);
+    if (!formData.country || !formData.state) return [];
+    const c = Country.getAllCountries().find(c => c.name === formData.country);
+    if (!c) return [];
+    const s = State.getStatesOfCountry(c.isoCode).find(s => s.name === formData.state);
+    return s ? City.getCitiesOfState(c.isoCode, s.isoCode).map(city => city.name) : [];
+  }, [formData.country, formData.state]);
 
   const updateForm = (updates: Partial<FormData>) => {
     setFormData((prev) => ({ ...prev, ...updates }));

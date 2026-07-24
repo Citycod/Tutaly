@@ -181,7 +181,7 @@ export default function Navbar() {
             ) : (
               <>
                 <Link href="/auth/signin" className="btn btn--ghost !hidden md:!inline-flex">Sign in</Link>
-                <Link href="/employer/jobs/create" className="btn btn--primary !hidden md:!inline-flex">Get started</Link>
+                <Link href="/auth/signup" className="btn btn--primary !hidden md:!inline-flex">Get started</Link>
               </>
             )}
 
@@ -210,7 +210,7 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link onClick={() => setIsMobileMenuOpen(false)} href="/auth/signin" className="btn btn--ghost text-center w-full block">Sign in</Link>
-                  <Link onClick={() => setIsMobileMenuOpen(false)} href="/employer/jobs/create" className="btn btn--primary text-center w-full block">Get started</Link>
+                  <Link onClick={() => setIsMobileMenuOpen(false)} href="/auth/signup" className="btn btn--primary text-center w-full block">Get started</Link>
                 </>
               )}
             </div>

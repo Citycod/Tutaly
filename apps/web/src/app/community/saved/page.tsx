@@ -4,6 +4,7 @@ import React, { useEffect, useState, useCallback } from 'react';
 import { apiAuth } from '@/lib/api';
 import { Heart, MessageSquare, Loader2, BookmarkX, BookmarkCheck } from 'lucide-react';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface PostData {
   id: string;
@@ -112,9 +113,9 @@ export default function SavedPostsPage() {
                 <div className="flex items-center justify-between mb-3">
                   <div className="flex items-center gap-3">
                     <Link href={authorProfileLink}>
-                      <div className="w-10 h-10 rounded-full bg-green flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0">
+                      <div className="relative w-10 h-10 rounded-full bg-green flex items-center justify-center text-white font-bold text-sm overflow-hidden shrink-0">
                         {post.author.avatar ? (
-                          <img src={post.author.avatar} alt="avatar" className="w-full h-full object-cover" />
+                          <Image src={post.author.avatar} alt="avatar" fill className="object-cover" unoptimized />
                         ) : (
                           getAuthorName(post.author).charAt(0).toUpperCase()
                         )}
@@ -140,8 +141,8 @@ export default function SavedPostsPage() {
                 <p className="text-c800 text-sm leading-relaxed whitespace-pre-wrap mb-4">{post.content}</p>
 
                 {displayImage && (
-                  <div className="rounded-xl overflow-hidden mb-4 bg-c100 flex justify-center">
-                    <img src={displayImage} alt="Post content" className="max-w-full max-h-layout-lg object-contain" />
+                  <div className="rounded-xl overflow-hidden mb-4 bg-c100 flex justify-center relative" style={{ minHeight: '200px' }}>
+                    <Image src={displayImage} alt="Post content" fill className="object-contain" unoptimized />
                   </div>
                 )}
 

@@ -1,9 +1,9 @@
-/* ═══════════════════════════════════════════════════════════════
+﻿/* â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•
    HOME
    Extracted from tutaly-landing (1).html
-   ═══════════════════════════════════════════════════════════════ */
+   â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â•â• */
 
-/* ─── HERO ───────────────────────────────────────────────── */
+/* â”€â”€â”€ HERO â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero {
   padding: 160px 0 120px;
   position: relative;
@@ -114,6 +114,8 @@
   margin-bottom: 16px;
   overflow: hidden;
   max-width: 680px;
+  position: relative;
+  z-index: 10;
   animation: fadeUp 0.6s 0.28s ease both;
   transition: border-color 150ms, box-shadow 150ms;
 }
@@ -176,7 +178,7 @@
 }
 .hero__trending-tag:hover { border-color: var(--blue); color: var(--blue-l); }
 
-/* ─── FLOATING JOB CARDS ─────────────────────────────────── */
+/* â”€â”€â”€ FLOATING JOB CARDS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .hero__cards {
   position: absolute;
   right: -20px; top: 120px;
@@ -220,7 +222,7 @@
 
 @media (max-width: 1100px) { .hero__cards { display: none; } }
 
-/* ─── LOGOS ──────────────────────────────────────────────── */
+/* â”€â”€â”€ LOGOS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .logos {
   padding: 48px 0;
   border-top: 1px solid var(--c-800);
@@ -245,7 +247,7 @@
 }
 .logos__item:hover { color: var(--c-400); }
 
-/* ─── FEATURES (FOR PROFESSIONALS) ──────────────────────── */
+/* â”€â”€â”€ FEATURES (FOR PROFESSIONALS) â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .features-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -288,7 +290,7 @@
 }
 .feat:hover .feat__link { gap: 8px; }
 
-/* ─── SALARY SECTION ─────────────────────────────────────── */
+/* â”€â”€â”€ SALARY SECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .salary-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -362,7 +364,7 @@
 .salary-role-name { font-size: 14px; font-weight: 500; color: var(--c-200); }
 .salary-role-range { font-family: var(--mono); font-size: 13px; font-weight: 500; color: #2DB85A; }
 
-/* ─── REVIEWS SECTION ────────────────────────────────────── */
+/* â”€â”€â”€ REVIEWS SECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .reviews-row {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
@@ -409,7 +411,7 @@
 }
 .review-card__rec--yes { background: rgba(29,122,58,0.18); color: #2DB85A; }
 
-/* ─── EMPLOYER SECTION ───────────────────────────────────── */
+/* â”€â”€â”€ EMPLOYER SECTION â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .employer-split {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -489,7 +491,7 @@
 .status--interview { background: rgba(27,79,158,0.2); color: var(--blue-l); }
 .status--offer { background: rgba(29,122,58,0.2); color: #2DB85A; }
 
-/* ─── SHOP ────────────────────────────────────────── */
+/* â”€â”€â”€ SHOP â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .market-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
@@ -524,7 +526,7 @@
 .market-card__price { font-family: var(--mono); font-size: 16px; font-weight: 600; color: var(--blue-l); }
 .market-card__rating { font-size: 12px; color: var(--gold); font-weight: 600; }
 
-/* ─── TESTIMONIALS ────────────────────────────────────────── */
+/* â”€â”€â”€ TESTIMONIALS â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .testimonials { padding: 96px 0; background: var(--c-800); }
 .testimonials-grid {
   display: grid;
@@ -563,7 +565,7 @@
   margin-top: 4px;
 }
 
-/* ─── CTA BANNER ─────────────────────────────────────────── */
+/* â”€â”€â”€ CTA BANNER â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€â”€ */
 .cta-banner {
   padding: 96px 0;
   background: var(--c-900);
@@ -593,3 +595,157 @@
 }
 .cta-banner__actions { display: flex; align-items: center; justify-content: center; gap: 14px; flex-wrap: wrap; }
 .cta-banner__note { font-size: 12px; color: var(--c-500); margin-top: 16px; }
+  /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+     JOB DETAIL PAGE
+  Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+  .job-detail-layout {
+    display: grid;
+    grid-template-columns: 1fr 340px;
+    gap: 32px;
+    padding-bottom: 64px;
+  }
+  @media (max-width: 900px) {
+    .job-detail-layout { grid-template-columns: 1fr; }
+  }
+
+  .job-header {
+    display: flex; align-items: flex-start; gap: 18px;
+    padding-bottom: 24px;
+    margin-bottom: 24px;
+    border-bottom: 1px solid var(--c-700);
+  }
+  .job-header__logo {
+    width: 60px; height: 60px; flex-shrink: 0;
+    border-radius: var(--r-lg);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 22px; font-weight: 800;
+  }
+  .job-header__title { font-size: 24px; font-weight: 800; color: var(--c-100); letter-spacing: -0.02em; margin-bottom: 6px; }
+  .job-header__company { font-size: 14px; color: var(--blue-l); font-weight: 600; margin-bottom: 10px; }
+  .job-header__meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-size: 13px; color: var(--c-400); }
+  .job-header__meta span { display: flex; align-items: center; gap: 5px; }
+
+  .job-section { margin-bottom: 32px; }
+  .job-section__title { font-size: 16px; font-weight: 700; color: var(--c-100); margin-bottom: 14px; }
+  .job-section__body { font-size: 14.5px; color: var(--c-300); line-height: 1.75; }
+  .job-section__body p { margin-bottom: 14px; }
+  .job-section__body ul { margin: 0 0 14px 20px; }
+  .job-section__body li { margin-bottom: 8px; }
+
+  .apply-box {
+    background: var(--c-800);
+    border: 1px solid var(--c-700);
+    border-radius: var(--r-xl);
+    padding: 24px;
+    position: sticky; top: 84px;
+  }
+  .apply-box__salary { font-family: var(--mono); font-size: 22px; font-weight: 600; color: #2DB85A; margin-bottom: 2px; }
+  .apply-box__salary-note { font-size: 12px; color: var(--c-500); margin-bottom: 18px; }
+  .apply-box__stat-row {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 10px 0; border-bottom: 1px solid var(--c-700);
+    font-size: 12.5px;
+  }
+  .apply-box__stat-row:last-of-type { border-bottom: none; margin-bottom: 18px; }
+  .apply-box__stat-label { color: var(--c-500); }
+  .apply-box__stat-value { color: var(--c-200); font-weight: 600; }
+
+  .company-mini-card {
+    display: flex; align-items: center; gap: 12px;
+    padding: 16px;
+    background: var(--c-800);
+    border: 1px solid var(--c-700);
+    border-radius: var(--r-lg);
+    margin-top: 16px;
+  }
+  .company-mini-card__logo {
+    width: 40px; height: 40px; border-radius: var(--r-md);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px; font-weight: 800; flex-shrink: 0;
+  }
+  .company-mini-card__name { font-size: 13px; font-weight: 700; color: var(--c-100); }
+  .company-mini-card__meta { font-size: 11.5px; color: var(--c-500); }
+
+  /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+     SALARY DETAIL PAGE (role breakdown)
+  Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+  .salary-detail-header {
+    display: flex; align-items: flex-end; justify-content: space-between;
+    flex-wrap: wrap; gap: 20px;
+    margin-bottom: 24px;
+  }
+  .salary-detail-header__title { font-size: 26px; font-weight: 800; color: var(--c-100); letter-spacing: -0.02em; }
+  .salary-detail-header__sub { font-size: 13px; color: var(--c-500); margin-top: 4px; }
+
+  .percentile-grid {
+    display: grid; grid-template-columns: repeat(5, 1fr);
+    gap: 12px; margin: 24px 0;
+  }
+  @media (max-width: 700px) { .percentile-grid { grid-template-columns: repeat(3, 1fr); } }
+  .percentile-tile {
+    background: var(--c-700);
+    border-radius: var(--r-md);
+    padding: 14px; text-align: center;
+  }
+  .percentile-tile__label { font-size: 10.5px; color: var(--c-500); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 6px; }
+  .percentile-tile__value { font-family: var(--mono); font-size: 15px; font-weight: 600; color: var(--c-100); }
+  .percentile-tile.median { background: rgba(29,122,58,0.15); border: 1px solid rgba(29,122,58,0.4); }
+  .percentile-tile.median .percentile-tile__value { color: #2DB85A; }
+
+  .breakdown-table { width: 100%; border-collapse: collapse; }
+  .breakdown-table th {
+    text-align: left; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em;
+    color: var(--c-500); padding: 0 0 10px; border-bottom: 1px solid var(--c-700);
+  }
+  .breakdown-table td { padding: 12px 0; border-bottom: 1px solid var(--c-700); font-size: 13.5px; color: var(--c-200); }
+  .breakdown-table tr:last-child td { border-bottom: none; }
+  .breakdown-table td.num { font-family: var(--mono); text-align: right; color: var(--c-100); font-weight: 600; }
+  .breakdown-table__company { display: flex; align-items: center; gap: 10px; }
+  .breakdown-table__logo {
+    width: 28px; height: 28px; border-radius: var(--r-sm);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 11px; font-weight: 800; flex-shrink: 0;
+  }
+
+  /* Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â
+     STAR RATING INPUT (write review)
+  Ã¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢ÂÃ¢â€¢Â */
+  .star-input { display: flex; gap: 6px; margin-bottom: 4px; }
+  .star-input__star {
+    font-size: 30px; line-height: 1;
+    color: var(--c-600);
+    cursor: pointer;
+    transition: color 150ms, transform 150ms;
+  }
+  .star-input__star.filled { color: var(--gold); }
+  .star-input__star:hover { transform: scale(1.12); }
+  .star-input__label { font-size: 12.5px; color: var(--c-500); }
+
+  .company-search-select {
+    display: flex; gap: 0;
+    background: var(--c-700);
+    border: 1px solid var(--c-500);
+    border-radius: var(--r-sm);
+    overflow: hidden;
+  }
+  .company-search-select input {
+    flex: 1; background: transparent; border: none; outline: none;
+    padding: 11px 14px;
+    font-family: var(--font); font-size: 14px; color: var(--c-100);
+  }
+  .company-search-select input::placeholder { color: var(--c-500); }
+  .company-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    padding: 8px 14px 8px 8px;
+    background: var(--c-700);
+    border: 1px solid var(--c-600);
+    border-radius: var(--r-pill);
+  }
+  .company-chip__logo {
+    width: 24px; height: 24px; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 10px; font-weight: 800; flex-shrink: 0;
+  }
+  .company-chip__name { font-size: 13px; font-weight: 600; color: var(--c-100); }
+
+

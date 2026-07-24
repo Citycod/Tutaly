@@ -106,3 +106,19 @@ export class DeleteAccountDto {
   @IsNotEmpty()
   password: string;
 }
+
+export class OnboardingDto {
+  @IsEnum(UserRole)
+  role: UserRole;
+
+  @IsDateString()
+  dateOfBirth: string;
+
+  @IsString()
+  @IsOptional()
+  companyName?: string;
+
+  @IsString()
+  @IsOptional()
+  industry?: string;
+}

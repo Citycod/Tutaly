@@ -8,11 +8,11 @@ import { Repository } from 'typeorm';
 import { User } from './entities/user.entity';
 import { SeekerProfile } from './entities/seeker-profile.entity';
 import { EmployerProfile } from './entities/employer-profile.entity';
-import { createClient, SupabaseClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js';
 
 @Injectable()
 export class UserService {
-  private supabase: SupabaseClient;
+  private supabase: ReturnType<typeof createClient>;
 
   constructor(
     @InjectRepository(User)

@@ -20,14 +20,14 @@ export default function ProfilePage() {
       const res = await apiAuth.withToken(token).get(`/connect/profiles/${username}`);
       setProfile(res.data);
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 setError(err?.response?.data?.message || 'Failed to load profile');
     } finally {
       setLoading(false);
@@ -50,14 +50,14 @@ setError(err?.response?.data?.message || 'Failed to load profile');
       await apiAuth.withToken(token!).post(`/connect/follow/${profile.id}`);
       alert('Follow request sent');
     } catch (e) {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+       
       /* eslint-disable @typescript-eslint/no-unused-vars */
       const error = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
       /* eslint-enable @typescript-eslint/no-unused-vars */
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      /* eslint-disable @typescript-eslint/no-unused-vars */
+       
+       
       const err = e as { response?: { data?: { message?: string }; status?: number }; message?: string };
-      /* eslint-enable @typescript-eslint/no-unused-vars */
+       
 alert(err?.response?.data?.message || 'Failed to follow user');
     }
   };
