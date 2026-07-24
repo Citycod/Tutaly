@@ -3,11 +3,12 @@
 import React, { useState, useEffect } from 'react';
 import Link from 'next/link';
 import { api } from '@/lib/api';
+import { FileText, Package, Briefcase } from 'lucide-react';
 
-const LISTING_TYPE_MAP: Record<string, { label: string; icon: string; color: string; tagClass: string }> = {
-  digital: { label: 'Digital', icon: '📄', color: 'var(--blue-10)', tagClass: 'tag--blue' },
-  physical: { label: 'Physical', icon: '📦', color: 'var(--green-10)', tagClass: 'tag--green' },
-  service: { label: 'Service', icon: '💼', color: 'var(--gold-10)', tagClass: 'tag--gold' },
+const LISTING_TYPE_MAP: Record<string, { label: string; icon: React.ElementType; color: string; iconColor: string; tagClass: string }> = {
+  digital: { label: 'Digital', icon: FileText, color: 'var(--blue-10)', iconColor: 'var(--blue)', tagClass: 'tag--blue' },
+  physical: { label: 'Physical', icon: Package, color: 'var(--green-10)', iconColor: 'var(--green)', tagClass: 'tag--green' },
+  service: { label: 'Service', icon: Briefcase, color: 'var(--gold-10)', iconColor: 'var(--gold)', tagClass: 'tag--gold' },
 };
 
 export default function ShopPage() {
@@ -102,9 +103,11 @@ export default function ShopPage() {
               return (
                 <Link key={product.id} href={`/shop/${product.id}`} className="market-card" style={{ display: 'block' }}>
                   <article>
-                    <div className="market-card__thumb" style={{ background: product.imageUrls?.[0] ? 'var(--c-50)' : typeInfo.color }}>
-                      {product.imageUrls?.[0] && (
+                    <div className="market-card__thumb" style={{ background: product.imageUrls?.[0] ? 'var(--c-50)' : typeInfo.color, position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      {product.imageUrls?.[0] ? (
                         <img src={product.imageUrls[0]} alt={product.title} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <typeInfo.icon size={48} color={typeInfo.iconColor} style={{ opacity: 0.8 }} />
                       )}
                       {product.isBestseller && (
                         <span className={`market-card__badge ${typeInfo.tagClass}`}>Bestseller</span>

@@ -97,7 +97,7 @@ export function CommentThread({ postId, comments, onCommentAdded }: CommentThrea
           value={newComment}
           onChange={(e) => setNewComment(e.target.value)}
           placeholder="Write a comment..."
-          className="flex-1 resize-none overflow-hidden rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-navy focus:bg-white focus:outline-none focus:ring-1 focus:ring-navy transition-colors min-h-[44px]"
+          className="flex-1 resize-none overflow-hidden rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 text-sm focus:border-navy focus:bg-white focus:outline-none focus:ring-1 focus:ring-navy transition-colors min-h-11"
           rows={1}
           onInput={(e) => {
             const target = e.target as HTMLTextAreaElement;

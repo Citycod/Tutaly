@@ -151,8 +151,8 @@ export default async function JobDetailPage(props: { params: Promise<{ id: strin
                   </div>
                 </div>
               </div>
-              {job.employer?.email && (
-                <Link href={`/reviews/company/${job.employer.email.split('@')[0]}`} className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '10px' }}>
+              {job.employer && (
+                <Link href={`/reviews/company/${encodeURIComponent(job.employer.companyName || 'Unknown')}`} className="btn btn--ghost btn--sm btn--full" style={{ marginTop: '10px' }}>
                   Read company reviews
                 </Link>
               )}

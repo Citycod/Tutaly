@@ -1,12 +1,11 @@
 'use client';
 
-import React, { useState } from 'react';
+import React, { useState, useMemo } from 'react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { Search } from 'lucide-react';
-import { Country, State, City } from 'country-state-city';
-
-
+import locationsData from '@/data/locations.json';
+import { INDUSTRIES } from '@/lib/constants';
 
 interface SalaryAggregate {
   role: string;
@@ -29,33 +28,18 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
   const searchParams = useSearchParams();
   
   const [roleInput, setRoleInput] = useState(searchParams.get('role') || '');
-  const [country, setCountry] = useState(searchParams.get('country') || 'Nigeria');
   const [state, setState] = useState(searchParams.get('state') || '');
   const [area, setArea] = useState(searchParams.get('area') || '');
   const [industry, setIndustry] = useState(searchParams.get('industry') || '');
   const [isOpen, setIsOpen] = useState(false);
 
-  // Cascading location data
-  const industriesList = React.useMemo(() => filterMeta?.industries || [], [filterMeta?.industries]);
-  const countries = React.useMemo(() => Country.getAllCountries().map(c => c.name), []);
-  const states = React.useMemo(() => {
-    if (!country) return [];
-    const c = Country.getAllCountries().find(c => c.name === country);
-    return c ? State.getStatesOfCountry(c.isoCode).map(s => s.name) : [];
-  }, [country]);
-  const areas = React.useMemo(() => {
-    if (!country || !state) return [];
-    const c = Country.getAllCountries().find(c => c.name === country);
-    if (!c) return [];
-    const s = State.getStatesOfCountry(c.isoCode).find(s => s.name === state);
-    return s ? City.getCitiesOfState(c.isoCode, s.isoCode).map(city => city.name) : [];
-  }, [country, state]);
-
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    setCountry(e.target.value);
-    setState('');
-    setArea('');
-  };
+  // Cascading location and standard industry data
+  const industriesList = INDUSTRIES;
+  const states = useMemo(() => Object.keys(locationsData.Nigeria).sort(), []);
+  const areas = useMemo(() => {
+    if (!state) return [];
+    return locationsData.Nigeria[state as keyof typeof locationsData.Nigeria] || [];
+  }, [state]);
 
   const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     setState(e.target.value);
@@ -66,7 +50,6 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
     e.preventDefault();
     const params = new URLSearchParams();
     if (roleInput) params.set('role', roleInput);
-    if (country) params.set('country', country);
     if (state) params.set('state', state);
     if (area) params.set('area', area);
     if (industry) params.set('industry', industry);
@@ -76,7 +59,6 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
   const handleApply = () => {
     const params = new URLSearchParams();
     if (roleInput) params.set('role', roleInput);
-    if (country) params.set('country', country);
     if (state) params.set('state', state);
     if (area) params.set('area', area);
     if (industry) params.set('industry', industry);
@@ -85,7 +67,6 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
 
   const handleClear = () => {
     setRoleInput('');
-    setCountry('Nigeria');
     setState('');
     setArea('');
     setIndustry('');
@@ -124,7 +105,7 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
             <div className="salary-card__header">
               <div>
                 <div className="salary-card__role">{featured.role || featured.industry || 'All Roles'}</div>
-                <div className="salary-card__loc">📍 Lagos, Nigeria · All experience levels · {featured.totalSubmissions || 0} reports</div>
+                <div className="salary-card__loc">📍 Nigeria · All experience levels · {featured.totalSubmissions || 0} reports</div>
               </div>
               <div>
                 <div className="salary-card__avg">₦{(Number(featured.avgSalary) / 1000).toFixed(0)}K</div>
@@ -170,14 +151,6 @@ export default function SalariesClient({ aggregates, popularRoles = [], filterMe
               <div className="filter-group">
                 <div className="filter-group__label">Location</div>
                 <div className="flex flex-col gap-2">
-                  <div className="filter-range">
-                    <select value={country} onChange={handleCountryChange} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue">
-                      <option value="">All Countries</option>
-                      {countries.map((c) => (
-                        <option key={c} value={c}>{c}</option>
-                      ))}
-                    </select>
-                  </div>
                   <div className="filter-range">
                     <select value={state} onChange={handleStateChange} disabled={states.length === 0} className="w-full bg-c700 border border-c600 rounded-sm py-2 px-2 text-xs font-mono text-c100 outline-none focus:border-blue disabled:opacity-50">
                       <option value="">All States</option>

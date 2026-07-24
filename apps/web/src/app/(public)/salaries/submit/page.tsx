@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import { useRouter } from 'next/navigation';
 import { api } from '@/lib/api';
 import { ShieldCheck, Loader2 } from 'lucide-react';
-import { Country, State } from 'country-state-city';
+import locationsData from '@/data/locations.json';
 import { INDUSTRIES } from '@/lib/constants';
 
 export default function SubmitSalaryPage() {
@@ -27,27 +27,26 @@ export default function SubmitSalaryPage() {
     confirmed: true,
   });
 
-  const [country, setCountry] = useState('Nigeria');
-  const [state, setState] = useState('');
+  const [state, setState] = useState('Lagos');
+  const [area, setArea] = useState('');
 
-  const countries = useMemo(() => Country.getAllCountries().map(c => c.name), []);
-  const states = useMemo(() => {
-    if (!country) return [];
-    const c = Country.getAllCountries().find(c => c.name === country);
-    return c ? State.getStatesOfCountry(c.isoCode).map(s => s.name) : [];
-  }, [country]);
-
-  const handleCountryChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
-    const val = e.target.value;
-    setCountry(val);
-    setState('');
-    setFormData(prev => ({ ...prev, location: val }));
-  };
+  const states = useMemo(() => Object.keys(locationsData.Nigeria).sort(), []);
+  const areas = useMemo(() => {
+    if (!state) return [];
+    return locationsData.Nigeria[state as keyof typeof locationsData.Nigeria] || [];
+  }, [state]);
 
   const handleStateChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const val = e.target.value;
     setState(val);
-    setFormData(prev => ({ ...prev, location: val ? `${val}, ${country}` : country }));
+    setArea('');
+    setFormData(prev => ({ ...prev, location: val ? `${val}, Nigeria` : 'Nigeria' }));
+  };
+
+  const handleAreaChange = (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const val = e.target.value;
+    setArea(val);
+    setFormData(prev => ({ ...prev, location: val ? `${val}, ${state}, Nigeria` : `${state}, Nigeria` }));
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
@@ -159,16 +158,16 @@ export default function SubmitSalaryPage() {
               <div className="form-section__title">Location &amp; experience</div>
               <div className="form-grid-2">
                 <div className="form-field">
-                  <label className="form-label" htmlFor="s-country">Country<span className="required">*</span></label>
-                  <select className="input" id="s-country" value={country} onChange={handleCountryChange} required>
-                    {countries.map(c => <option key={c} value={c}>{c}</option>)}
+                  <label className="form-label" htmlFor="s-state">State<span className="required">*</span></label>
+                  <select className="input" id="s-state" value={state} onChange={handleStateChange} required>
+                    {states.map(s => <option key={s} value={s}>{s}</option>)}
                   </select>
                 </div>
                 <div className="form-field">
-                  <label className="form-label" htmlFor="s-state">State/Region</label>
-                  <select className="input" id="s-state" value={state} onChange={handleStateChange}>
-                    <option value="">Select State</option>
-                    {states.map(s => <option key={s} value={s}>{s}</option>)}
+                  <label className="form-label" htmlFor="s-area">Area/LGA</label>
+                  <select className="input" id="s-area" value={area} onChange={handleAreaChange}>
+                    <option value="">Any Area</option>
+                    {areas.map(a => <option key={a} value={a}>{a}</option>)}
                   </select>
                 </div>
               </div>
