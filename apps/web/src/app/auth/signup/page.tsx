@@ -29,7 +29,7 @@ export default function SignUp() {
       setError('You must agree to the Terms of Service.');
       return;
     }
-    
+
     setIsLoading(true);
     setError('');
 
@@ -70,9 +70,9 @@ export default function SignUp() {
   if (isSuccess) {
     return (
       <div className="auth-centered-shell">
-        <Link href="/" className="auth-centered-logo">
+        {/* <Link href="/" className="auth-centered-logo">
           <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
-        </Link>
+        </Link> */}
         <div className="auth-centered-wrap text-center">
           <div className="auth-success-icon mx-auto">
             <CheckCircle2 style={{ width: '28px', height: '28px', color: 'var(--green)' }} />
@@ -89,7 +89,7 @@ export default function SignUp() {
 
   return (
     <div className="auth-shell">
-      
+
       {/* LEFT BRANDED PANEL */}
       <aside className="auth-panel">
         <Link href="/" className="auth-panel__logo">
@@ -124,7 +124,7 @@ export default function SignUp() {
       {/* RIGHT FORM PANEL */}
       <main className="auth-form-side reveal visible">
         <div className="auth-form-wrap">
-          
+
           <Link href="/" className="auth-mobile-logo">
             <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
           </Link>
@@ -135,8 +135,8 @@ export default function SignUp() {
           </p>
 
           <div className="role-toggle">
-            <div 
-              className={`role-option ${role === 'seeker' ? 'selected' : ''}`} 
+            <div
+              className={`role-option ${role === 'seeker' ? 'selected' : ''}`}
               onClick={() => setRole('seeker')}
               tabIndex={0}
             >
@@ -144,8 +144,8 @@ export default function SignUp() {
               <div className="role-option__title">Professional</div>
               <div className="role-option__desc">Share salaries, leave reviews.</div>
             </div>
-            <div 
-              className={`role-option ${role === 'employer' ? 'selected' : ''}`} 
+            <div
+              className={`role-option ${role === 'employer' ? 'selected' : ''}`}
               onClick={() => setRole('employer')}
               tabIndex={0}
             >

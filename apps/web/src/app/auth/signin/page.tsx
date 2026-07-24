@@ -21,7 +21,7 @@ export default function SignIn() {
 
     try {
       const response = await api.post('/auth/signin', { email, password });
-      
+
       if (response.data.mfaRequired) {
         const params = new URLSearchParams();
         params.set('uid', response.data.userId);
@@ -44,12 +44,12 @@ export default function SignIn() {
 
   return (
     <div className="auth-shell">
-      
+
       {/* LEFT BRANDED PANEL */}
       <aside className="auth-panel">
-        <Link href="/" className="auth-panel__logo">
+        {/* <Link href="/" className="auth-panel__logo">
           <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
-        </Link>
+        </Link> */}
 
         <div className="auth-panel__content">
           <div className="auth-panel__quote">
@@ -79,7 +79,7 @@ export default function SignIn() {
       {/* RIGHT FORM PANEL */}
       <main className="auth-form-side reveal visible">
         <div className="auth-form-wrap">
-          
+
           <Link href="/" className="auth-mobile-logo">
             <img src="/images/tutaly-icon-mark.png" alt="Tutaly" />
           </Link>
@@ -101,12 +101,12 @@ export default function SignIn() {
                 Work Email <span className="required">*</span>
               </label>
               <div className="input-wrap">
-                <input 
-                  type="email" 
-                  id="email" 
-                  className="input" 
-                  placeholder="you@company.com" 
-                  required 
+                <input
+                  type="email"
+                  id="email"
+                  className="input"
+                  placeholder="you@company.com"
+                  required
                   value={email}
                   onChange={(e) => setEmail(e.target.value)}
                 />
@@ -118,18 +118,18 @@ export default function SignIn() {
                 Password <span className="required">*</span>
               </label>
               <div className="input-wrap">
-                <input 
-                  type={showPassword ? 'text' : 'password'} 
-                  id="password" 
-                  className="input" 
-                  placeholder="••••••••" 
-                  required 
+                <input
+                  type={showPassword ? 'text' : 'password'}
+                  id="password"
+                  className="input"
+                  placeholder="••••••••"
+                  required
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                 />
-                <button 
-                  type="button" 
-                  className="input-toggle" 
+                <button
+                  type="button"
+                  className="input-toggle"
                   onClick={() => setShowPassword(!showPassword)}
                 >
                   {showPassword ? 'HIDE' : 'SHOW'}
